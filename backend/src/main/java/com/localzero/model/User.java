@@ -40,7 +40,7 @@ public class User {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER) // EAGER fetch type to load roles immediately with the user
     @JoinTable(
             name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
