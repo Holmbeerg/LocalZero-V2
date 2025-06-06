@@ -1,10 +1,14 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
+import { RouterView, useRoute } from 'vue-router'
+
+import Header  from './components/Header.vue'
+import { computed } from 'vue'
+
+const route = useRoute()
+const showHeader = computed(() => !route.meta.hideHeader)
 </script>
 
 <template>
-  <header>
-
-  </header>
+  <Header v-if="showHeader" />
   <RouterView />
 </template>

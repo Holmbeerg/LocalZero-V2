@@ -7,6 +7,7 @@ export interface User {
   name: string
   email: string
   location: string
+  createdAt: string
   roles: string[]
 }
 
@@ -23,13 +24,13 @@ export interface RegisterData {
 }
 
 export const useAuthStore = defineStore('auth', () => {
-  const user = ref<User | null>(null);
-  const isAuthenticated = computed(() => !!user.value);
+  const user = ref<User | null>(null); // user state, initially null
+  const isAuthenticated = computed(() => Boolean(user.value));
 
   async function login(credentials: LoginCredentials) {
     try {
       const response = await authApi.login(credentials);
-      user.value = response.data;
+      user.value = response.data; // save user data to the store
       return response;
     } catch (error) {
       console.error('Login failed:', error);

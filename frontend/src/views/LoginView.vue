@@ -33,7 +33,7 @@ const handleSubmit = async () => {
       password: password.value
     })
 
-    await router.push('/home');
+    await router.push('/profile'); // Redirect to profile page after successful login
   } catch (e: unknown) {
     if (e instanceof Error) {
       error.value = e.message || 'Login failed. Please check your credentials.'

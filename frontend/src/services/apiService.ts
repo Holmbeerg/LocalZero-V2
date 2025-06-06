@@ -1,6 +1,6 @@
 import axios from 'axios'
 import type { AxiosInstance, AxiosResponse } from 'axios'
-import type { LoginCredentials, RegisterData, User } from '@/stores/auth'
+import type { LoginCredentials, RegisterData} from '@/stores/auth'
 
 const API_BASE_URL = 'http://localhost:8080/api'
 
@@ -57,5 +57,3 @@ export const authApi = {
     return await apiClient.post('/auth/logout')
   },
 }
-
-export default apiClient
