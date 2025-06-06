@@ -1,6 +1,6 @@
-import { defineStore } from 'pinia';
-import { ref, computed } from 'vue';
-import {authApi} from '@/services/apiService.ts';
+import { defineStore } from 'pinia'
+import { computed, ref } from 'vue'
+import { authApi } from '@/services/apiService.ts'
 
 export interface User {
   id: string
@@ -24,41 +24,53 @@ export interface RegisterData {
 }
 
 export const useAuthStore = defineStore('auth', () => {
-  const user = ref<User | null>(null); // user state, initially null
-  const isAuthenticated = computed(() => Boolean(user.value));
+  const user = ref<User | null>(null) // user state, initially null
+  const isInitialized = ref(false) // to track if auth has been initialized
+  const isAuthenticated = computed(() => Boolean(user.value))
+
+  async function initializeAuth() {
+    if (isInitialized.value) return // prevent re-initialization
+    try {
+      user.value = await authApi.getCurrentUser() // save user data to the store
+      isInitialized.value = true
+    } catch (error) { // errors that bubble up from the API
+      console.error('Failed to initialize authentication:', error)
+      user.value = null
+    }
+  }
 
   async function login(credentials: LoginCredentials) {
     try {
-      const response = await authApi.login(credentials);
-      user.value = response.data; // save user data to the store
-      return response;
+      const response = await authApi.login(credentials)
+      user.value = response.data
+      return response
     } catch (error) {
-      console.error('Login failed:', error);
-      throw error;
+      console.error('Login failed:', error)
+      throw error
     }
   }
 
   async function register(data: RegisterData) {
     try {
-      const response = await authApi.register(data);
-      user.value = response.data;
-      return response;
+      const response = await authApi.register(data)
+      user.value = response.data
+      return response
     } catch (error) {
-      console.error('Registration failed:', error);
-      throw error;
+      console.error('Registration failed:', error)
+      throw error
     }
   }
 
   async function logout() {
     try {
-      await authApi.logout();
+      await authApi.logout()
     } catch (error) {
-      console.error('Logout failed:', error);
-      throw error;
+      console.error('Logout failed:', error)
+      throw error
     } finally {
-      user.value = null;
+      user.value = null
     }
   }
 
-  return { user, isAuthenticated, login, register, logout };
+  return { user, isAuthenticated, initializeAuth, login, register, logout }
 })

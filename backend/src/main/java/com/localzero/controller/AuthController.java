@@ -15,10 +15,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
@@ -36,6 +35,16 @@ public class AuthController {
         this.userMapper = userMapper;
         this.jwtService = jwtService;
     }
+
+    @GetMapping("/me") // if we reach this endpoint, the user is authenticated (because of the JWTAuthenticationFilter)
+    public ResponseEntity<UserResponse> me(@AuthenticationPrincipal UserDetails userDetails) {
+        String email = userDetails.getUsername();
+        User user = userService.getUserByEmail(email);
+        UserResponse userResponse = userMapper.toUserResponse(user);
+
+        return ResponseEntity.ok(userResponse);
+    }
+
 
     @PostMapping("/register")
     public ResponseEntity<UserResponse> register(@Valid @RequestBody CreateUserRequest createUserRequest, HttpServletResponse response) {

@@ -1,6 +1,7 @@
 import axios from 'axios'
 import type { AxiosInstance, AxiosResponse } from 'axios'
-import type { LoginCredentials, RegisterData} from '@/stores/auth'
+import type { LoginCredentials, RegisterData, User } from '@/stores/auth'
+
 
 const API_BASE_URL = 'http://localhost:8080/api'
 
@@ -30,7 +31,6 @@ apiClient.interceptors.response.use(
   },
   (error) => {
     if (error.response?.status === 401) { // optional chaining
-      // Unauthorized - could redirect to login
       console.warn('Unauthorized request')
     } else if (error.response?.status === 403) {
       // Forbidden
@@ -45,6 +45,18 @@ apiClient.interceptors.response.use(
 
 // Auth API endpoints
 export const authApi = {
+  async getCurrentUser(): Promise<User | null> {
+    try {
+      return await apiClient.get('/auth/me')
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response?.status === 401) { // TODO: is this correct?
+        return null // If unauthorized, return null
+      }
+      console.error('Failed to fetch current user:', error)
+      throw error // bubble up other errors
+    }
+  },
+
   async login(credentials: LoginCredentials) {
     return await apiClient.post('/auth/login', credentials)
   },

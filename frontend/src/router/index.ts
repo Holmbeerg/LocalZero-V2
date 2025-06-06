@@ -5,8 +5,8 @@ import ProfileView from '@/views/ProfileView.vue'
 import { useAuthStore } from '@/stores/auth.ts'
 
 const routes = [
-  { path: '/login', component: LoginView, meta: { hideHeader: true } },
-  { path: '/register', component: RegisterView, meta: { hideHeader: true }  },
+  { path: '/login', component: LoginView, meta: { hideHeader: true, guest: true } },
+  { path: '/register', component: RegisterView, meta: { hideHeader: true, guest: true }  },
   { path: '/profile', component: ProfileView, meta: { requiresAuth: true} },
   { path: '/', redirect: '/login' },
 ];
@@ -17,13 +17,16 @@ export const router = createRouter({
   routes
 });
 
-// Navigation guards
+// Navigation guard
 
-router.beforeEach((to) => { // not using from or next at the moment
-  if (to.meta.requiresAuth) {
-    const authStore = useAuthStore();
-    if (!authStore.isAuthenticated) {
-      return '/login';
-    }
+router.beforeEach(async(to) => {
+  const authStore = useAuthStore();
+  await authStore.initializeAuth();
+  if (to.meta.requiresAuth && !authStore.isAuthenticated) {
+    return '/login';
+  }
+
+  if (to.meta.guest && authStore.isAuthenticated) {
+    return '/profile'; // redirect authenticated users away from login/register
   }
 })
