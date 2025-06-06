@@ -64,11 +64,13 @@ export const useAuthStore = defineStore('auth', () => {
   async function logout() {
     try {
       await authApi.logout()
+      console.log('User logged out successfully')
     } catch (error) {
       console.error('Logout failed:', error)
-      throw error
     } finally {
       user.value = null
+      isInitialized.value = false
+      console.log("user cleared from store")
     }
   }
 

@@ -22,6 +22,9 @@ export const router = createRouter({
 router.beforeEach(async(to) => {
   const authStore = useAuthStore();
   await authStore.initializeAuth();
+
+  console.log('Navigation Guard:', to.fullPath, 'Authenticated:', authStore.isAuthenticated);
+
   if (to.meta.requiresAuth && !authStore.isAuthenticated) {
     return '/login';
   }

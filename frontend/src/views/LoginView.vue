@@ -19,6 +19,7 @@ const clearError = () => {
 }
 
 const handleSubmit = async () => {
+  console.log("Handling login submission...")
   if (!isFormValid.value) {
     error.value = 'Please enter both email and password.'
     return
