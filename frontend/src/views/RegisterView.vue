@@ -56,7 +56,7 @@ const handleSubmit = async () => {
       location: location.value.trim()
     })
 
-    await router.push('/home');
+    await router.push('/profile');
   } catch (e: unknown) {
     if (e instanceof Error) {
       error.value = e.message || 'Registration failed. Please try again.'
