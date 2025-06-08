@@ -1,6 +1,7 @@
 import axios from 'axios'
 import type { AxiosInstance, AxiosResponse } from 'axios'
-import type { LoginCredentials, RegisterData, User } from '@/stores/auth'
+import type { LoginCredentials, RegisterData, User } from '@/types/user.ts'
+import type { EcoAction, LogEcoActionRequest } from '@/types/ecoAction.ts'
 
 
 const API_BASE_URL = 'http://localhost:8080/api'
@@ -67,5 +68,26 @@ export const authApi = {
 
   async logout() {
     return await apiClient.post('/auth/logout')
+  },
+}
+
+// Eco Actions API endpoints
+export const ecoActionsApi = {
+  async getActions(): Promise<EcoAction[]> {
+    try {
+      return await apiClient.get('/eco-actions')
+    } catch (error) {
+      console.error('Failed to fetch eco actions:', error)
+      throw error
+    }
+  },
+
+  async logAction(ecoAction: LogEcoActionRequest): Promise<EcoAction> {
+    try {
+      return await apiClient.post('/eco-actions', ecoAction)
+    } catch (error) {
+      console.error('Failed to add eco action:', error)
+      throw error
+    }
   },
 }

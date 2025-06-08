@@ -34,8 +34,8 @@ defineProps<{ ecoActions: EcoAction[] }>()
       <p>Start logging your sustainable activities to track your impact!</p>
     </div>
 
-    <div v-else class="space-y-4">
-      <div
+    <ul v-else class="space-y-4">
+      <li
         v-for="action in ecoActions"
         :key="action.id"
         class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors"
@@ -64,8 +64,8 @@ defineProps<{ ecoActions: EcoAction[] }>()
             <div class="text-xs text-gray-500">saved</div>
           </div>
         </div>
-      </div>
-    </div>
+      </li>
+    </ul>
   </div>
   </div>
 </template>

@@ -5,6 +5,8 @@ import UserProfileCard from '@/components/UserProfileCard.vue'
 import EcoActionList from '@/components/EcoActionList.vue'
 import { ref } from 'vue'
 import type { EcoAction } from '@/types/ecoAction'
+import { ecoActionOptions } from '@/constants/ecoActionOptions.ts'
+import EcoActionForm from '@/components/EcoActionForm.vue'
 
 const { user } = storeToRefs(useAuthStore())
 
@@ -19,18 +21,22 @@ const ecoActions = ref<EcoAction[]>([
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-50 p-6">
+  <div class="min-h-screen bg-gray-50 py-20 px-6">
     <div class="max-w-7xl mx-auto">
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
         <!-- Left Column - User Info -->
-        <div class="lg:col-span-1">
+        <div class="lg:col-span-3">
           <UserProfileCard :user="user" :ecoActions="ecoActions" />
         </div>
         <!-- Middle Column - Eco Actions -->
-        <div class="lg:col-span-2">
+        <div class="lg:col-span-6">
           <EcoActionList :ecoActions="ecoActions" />
         </div>
         <!-- Right Column - Eco Action form-->
+        <div class="lg:col-span-3">
+          <EcoActionForm :ecoActionOptions="ecoActionOptions" />
+
+        </div>
 
       </div>
     </div>
