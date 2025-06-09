@@ -6,9 +6,11 @@ import com.localzero.mapper.UserMapper;
 import com.localzero.model.User;
 import com.localzero.model.dto.CreateUserRequest;
 import com.localzero.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+@Transactional //
 @Service
 public class UserService {
     private final UserMapper userMapper;

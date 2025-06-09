@@ -1,29 +1,26 @@
 <script setup lang="ts">
 import { Plus } from 'lucide-vue-next'
-import { ref } from 'vue'
+import { ref, defineEmits } from 'vue'
 import { ecoActionsApi } from '@/services/apiService.ts'
 import type { LogEcoActionRequest } from '@/types/ecoAction.ts'
 
 const selectedActionId = ref<number | ''>('')
 const selectedDate = ref('')
-
+const emit = defineEmits(['action-logged']) // should we use emit?
 
 async function logNewAction(){
-  if (!selectedActionId.value) {
-    alert('Please select an action to log.')
-    return
-  }
 
   console.log(`Logged new eco action: ${selectedActionId.value}`)
 
   const request: LogEcoActionRequest = {
-    actionId: selectedActionId.value,
+    actionId: selectedActionId.value as number,
     date: selectedDate.value
   }
 
   try {
-    await ecoActionsApi.logAction(request)
+    const newAction = await ecoActionsApi.logAction(request)
     alert('Eco action logged successfully!')
+    emit('action-logged', newAction)
   } catch (error) {
     console.error('Error logging eco action:', error)
     alert('Failed to log action. Please try again later.')
@@ -36,6 +33,8 @@ async function logNewAction(){
 defineProps<{
   ecoActionOptions: Array<{ id: number, action: string, carbonSaved: number, category: string }>
 }>()
+
+
 </script>
 
 <template>
@@ -55,6 +54,7 @@ defineProps<{
         <div>
           <label for="action" class="block text-sm font-medium mb-1">Action</label>
           <select id="action" v-model="selectedActionId" required class="w-full px-3 py-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500">
+            <option value="" disabled>Select an action...</option>
             <option v-for="option in ecoActionOptions" :key="option.id" :value="option.id">{{ option.action }}</option>
           </select>
         </div>

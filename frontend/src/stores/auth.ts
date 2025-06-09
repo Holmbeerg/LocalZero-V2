@@ -2,11 +2,13 @@ import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 import { authApi } from '@/services/apiService.ts'
 import type { User, LoginCredentials, RegisterData } from '@/types/user.ts'
+import { useEcoActionsStore } from '@/stores/ecoActions'
 
 export const useAuthStore = defineStore('auth', () => {
   const user = ref<User | null>(null) // user state, initially null
   const isInitialized = ref(false) // to track if auth has been initialized
   const isAuthenticated = computed(() => Boolean(user.value))
+  const ecoActionsStore = useEcoActionsStore()
 
   async function initializeAuth() {
     if (isInitialized.value) return // prevent re-initialization
@@ -50,6 +52,7 @@ export const useAuthStore = defineStore('auth', () => {
     } finally {
       user.value = null
       isInitialized.value = false
+      ecoActionsStore.resetEcoActions()
       console.log("user cleared from store")
     }
   }

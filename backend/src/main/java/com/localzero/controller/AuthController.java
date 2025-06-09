@@ -60,7 +60,7 @@ public class AuthController {
         cookie.setMaxAge(7200); // 2 hours
         response.addCookie(cookie);
 
-        return ResponseEntity.ok(userResponse);
+        return ResponseEntity.status(HttpStatus.CREATED).body(userResponse);
     }
 
     @PostMapping("/login")
