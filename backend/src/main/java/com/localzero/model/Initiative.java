@@ -1,6 +1,7 @@
 package com.localzero.model;
 
 import com.localzero.model.enums.InitiativeCategory;
+import com.localzero.model.enums.Neighborhood;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnTransformer;
@@ -29,8 +30,10 @@ public class Initiative {
     @Column(name = "description", nullable = false)
     private String description;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "location", nullable = false)
-    private String location;
+    @ColumnTransformer(write = "?::neighborhood") // maps Neighborhood enum to PostgreSQL enum type
+    private Neighborhood location;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "category", nullable = false)

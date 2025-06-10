@@ -1,8 +1,10 @@
 package com.localzero.model;
 
+import com.localzero.model.enums.Neighborhood;
 import com.localzero.model.enums.RoleName;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.ColumnTransformer;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -35,8 +37,10 @@ public class User {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "location")
-    private String location;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "location", nullable = false)
+    @ColumnTransformer(write = "?::neighborhood")
+    private Neighborhood location;
 
     @Column(name = "created_at")
     @CreationTimestamp
