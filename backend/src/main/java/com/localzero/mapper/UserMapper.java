@@ -3,6 +3,7 @@ package com.localzero.mapper;
 import com.localzero.model.User;
 import com.localzero.model.dto.CreateUserRequest;
 import com.localzero.model.dto.UserResponse;
+import com.localzero.model.dto.UserSummaryResponse;
 import org.springframework.stereotype.Component;
 
 // mapper libraries exist for example MapStruct or ModelMapper, but for simplicity we will do it manually
@@ -28,5 +29,12 @@ public class UserMapper {
                 .name(request.name())
                 .location(request.location())
                 .build();
+    }
+
+    public UserSummaryResponse toUserSummaryResponse(User user) {
+        return new UserSummaryResponse(
+                user.getUserId(),
+                user.getName()
+        );
     }
 }

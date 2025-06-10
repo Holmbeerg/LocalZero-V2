@@ -3,6 +3,7 @@ package com.localzero.model;
 import com.localzero.model.enums.RoleName;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
@@ -38,6 +39,7 @@ public class User {
     private String location;
 
     @Column(name = "created_at")
+    @CreationTimestamp
     private LocalDateTime createdAt;
 
     @ManyToMany(fetch = FetchType.EAGER) // EAGER fetch type to load roles immediately with the user
@@ -49,13 +51,6 @@ public class User {
 
     @Builder.Default
     private Set<Role> roles = new HashSet<>();
-
-    // Set createdAt only on insert
-    @PrePersist
-    public void prePersist() {
-        if (createdAt == null) createdAt = LocalDateTime.now();
-    }
-
 
     public void addRole(Role role) {
         this.roles.add(role);

@@ -1,5 +1,6 @@
 package com.localzero.model;
 
+import com.localzero.model.enums.EcoActionCategory;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,6 +24,7 @@ public class EcoActionType {
     @Column(name="carbon_savings_kg", nullable = false)
     private Double carbonSaved;
 
+    @Enumerated(EnumType.STRING)
     @Column(name="category", nullable = false)
-    private String category;
+    private EcoActionCategory category;
 }
