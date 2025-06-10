@@ -2,6 +2,7 @@
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
+import { neighborhoods } from '@/constants/neighborhoods.ts'
 
 const name = ref('')
 const email = ref('')
@@ -14,11 +15,13 @@ const router = useRouter()
 const authStore = useAuthStore()
 
 const isFormValid = computed(() => {
-  return name.value.trim() &&
+  return (
+    name.value.trim() &&
     email.value.trim() &&
     password.value.trim() &&
     confirmPassword.value.trim() &&
     location.value.trim()
+  )
 })
 
 const passwordsMatch = computed(() => {
@@ -53,10 +56,10 @@ const handleSubmit = async () => {
       name: name.value.trim(),
       email: email.value.trim(),
       password: password.value,
-      location: location.value.trim()
+      location: location.value.trim(),
     })
 
-    await router.push('/profile');
+    await router.push('/profile')
   } catch (e: unknown) {
     if (e instanceof Error) {
       error.value = e.message || 'Registration failed. Please try again.'
@@ -78,12 +81,14 @@ const handleInputChange = () => {
   }
 }
 
-const inputClass = "w-full px-3 py-2 border border-gray-300 rounded shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 disabled:bg-gray-50"
-
+const inputClass =
+  'w-full px-3 py-2 border border-gray-300 rounded shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 disabled:bg-gray-50'
 </script>
 
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-100 to-blue-50 px-4">
+  <div
+    class="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-100 to-blue-50 px-4"
+  >
     <div class="w-full bg-white rounded-xl shadow-lg p-8 max-w-md">
       <div class="text-center mb-4">
         <h2 class="text-2xl text-gray-900">Join LocalZero</h2>
@@ -138,7 +143,9 @@ const inputClass = "w-full px-3 py-2 border border-gray-300 rounded shadow-sm pl
         </div>
 
         <div>
-          <label for="confirmPassword" class="block text-sm font-medium mb-1">Confirm Password</label>
+          <label for="confirmPassword" class="block text-sm font-medium mb-1"
+            >Confirm Password</label
+          >
           <input
             id="confirmPassword"
             v-model="confirmPassword"
@@ -153,23 +160,25 @@ const inputClass = "w-full px-3 py-2 border border-gray-300 rounded shadow-sm pl
 
         <div>
           <label for="location" class="block text-sm font-medium mb-1">Location</label>
-          <input
+          <select
             id="location"
             v-model="location"
-            type="text"
             required
             :disabled="loading"
-            @input="handleInputChange"
-            :class="inputClass"
-            placeholder="Enter your city or neighborhood"
-          />
+            @change="handleInputChange"
+            class="w-full px-3 py-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
+          >
+            <option value="" disabled>Select your neighborhood...</option>
+            <option v-for="[value, label] in neighborhoods" :key="value" :value="value">
+              {{ label }}
+            </option>
+          </select>
         </div>
 
         <button
           type="submit"
           :disabled="!isFormValid || loading"
-          class="w-full py-2 px-4 bg-green-600 text-white rounded hover:bg-green-700 transition-colors cursor-pointer
-                 disabled:opacity-50 disabled:cursor-not-allowed"
+          class="w-full py-2 px-4 bg-green-600 text-white rounded hover:bg-green-700 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {{ loading ? 'Creating account...' : 'Create account' }}
         </button>
@@ -191,5 +200,4 @@ const inputClass = "w-full px-3 py-2 border border-gray-300 rounded shadow-sm pl
   </div>
 </template>
 
-<style scoped>
-</style>
+<style scoped></style>

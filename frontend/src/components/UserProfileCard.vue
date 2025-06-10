@@ -4,6 +4,7 @@ import { computed } from 'vue'
 import type { User } from '@/types/user.ts'
 import type { EcoAction } from '@/types/ecoAction'
 import { roleDisplayNames } from '@/types/user.ts'
+import { type Neighborhood, neighborhoodLabelMap } from '@/constants/neighborhoods.ts'
 
 const props = defineProps<{
   // use props instead of store for better reusability?
@@ -22,6 +23,10 @@ function formatJoinDate(user: User | null): string {
     month: 'long',
     day: 'numeric',
   })
+}
+
+const getNeighborhoodLabel = (location: Neighborhood | undefined): string => {
+  return location ? neighborhoodLabelMap[location] : 'N/A'
 }
 </script>
 
@@ -44,7 +49,7 @@ function formatJoinDate(user: User | null): string {
       <div class="space-y-3">
         <div class="flex items-center justify-center text-gray-600">
           <MapPin class="w-4 h-4 mr-2" />
-          <span>{{ user?.location || 'N/A' }}</span>
+          <span>{{ getNeighborhoodLabel(user?.location) }}</span>
         </div>
 
         <div class="flex items-center justify-center text-gray-600">

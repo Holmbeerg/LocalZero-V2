@@ -1,18 +1,20 @@
+import type { Neighborhood } from '@/constants/neighborhoods.ts'
+
 export interface Role {
-  roleId: number;
-  roleName: string;
+  roleId: number
+  roleName: string
 }
 
 export const roleDisplayNames: Record<string, string> = {
   RESIDENT: 'Resident',
   COMMUNITY_ORGANIZER: 'Community Organizer',
-};
+}
 
 export interface User {
   id: string
   name: string
   email: string
-  location: string
+  location: Neighborhood
   createdAt: string
   roles: Role[]
 }
