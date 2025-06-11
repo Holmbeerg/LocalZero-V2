@@ -3,7 +3,7 @@ package com.localzero.service;
 import com.localzero.model.EcoAction;
 import com.localzero.model.EcoActionType;
 import com.localzero.model.User;
-import com.localzero.model.dto.LogEcoActionRequest;
+import com.localzero.dto.LogEcoActionRequest;
 import com.localzero.repository.EcoActionRepository;
 import com.localzero.repository.EcoActionTypeRepository;
 import jakarta.transaction.Transactional;

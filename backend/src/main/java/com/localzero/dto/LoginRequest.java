@@ -1,4 +1,4 @@
-package com.localzero.model.dto;
+package com.localzero.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

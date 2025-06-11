@@ -2,18 +2,17 @@ package com.localzero.controller;
 
 import com.localzero.mapper.InitiativeMapper;
 import com.localzero.model.Initiative;
-import com.localzero.model.dto.CreateInitiativeRequest;
-import com.localzero.model.dto.InitiativeResponse;
+import com.localzero.dto.CreateInitiativeRequest;
+import com.localzero.dto.InitiativeResponse;
 import com.localzero.service.InitiativeService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/initiatives")
@@ -31,9 +30,41 @@ public class InitiativesController {
     public ResponseEntity<InitiativeResponse> createInitiative(@Valid @RequestBody CreateInitiativeRequest initiativeRequest,
                                                                @AuthenticationPrincipal
                                                                UserDetails userDetails) {
-        String email = userDetails.getUsername();
-        Initiative initiative = initiativeService.createInitiative(initiativeRequest, email);
+
+        Initiative initiative = initiativeService.createInitiative(initiativeRequest, userDetails.getUsername());
         InitiativeResponse response = initiativeMapper.toResponse(initiative);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+
+        return ResponseEntity.
+                status(HttpStatus.CREATED).
+                body(response);
     }
+    /*
+    @GetMapping
+    public ResponseEntity<List<InitiativeResponse>> getAllInitiatives(@AuthenticationPrincipal UserDetails userDetails) {
+        List<Initiative> initiatives = initiativeService.getAllInitiativesForUser(userDetails.getUsername());
+        List<InitiativeResponse> responses = initiatives.stream()
+                .map(initiativeMapper::toResponse)
+                .toList();
+
+        return ResponseEntity.ok(responses);
+    }
+
+
+    @GetMapping("/{id}")
+    public ResponseEntity<InitiativeResponse> getInitiativeById(@PathVariable Long id,
+                                                                @AuthenticationPrincipal UserDetails userDetails) {
+
+
+        /*
+        try {
+            Initiative initiative = initiativeService.getInitiativeById(id, userDetails.getUsername());
+            InitiativeResponse response = initiativeMapper.toResponse(initiative);
+            return ResponseEntity.ok(response);
+        } catch (InitiativeNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        } catch (AccessDeniedException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+    } */
 }
+

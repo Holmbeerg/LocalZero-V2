@@ -1,7 +1,7 @@
 package com.localzero.mapper;
 
 import com.localzero.model.EcoAction;
-import com.localzero.model.dto.EcoActionResponse;
+import com.localzero.dto.EcoActionResponse;
 import org.springframework.stereotype.Component;
 
 @Component

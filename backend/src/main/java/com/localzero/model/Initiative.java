@@ -9,6 +9,8 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "initiatives")
@@ -53,6 +55,16 @@ public class Initiative {
 
     @Column(name = "end_date") // right now, end date is optional
     private LocalDate endDate;
+
+    @ManyToMany
+    @JoinTable(
+            name = "initiative_members",
+            joinColumns = @JoinColumn(name = "initiative_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+
+    @Builder.Default
+    private Set<User> participants = new HashSet<>();
 
     @Column(name = "created_at", nullable = false, updatable = false)
     @CreationTimestamp

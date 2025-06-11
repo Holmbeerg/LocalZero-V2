@@ -2,7 +2,7 @@ package com.localzero.mapper;
 
 import com.localzero.model.Initiative;
 import org.springframework.stereotype.Component;
-import com.localzero.model.dto.InitiativeResponse;
+import com.localzero.dto.InitiativeResponse;
 
 @Component
 public class InitiativeMapper {
@@ -22,6 +22,7 @@ public class InitiativeMapper {
                 initiative.getLocation(),
                 initiative.getCategory(),
                 initiative.isPublic(),
+                initiative.getParticipants().size(),
                 initiative.getStartDate().toString(),
                 initiative.getEndDate() != null ? initiative.getEndDate().toString() : null
         );

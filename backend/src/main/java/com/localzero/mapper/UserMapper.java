@@ -1,9 +1,9 @@
 package com.localzero.mapper;
 
 import com.localzero.model.User;
-import com.localzero.model.dto.CreateUserRequest;
-import com.localzero.model.dto.UserResponse;
-import com.localzero.model.dto.UserSummaryResponse;
+import com.localzero.dto.CreateUserRequest;
+import com.localzero.dto.UserResponse;
+import com.localzero.dto.UserSummaryResponse;
 import org.springframework.stereotype.Component;
 
 // mapper libraries exist for example MapStruct or ModelMapper, but for simplicity we will do it manually

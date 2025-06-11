@@ -1,12 +1,17 @@
 package com.localzero.service;
 
 import com.localzero.model.Initiative;
+import com.localzero.model.InitiativeMember;
+import com.localzero.model.InitiativeMemberId;
 import com.localzero.model.User;
-import com.localzero.model.dto.CreateInitiativeRequest;
+import com.localzero.dto.CreateInitiativeRequest;
+import com.localzero.repository.InitiativeMemberRepository;
 import com.localzero.repository.InitiativeRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Transactional
 @Service
@@ -14,10 +19,12 @@ import org.springframework.stereotype.Service;
 public class InitiativeService {
     private final InitiativeRepository initiativeRepository;
     private final UserService userService;
+    private final InitiativeMemberRepository initiativeMemberRepository;
 
-    public InitiativeService(InitiativeRepository initiativeRepository, UserService userService) {
+    public InitiativeService(InitiativeRepository initiativeRepository, UserService userService, InitiativeMemberRepository initiativeMemberRepository) {
         this.initiativeRepository = initiativeRepository;
         this.userService = userService;
+        this.initiativeMemberRepository = initiativeMemberRepository;
     }
 
     public Initiative createInitiative(CreateInitiativeRequest initiativeRequest, String email) {
@@ -28,13 +35,18 @@ public class InitiativeService {
                 .title(initiativeRequest.title())
                 .description(initiativeRequest.description())
                 .creator(user)
-                .location(initiativeRequest.location())
+                .location(user.getLocation())
                 .category(initiativeRequest.category())
                 .isPublic(initiativeRequest.isPublic())
                 .startDate(initiativeRequest.startDate())
                 .endDate(initiativeRequest.endDate())
                 .build();
 
-        return initiativeRepository.save(initiative);
+        Initiative savedInitiative = initiativeRepository.save(initiative);
+
+        InitiativeMember initiativeMember = new InitiativeMember(savedInitiative, user);
+        initiativeMemberRepository.save(initiativeMember);
+
+        return savedInitiative;
     }
 }

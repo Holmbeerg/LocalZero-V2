@@ -4,7 +4,7 @@ package com.localzero.service;
 import com.localzero.exception.EmailAlreadyExists;
 import com.localzero.mapper.UserMapper;
 import com.localzero.model.User;
-import com.localzero.model.dto.CreateUserRequest;
+import com.localzero.dto.CreateUserRequest;
 import com.localzero.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.security.crypto.password.PasswordEncoder;

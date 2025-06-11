@@ -1,4 +1,4 @@
-package com.localzero.model.dto;
+package com.localzero.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotNull;

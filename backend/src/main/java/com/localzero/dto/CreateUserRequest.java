@@ -1,4 +1,4 @@
-package com.localzero.model.dto;
+package com.localzero.dto;
 import com.localzero.model.enums.Neighborhood;
 import jakarta.validation.constraints.Email; // TODO: should these be used
 import jakarta.validation.constraints.NotBlank;

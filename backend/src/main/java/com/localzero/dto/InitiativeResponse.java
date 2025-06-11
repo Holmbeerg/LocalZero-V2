@@ -1,4 +1,4 @@
-package com.localzero.model.dto;
+package com.localzero.dto;
 
 import com.localzero.model.enums.InitiativeCategory;
 import com.localzero.model.enums.Neighborhood;
@@ -11,6 +11,7 @@ public record InitiativeResponse(
     Neighborhood location,
     InitiativeCategory category,
     boolean isPublic,
+    int participantsCount,
     String startDate,
     String endDate
 ) { }
