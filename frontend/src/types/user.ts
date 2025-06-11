@@ -11,12 +11,17 @@ export const roleDisplayNames: Record<string, string> = {
 }
 
 export interface User {
-  id: string
+  id: number
   name: string
   email: string
   location: Neighborhood
   createdAt: string
   roles: Role[]
+}
+
+export interface UserSummary {
+  id: number
+  name: string
 }
 
 export interface LoginCredentials {

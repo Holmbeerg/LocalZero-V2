@@ -19,7 +19,7 @@ const clearError = () => {
 }
 
 const handleSubmit = async () => {
-  console.log("Handling login submission...")
+  console.log('Handling login submission...')
   if (!isFormValid.value) {
     error.value = 'Please enter both email and password.'
     return
@@ -31,10 +31,10 @@ const handleSubmit = async () => {
   try {
     await authStore.login({
       email: email.value.trim(),
-      password: password.value
+      password: password.value,
     })
 
-    await router.push('/profile'); // Redirect to profile page after successful login
+    await router.push('/profile') // Redirect to profile page after successful login
   } catch (e: unknown) {
     if (e instanceof Error) {
       error.value = e.message || 'Login failed. Please check your credentials.'
@@ -58,7 +58,9 @@ const handleInputChange = () => {
 </script>
 
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-100 to-blue-50 px-4">
+  <div
+    class="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-100 to-blue-50 px-4"
+  >
     <div class="w-full bg-white rounded-xl shadow-lg p-8 max-w-md">
       <div class="text-center mb-4">
         <h2 class="text-2xl text-gray-900">Sign in to LocalZero</h2>
@@ -78,8 +80,7 @@ const handleInputChange = () => {
             required
             :disabled="loading"
             @input="handleInputChange"
-            class="w-full px-3 py-2 border border-gray-300 rounded shadow-sm placeholder-gray-400
-                   focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 disabled:bg-gray-50"
+            class="w-full px-3 py-2 border border-gray-300 rounded shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 disabled:bg-gray-50"
             placeholder="Enter your email"
           />
         </div>
@@ -92,16 +93,14 @@ const handleInputChange = () => {
             required
             :disabled="loading"
             @input="handleInputChange"
-            class="w-full px-3 py-2 border border-gray-300 rounded shadow-sm placeholder-gray-400
-                   focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 disabled:bg-gray-50"
+            class="w-full px-3 py-2 border border-gray-300 rounded shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 disabled:bg-gray-50"
             placeholder="Enter your password"
           />
         </div>
         <button
           type="submit"
           :disabled="!isFormValid || loading"
-          class="w-full py-2 px-4 bg-green-600 text-white rounded hover:bg-green-700 transition-colors cursor-pointer
-                 disabled:opacity-50 disabled:cursor-not-allowed"
+          class="w-full py-2 px-4 bg-green-600 text-white rounded hover:bg-green-700 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {{ loading ? 'Signing in...' : 'Sign in' }}
         </button>
@@ -113,7 +112,6 @@ const handleInputChange = () => {
           <button
             @click="goToRegister"
             :disabled="loading"
-
             class="text-green-600 hover:text-green-400 transition-colors ml-1 cursor-pointer"
           >
             Sign up

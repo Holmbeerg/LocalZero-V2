@@ -15,7 +15,8 @@ export const useAuthStore = defineStore('auth', () => {
     try {
       user.value = await authApi.getCurrentUser() // save user data to the store
       isInitialized.value = true
-    } catch (error) { // errors that bubble up from the API
+    } catch (error) {
+      // errors that bubble up from the API
       console.error('Failed to initialize authentication:', error)
       user.value = null
     }
@@ -53,7 +54,7 @@ export const useAuthStore = defineStore('auth', () => {
       user.value = null
       isInitialized.value = false
       ecoActionsStore.resetEcoActions()
-      console.log("user cleared from store")
+      console.log('user cleared from store')
     }
   }
 

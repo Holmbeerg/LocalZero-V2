@@ -4,7 +4,6 @@ import { storeToRefs } from 'pinia'
 import UserProfileCard from '@/components/UserProfileCard.vue'
 import EcoActionList from '@/components/EcoActionList.vue'
 import { onMounted } from 'vue'
-import type { EcoAction } from '@/types/ecoAction'
 import { ecoActionOptions } from '@/constants/ecoActionOptions.ts'
 import EcoActionForm from '@/components/EcoActionForm.vue'
 import { useEcoActionsStore } from '@/stores/ecoActions.ts'
@@ -16,10 +15,6 @@ const { ecoActions, loading, error } = storeToRefs(useEcoActionsStore())
 onMounted(() => {
   ecoActionsStore.fetchEcoActions()
 })
-
-const handleNewAction = (newAction: EcoAction) => {
-  ecoActionsStore.addEcoAction(newAction)
-}
 </script>
 
 <template>
@@ -40,7 +35,7 @@ const handleNewAction = (newAction: EcoAction) => {
         </div>
         <!-- Right Column - Eco Action form-->
         <div class="lg:col-span-3">
-          <EcoActionForm :ecoActionOptions="ecoActionOptions" @action-logged="handleNewAction" />
+          <EcoActionForm :ecoActionOptions="ecoActionOptions" />
         </div>
       </div>
     </div>

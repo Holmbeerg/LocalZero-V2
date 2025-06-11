@@ -1,26 +1,24 @@
 <script setup lang="ts">
 import { Plus } from 'lucide-vue-next'
-import { ref, defineEmits } from 'vue'
-import { ecoActionsApi } from '@/services/apiService.ts'
+import { ref } from 'vue'
 import type { LogEcoActionRequest } from '@/types/ecoAction.ts'
+import { useEcoActionsStore } from '@/stores/ecoActions.ts'
 
 const selectedActionId = ref<number | ''>('')
 const selectedDate = ref('')
-const emit = defineEmits(['action-logged']) // should we use emit?
+const ecoActionsStore = useEcoActionsStore()
 
-async function logNewAction(){
-
+async function logNewAction() {
   console.log(`Logged new eco action: ${selectedActionId.value}`)
 
   const request: LogEcoActionRequest = {
     actionId: selectedActionId.value as number,
-    date: selectedDate.value
+    date: selectedDate.value,
   }
 
   try {
-    const newAction = await ecoActionsApi.logAction(request)
+    await ecoActionsStore.logEcoAction(request)
     alert('Eco action logged successfully!')
-    emit('action-logged', newAction)
   } catch (error) {
     console.error('Error logging eco action:', error)
     alert('Failed to log action. Please try again later.')
@@ -31,10 +29,8 @@ async function logNewAction(){
 }
 
 defineProps<{
-  ecoActionOptions: Array<{ id: number, action: string, carbonSaved: number, category: string }>
+  ecoActionOptions: Array<{ id: number; action: string; carbonSaved: number; category: string }>
 }>()
-
-
 </script>
 
 <template>
@@ -53,9 +49,16 @@ defineProps<{
       <form @submit.prevent="logNewAction" class="space-y-4">
         <div>
           <label for="action" class="block text-sm font-medium mb-1">Action</label>
-          <select id="action" v-model="selectedActionId" required class="w-full px-3 py-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500">
+          <select
+            id="action"
+            v-model="selectedActionId"
+            required
+            class="w-full px-3 py-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
+          >
             <option value="" disabled>Select an action...</option>
-            <option v-for="option in ecoActionOptions" :key="option.id" :value="option.id">{{ option.action }}</option>
+            <option v-for="option in ecoActionOptions" :key="option.id" :value="option.id">
+              {{ option.action }}
+            </option>
           </select>
         </div>
         <div>
@@ -65,7 +68,8 @@ defineProps<{
             type="date"
             v-model="selectedDate"
             required
-            class="w-full px-3 py-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500">
+            class="w-full px-3 py-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
+          />
         </div>
 
         <button
@@ -79,6 +83,4 @@ defineProps<{
   </div>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

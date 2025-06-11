@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import type { EcoAction } from '@/types/ecoAction'
+import type { EcoAction, LogEcoActionRequest } from '@/types/ecoAction'
 import { ecoActionsApi } from '@/services/apiService'
 
 export const useEcoActionsStore = defineStore('ecoActions', () => {
@@ -24,7 +24,22 @@ export const useEcoActionsStore = defineStore('ecoActions', () => {
     }
   }
 
-  const addEcoAction = (action: EcoAction) => {
+  const logEcoAction = async (request: LogEcoActionRequest) => {
+    error.value = null
+    try {
+      const newAction = await ecoActionsApi.logAction(request)
+      addEcoActionToStore(newAction)
+      return newAction
+    } catch (err) {
+      error.value = 'Failed to log eco action'
+      console.error('Error logging eco action:', err)
+      throw err
+    } finally {
+      loading.value = false
+    }
+  }
+
+  const addEcoActionToStore = (action: EcoAction) => {
     ecoActions.value.push(action)
     ecoActions.value.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
   }
@@ -41,7 +56,8 @@ export const useEcoActionsStore = defineStore('ecoActions', () => {
     loading,
     error,
     fetchEcoActions,
-    addEcoAction,
+    addEcoAction: addEcoActionToStore,
     resetEcoActions,
+    logEcoAction,
   }
 })

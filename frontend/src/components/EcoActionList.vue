@@ -4,27 +4,30 @@ import type { EcoAction, EcoActionCategory } from '@/types/ecoAction.ts'
 
 const getCategoryIcon = (category: EcoActionCategory) => {
   switch (category) {
-    case 'Transport': return Car
-    case 'Waste': return Recycle
-    case 'Food': return Leaf
-    default: return Leaf
+    case 'Transport':
+      return Car
+    case 'Waste':
+      return Recycle
+    case 'Food':
+      return Leaf
+    default:
+      return Leaf
   }
 }
 
 defineProps<{ ecoActions: EcoAction[] }>()
-
 </script>
 
 <template>
   <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-  <div class="p-6 border-b border-gray-200">
-    <div class="flex items-center justify-between">
-      <h2 class="text-xl font-bold text-gray-900 flex items-center">
-        <Leaf class="w-5 h-5 mr-2 text-green-500" />
-        My Eco Actions
-      </h2>
+    <div class="p-6 border-b border-gray-200">
+      <div class="flex items-center justify-between">
+        <h2 class="text-xl font-bold text-gray-900 flex items-center">
+          <Leaf class="w-5 h-5 mr-2 text-green-500" />
+          My Eco Actions
+        </h2>
+      </div>
     </div>
-  </div>
 
     <!-- Actions List -->
     <div class="p-6">
@@ -44,7 +47,9 @@ defineProps<{ ecoActions: EcoAction[] }>()
           >
             <div class="flex items-start justify-between">
               <div class="flex items-start space-x-3">
-                <div class="flex-shrink-0 w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                <div
+                  class="flex-shrink-0 w-8 h-8 bg-green-100 rounded-full flex items-center justify-center"
+                >
                   <component :is="getCategoryIcon(action.category)" class="w-4 h-4" />
                 </div>
                 <div class="flex-1">
@@ -74,6 +79,4 @@ defineProps<{ ecoActions: EcoAction[] }>()
   </div>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

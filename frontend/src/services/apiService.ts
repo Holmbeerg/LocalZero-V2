@@ -2,7 +2,7 @@ import axios from 'axios'
 import type { AxiosInstance, AxiosResponse } from 'axios'
 import type { LoginCredentials, RegisterData, User } from '@/types/user.ts'
 import type { EcoAction, LogEcoActionRequest } from '@/types/ecoAction.ts'
-
+import type { CreateInitiativeRequest, Initiative } from '@/types/initiative.ts'
 
 const API_BASE_URL = 'http://localhost:8080/api'
 
@@ -22,7 +22,7 @@ apiClient.interceptors.request.use(
   },
   (error) => {
     return Promise.reject(error)
-  }
+  },
 )
 
 // Response interceptor
@@ -31,7 +31,8 @@ apiClient.interceptors.response.use(
     return response.data
   },
   (error) => {
-    if (error.response?.status === 401) { // optional chaining
+    if (error.response?.status === 401) {
+      // optional chaining
       console.warn('Unauthorized request')
     } else if (error.response?.status === 403) {
       // Forbidden
@@ -41,7 +42,7 @@ apiClient.interceptors.response.use(
       console.error('Server error:', error.response?.data?.message)
     }
     return Promise.reject(error)
-  }
+  },
 )
 
 // Auth API endpoints
@@ -50,7 +51,8 @@ export const authApi = {
     try {
       return await apiClient.get('/auth/me')
     } catch (error) {
-      if (axios.isAxiosError(error) && error.response?.status === 401) { // TODO: is this correct?
+      if (axios.isAxiosError(error) && error.response?.status === 401) {
+        // TODO: is this correct?
         return null // If unauthorized, return null
       }
       console.error('Failed to fetch current user:', error)
@@ -87,6 +89,37 @@ export const ecoActionsApi = {
       return await apiClient.post('/eco-actions', ecoAction)
     } catch (error) {
       console.error('Failed to add eco action:', error)
+      throw error
+    }
+  },
+}
+
+// Initiatives API endpoints
+
+export const initiativesApi = {
+  async getInitiatives(): Promise<Initiative[]> {
+    try {
+      return await apiClient.get('/initiatives')
+    } catch (error) {
+      console.error('Failed to fetch initiatives:', error)
+      throw error
+    }
+  },
+
+  async getInitiativeById(id: string): Promise<Initiative> {
+    try {
+      return await apiClient.get(`/initiatives/${id}`)
+    } catch (error) {
+      console.error(`Failed to fetch initiative with ID ${id}:`, error)
+      throw error
+    }
+  },
+
+  async createInitiative(initiative: CreateInitiativeRequest): Promise<Initiative> {
+    try {
+      return await apiClient.post('/initiatives', initiative)
+    } catch (error) {
+      console.error('Failed to create initiative:', error)
       throw error
     }
   },
