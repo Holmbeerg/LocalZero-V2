@@ -34,12 +34,13 @@ public class Initiative {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "location", nullable = false)
-    @ColumnTransformer(write = "?::neighborhood") // maps Neighborhood enum to PostgreSQL enum type
+    @ColumnTransformer(write = "?::neighborhood", read = "location::text")
     private Neighborhood location;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "category", nullable = false)
-    @ColumnTransformer(write = "?::initiative_category")
+    @ColumnTransformer(write = "?::initiative_category",
+            read = "category::text")
     // needed to map InitiativeCategory enum to PostgreSQL enum type, unsure if best practice
     private InitiativeCategory category;
 

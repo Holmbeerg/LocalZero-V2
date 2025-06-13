@@ -3,6 +3,7 @@ package com.localzero.model;
 import com.localzero.model.enums.RoleName;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.ColumnTransformer;
 
 @Entity
 @Table(name = "roles")
@@ -19,6 +20,8 @@ public class Role {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "role_name", nullable = false, unique = true)
+    @ColumnTransformer(write = "?::user_role", // PostgreSQL specific type casting
+            read = "role_name::text")
     private RoleName roleName;
 
     @Override
