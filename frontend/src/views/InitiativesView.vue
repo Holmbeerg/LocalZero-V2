@@ -19,7 +19,7 @@ onMounted(() => {
 })
 
 const filteredInitiatives = computed(() =>
-  selectedFilter.value === 'all'
+  selectedFilter.value === 'ALL'
     ? initiatives.value
     : initiatives.value.filter((i) => i.category === selectedFilter.value),
 )
