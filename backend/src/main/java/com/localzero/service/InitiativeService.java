@@ -2,7 +2,6 @@ package com.localzero.service;
 
 import com.localzero.model.Initiative;
 import com.localzero.model.InitiativeMember;
-import com.localzero.model.InitiativeMemberId;
 import com.localzero.model.User;
 import com.localzero.dto.CreateInitiativeRequest;
 import com.localzero.repository.InitiativeMemberRepository;
@@ -37,7 +36,7 @@ public class InitiativeService {
                 .creator(user)
                 .location(user.getLocation())
                 .category(initiativeRequest.category())
-                .isPublic(initiativeRequest.isPublic())
+                .publicFlag(initiativeRequest.isPublic())
                 .startDate(initiativeRequest.startDate())
                 .endDate(initiativeRequest.endDate())
                 .build();
@@ -48,5 +47,12 @@ public class InitiativeService {
         initiativeMemberRepository.save(initiativeMember);
 
         return savedInitiative;
+    }
+
+    public List<Initiative> getAccessibleInitiatives(String email) {
+        log.info("Fetching all available initiatives for user: {}", email);
+        User user = userService.getUserByEmail(email);
+        log.info("fetching initiatives for user: {} in location: {}", user.getEmail(), user.getLocation());
+        return initiativeRepository.findAllAccessibleByUser(user, user.getLocation());
     }
 }

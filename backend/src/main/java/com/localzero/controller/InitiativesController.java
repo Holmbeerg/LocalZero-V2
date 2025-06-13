@@ -6,6 +6,7 @@ import com.localzero.dto.CreateInitiativeRequest;
 import com.localzero.dto.InitiativeResponse;
 import com.localzero.service.InitiativeService;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -16,6 +17,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/initiatives")
+@Slf4j
 public class InitiativesController {
 
     private final InitiativeService initiativeService;
@@ -38,10 +40,11 @@ public class InitiativesController {
                 status(HttpStatus.CREATED).
                 body(response);
     }
-    /*
+
     @GetMapping
     public ResponseEntity<List<InitiativeResponse>> getAllInitiatives(@AuthenticationPrincipal UserDetails userDetails) {
-        List<Initiative> initiatives = initiativeService.getAllInitiativesForUser(userDetails.getUsername());
+        List<Initiative> initiatives = initiativeService.getAccessibleInitiatives(userDetails.getUsername());
+        log.info("Retrieved initiatives for user: {}", userDetails.getUsername());
         List<InitiativeResponse> responses = initiatives.stream()
                 .map(initiativeMapper::toResponse)
                 .toList();
@@ -49,13 +52,11 @@ public class InitiativesController {
         return ResponseEntity.ok(responses);
     }
 
-
+    /*
     @GetMapping("/{id}")
     public ResponseEntity<InitiativeResponse> getInitiativeById(@PathVariable Long id,
                                                                 @AuthenticationPrincipal UserDetails userDetails) {
 
-
-        /*
         try {
             Initiative initiative = initiativeService.getInitiativeById(id, userDetails.getUsername());
             InitiativeResponse response = initiativeMapper.toResponse(initiative);

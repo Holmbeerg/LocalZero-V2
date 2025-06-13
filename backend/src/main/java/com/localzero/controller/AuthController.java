@@ -2,9 +2,9 @@ package com.localzero.controller;
 
 import com.localzero.mapper.UserMapper;
 import com.localzero.model.User;
-import com.localzero.model.dto.CreateUserRequest;
-import com.localzero.model.dto.LoginRequest;
-import com.localzero.model.dto.UserResponse;
+import com.localzero.dto.CreateUserRequest;
+import com.localzero.dto.LoginRequest;
+import com.localzero.dto.UserResponse;
 import com.localzero.security.JWTService;
 import com.localzero.service.UserService;
 import jakarta.servlet.http.Cookie;

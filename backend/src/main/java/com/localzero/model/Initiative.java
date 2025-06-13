@@ -44,7 +44,7 @@ public class Initiative {
     private InitiativeCategory category;
 
     @Column(name = "is_public", nullable = false)
-    private boolean isPublic;
+    private boolean publicFlag;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "creator_id", nullable = false)

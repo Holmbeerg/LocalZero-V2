@@ -21,7 +21,7 @@ public class InitiativeMapper {
                 userMapper.toUserSummaryResponse(initiative.getCreator()),
                 initiative.getLocation(),
                 initiative.getCategory(),
-                initiative.isPublic(),
+                initiative.isPublicFlag(),
                 initiative.getParticipants().size(),
                 initiative.getStartDate().toString(),
                 initiative.getEndDate() != null ? initiative.getEndDate().toString() : null
