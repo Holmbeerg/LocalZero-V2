@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { InitiativeCategory } from '@/types/initiative.ts'
 import type { Initiative } from '@/types/initiative.ts'
+import { initiativeCategoriesLabelMap } from '@/constants/initiativeCategories.ts'
 
 defineProps<{
   initiative: Initiative
@@ -30,7 +31,7 @@ const getCategoryColor = (category: InitiativeCategory) => {
   >
     <div class="flex justify-between items-start mb-4">
       <span class="px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-        {{ initiative.category }}
+        {{ initiativeCategoriesLabelMap[initiative.category] || 'Other' }}
       </span>
       <div class="flex items-center space-x-1">
         <div
