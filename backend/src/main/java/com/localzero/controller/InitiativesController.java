@@ -3,8 +3,10 @@ package com.localzero.controller;
 import com.localzero.mapper.InitiativeMapper;
 import com.localzero.model.Initiative;
 import com.localzero.dto.CreateInitiativeRequest;
-import com.localzero.dto.InitiativeResponse;
+import com.localzero.dto.InitiativeListResponse;
+import com.localzero.model.User;
 import com.localzero.service.InitiativeService;
+import com.localzero.service.UserService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -22,19 +24,23 @@ public class InitiativesController {
 
     private final InitiativeService initiativeService;
     private final InitiativeMapper initiativeMapper;
+    private final UserService userService;
 
-    public InitiativesController(InitiativeService initiativeService, InitiativeMapper initiativeMapper) {
+
+    public InitiativesController(InitiativeService initiativeService, InitiativeMapper initiativeMapper, UserService userService) {
         this.initiativeService = initiativeService;
         this.initiativeMapper = initiativeMapper;
+        this.userService = userService;
     }
 
     @PostMapping
-    public ResponseEntity<InitiativeResponse> createInitiative(@Valid @RequestBody CreateInitiativeRequest initiativeRequest,
-                                                               @AuthenticationPrincipal
+    public ResponseEntity<InitiativeListResponse> createInitiative(@Valid @RequestBody CreateInitiativeRequest initiativeRequest,
+                                                                   @AuthenticationPrincipal
                                                                UserDetails userDetails) {
 
-        Initiative initiative = initiativeService.createInitiative(initiativeRequest, userDetails.getUsername());
-        InitiativeResponse response = initiativeMapper.toResponse(initiative);
+        User user = userService.getUserByEmail(userDetails.getUsername());
+        Initiative initiative = initiativeService.createInitiative(initiativeRequest, user);
+        InitiativeListResponse response = initiativeMapper.toResponse(initiative, user);
 
         return ResponseEntity.
                 status(HttpStatus.CREATED).
@@ -42,11 +48,12 @@ public class InitiativesController {
     }
 
     @GetMapping
-    public ResponseEntity<List<InitiativeResponse>> getAllInitiatives(@AuthenticationPrincipal UserDetails userDetails) {
-        List<Initiative> initiatives = initiativeService.getAccessibleInitiatives(userDetails.getUsername());
+    public ResponseEntity<List<InitiativeListResponse>> getAllInitiatives(@AuthenticationPrincipal UserDetails userDetails) {
+        User user = userService.getUserByEmail(userDetails.getUsername());
+        List<Initiative> initiatives = initiativeService.getAccessibleInitiatives(user);
         log.info("Retrieved initiatives for user: {}", userDetails.getUsername());
-        List<InitiativeResponse> responses = initiatives.stream()
-                .map(initiativeMapper::toResponse)
+        List<InitiativeListResponse> responses = initiatives.stream()
+                .map(initiative -> initiativeMapper.toResponse(initiative, user))
                 .toList();
 
         return ResponseEntity.ok(responses);

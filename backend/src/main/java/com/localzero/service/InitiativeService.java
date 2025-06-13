@@ -17,18 +17,15 @@ import java.util.List;
 @Slf4j
 public class InitiativeService {
     private final InitiativeRepository initiativeRepository;
-    private final UserService userService;
     private final InitiativeMemberRepository initiativeMemberRepository;
 
-    public InitiativeService(InitiativeRepository initiativeRepository, UserService userService, InitiativeMemberRepository initiativeMemberRepository) {
+    public InitiativeService(InitiativeRepository initiativeRepository, InitiativeMemberRepository initiativeMemberRepository) {
         this.initiativeRepository = initiativeRepository;
-        this.userService = userService;
         this.initiativeMemberRepository = initiativeMemberRepository;
     }
 
-    public Initiative createInitiative(CreateInitiativeRequest initiativeRequest, String email) {
-        log.info("Creating initiative for user: {} with title: {}", email, initiativeRequest.title());
-        User user = userService.getUserByEmail(email);
+    public Initiative createInitiative(CreateInitiativeRequest initiativeRequest, User user) {
+        log.info("Creating initiative for user: {} with title: {}", user.getEmail(), initiativeRequest.title());
 
         Initiative initiative = Initiative.builder()
                 .title(initiativeRequest.title())
@@ -49,10 +46,8 @@ public class InitiativeService {
         return savedInitiative;
     }
 
-    public List<Initiative> getAccessibleInitiatives(String email) {
-        log.info("Fetching all available initiatives for user: {}", email);
-        User user = userService.getUserByEmail(email);
-        log.info("fetching initiatives for user: {} in location: {}", user.getEmail(), user.getLocation());
+    public List<Initiative> getAccessibleInitiatives(User user) {
+        log.info("Fetching all available initiatives for user: {}", user.getEmail());
         return initiativeRepository.findAllAccessibleByUser(user, user.getLocation());
     }
 }

@@ -3,7 +3,7 @@ package com.localzero.dto;
 import com.localzero.model.enums.InitiativeCategory;
 import com.localzero.model.enums.Neighborhood;
 
-public record InitiativeResponse(
+public record InitiativeListResponse(
     Long id,
     String title,
     String description,
@@ -13,5 +13,7 @@ public record InitiativeResponse(
     boolean isPublic,
     int participantsCount,
     String startDate,
-    String endDate
+    String endDate,
+    boolean isUserParticipant,
+    boolean isUserCreator
 ) { }

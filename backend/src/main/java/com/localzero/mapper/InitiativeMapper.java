@@ -1,8 +1,9 @@
 package com.localzero.mapper;
 
 import com.localzero.model.Initiative;
+import com.localzero.model.User;
 import org.springframework.stereotype.Component;
-import com.localzero.dto.InitiativeResponse;
+import com.localzero.dto.InitiativeListResponse;
 
 @Component
 public class InitiativeMapper {
@@ -13,8 +14,12 @@ public class InitiativeMapper {
         this.userMapper = userMapper;
     }
 
-    public InitiativeResponse toResponse(Initiative initiative) {
-        return new InitiativeResponse(
+    public InitiativeListResponse toResponse(Initiative initiative, User currentUser) {
+        boolean isUserCreator = initiative.getCreator().getUserId().equals(currentUser.getUserId());
+        boolean isUserParticipant = isUserCreator || initiative.getParticipants().stream()
+                .anyMatch(u -> u.getUserId().equals(currentUser.getUserId()));
+
+        return new InitiativeListResponse(
                 initiative.getId(),
                 initiative.getTitle(),
                 initiative.getDescription(),
@@ -24,7 +29,9 @@ public class InitiativeMapper {
                 initiative.isPublicFlag(),
                 initiative.getParticipants().size(),
                 initiative.getStartDate().toString(),
-                initiative.getEndDate() != null ? initiative.getEndDate().toString() : null
+                initiative.getEndDate() != null ? initiative.getEndDate().toString() : null,
+                isUserParticipant,
+                isUserCreator
         );
     }
 }

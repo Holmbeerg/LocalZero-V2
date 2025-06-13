@@ -12,6 +12,12 @@ export interface Initiative {
   participantsCount: number
   startDate: string
   endDate: string
+  isUserParticipant: boolean
+  isUserCreator: boolean
+}
+
+export interface InitiativeDetail extends Initiative {
+  participants: UserSummary[]
 }
 
 export type InitiativeCategory =
