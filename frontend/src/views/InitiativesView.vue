@@ -6,11 +6,6 @@ import { useAuthStore } from '@/stores/auth'
 import { initiativeFilterOptions } from '@/constants/initiativeCategories.ts'
 import CreateInitiativeModal from '@/components/CreateInitiativeModal.vue'
 import InitiativeCard from '@/components/InitiativeCard.vue'
-import type { InitiativeCategory } from '@/types/initiative.ts'
-import {
-  initiativeCategoryColorMap,
-  initiativeCategoryActiveColorMap,
-} from '@/constants/initiativeCategories.ts'
 
 const showCreateForm = ref(false)
 const selectedFilter = ref<'ALL' | string>('ALL')
@@ -28,20 +23,6 @@ const filteredInitiatives = computed(() =>
     ? initiatives.value
     : initiatives.value.filter((i) => i.category === selectedFilter.value),
 )
-
-function getCategoryColor(category: string) {
-  if (category === 'ALL') {
-    return 'bg-gray-200 text-gray-700'
-  }
-  return initiativeCategoryColorMap[category as InitiativeCategory] ?? 'bg-gray-200 text-gray-700'
-}
-
-function getSelectedCategoryColor(category: string) {
-  if (category === 'ALL') {
-    return 'bg-gray-200 text-gray-700'
-  }
-  return initiativeCategoryActiveColorMap[category as InitiativeCategory]
-}
 
 const handleInitiativeCreated = async () => {
   showCreateForm.value = false
@@ -62,9 +43,7 @@ const handleInitiativeCreated = async () => {
               @click="selectedFilter = value"
               :class="[
                 'px-3 py-1 rounded-full text-sm font-medium transition-colors cursor-pointer',
-                selectedFilter === value
-                  ? getSelectedCategoryColor(value)
-                  : getCategoryColor(value),
+                selectedFilter === value ? 'bg-green-400 text-white' : 'bg-gray-200 text-gray-700',
               ]"
             >
               {{ label }}

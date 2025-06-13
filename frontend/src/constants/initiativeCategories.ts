@@ -16,14 +16,6 @@ export const initiativeCategoryColorMap: Record<InitiativeCategory, string> = {
   RIDE_SHARING: 'bg-purple-100 text-purple-800',
 }
 
-export const initiativeCategoryActiveColorMap: Record<InitiativeCategory, string> = {
-  TOOL_SHARING: 'bg-orange-400 text-white',
-  FOOD_SWAP: 'bg-blue-400 text-white',
-  COMMUNITY_GARDENING: 'bg-green-400 text-white',
-  RECYCLING_DRIVE: 'bg-yellow-400 text-white',
-  RIDE_SHARING: 'bg-purple-400 text-white',
-}
-
 export const initiativeFilterOptions = [
   ['ALL', 'All'],
   ...Object.entries(initiativeCategoriesLabelMap),
