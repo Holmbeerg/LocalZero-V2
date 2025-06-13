@@ -48,7 +48,7 @@ async function handleFormSubmit() {
 
   try {
     await initiativesStore.createInitiative(formData)
-    alert('Initiative created successfully!')
+    alert('Initiative created successfully!') // TODO: alerted even though it failed
   } catch (error) {
     console.error('Error creating initiative:', error)
     alert('Failed to create initiative. Please try again later.')

@@ -3,12 +3,14 @@ import { computed, ref } from 'vue'
 import { authApi } from '@/services/apiService.ts'
 import type { User, LoginCredentials, RegisterData } from '@/types/user.ts'
 import { useEcoActionsStore } from '@/stores/ecoActions'
+import { useInitiativesStore } from '@/stores/initiatives.ts'
 
 export const useAuthStore = defineStore('auth', () => {
   const user = ref<User | null>(null) // user state, initially null
   const isInitialized = ref(false) // to track if auth has been initialized
   const isAuthenticated = computed(() => Boolean(user.value))
   const ecoActionsStore = useEcoActionsStore()
+  const initiativesStore = useInitiativesStore()
 
   async function initializeAuth() {
     if (isInitialized.value) return // prevent re-initialization
@@ -51,11 +53,16 @@ export const useAuthStore = defineStore('auth', () => {
     } catch (error) {
       console.error('Logout failed:', error)
     } finally {
-      user.value = null
-      isInitialized.value = false
-      ecoActionsStore.resetEcoActions()
-      console.log('user cleared from store')
+      clearUserState()
+      console.log('User state cleared from store')
     }
+  }
+
+  function clearUserState() {
+    user.value = null
+    isInitialized.value = false
+    ecoActionsStore.resetEcoActions()
+    initiativesStore.resetInitiatives()
   }
 
   return { user, isAuthenticated, initializeAuth, login, register, logout }

@@ -97,7 +97,7 @@ export const ecoActionsApi = {
 // Initiatives API endpoints
 
 export const initiativesApi = {
-  async getInitiatives(): Promise<Initiative[]> {
+  async getAccessibleInitiatives(): Promise<Initiative[]> {
     try {
       return await apiClient.get('/initiatives')
     } catch (error) {

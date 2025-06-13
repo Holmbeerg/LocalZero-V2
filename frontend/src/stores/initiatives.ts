@@ -14,7 +14,7 @@ export const useInitiativesStore = defineStore('initiatives', () => {
     loading.value = true
     error.value = null
     try {
-      initiatives.value = await initiativesApi.getInitiatives()
+      initiatives.value = await initiativesApi.getAccessibleInitiatives()
       isLoaded.value = true
     } catch (err) {
       error.value = 'Failed to load initiatives'
