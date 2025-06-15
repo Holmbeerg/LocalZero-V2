@@ -4,7 +4,7 @@ import RegisterView from '@/views/RegisterView.vue'
 import ProfileView from '@/views/ProfileView.vue'
 import { useAuthStore } from '@/stores/auth.ts'
 import InitiativesView from '@/views/InitiativesView.vue'
-import InitiativeView from '@/components/InitiativeView.vue'
+import InitiativeView from '@/views/InitiativeView.vue'
 
 const routes = [
   { path: '/login', component: LoginView, meta: { hideHeader: true, guest: true } },

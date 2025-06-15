@@ -95,7 +95,7 @@ function handleCancel() {
       <label class="block text-sm font-medium text-gray-700 mb-1">Category</label>
       <select
         v-model="category"
-        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent cursor-pointer"
         required
       >
         <option value="">Select a category</option>
@@ -140,11 +140,11 @@ function handleCancel() {
       <label class="block text-sm font-medium text-gray-700 mb-1">Visibility</label>
       <div class="space-y-2">
         <label class="flex items-center">
-          <input type="radio" v-model="isPublic" :value="true" class="mr-2" />
+          <input type="radio" v-model="isPublic" :value="true" class="mr-2 cursor-pointer" />
           <span class="text-sm">Public (visible to all users)</span>
         </label>
         <label class="flex items-center">
-          <input type="radio" v-model="isPublic" :value="false" class="mr-2" />
+          <input type="radio" v-model="isPublic" :value="false" class="mr-2 cursor-pointer" />
           <span class="text-sm">Neighborhood only</span>
         </label>
       </div>
@@ -154,17 +154,23 @@ function handleCancel() {
       <button
         type="button"
         @click="handleCancel"
-        class="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+        class="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
       >
         Cancel
       </button>
       <button
         type="submit"
         :disabled="!isFormValid"
-        class="flex-1 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors disabled:opacity-50"
+        class="flex-1 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors disabled:opacity-50 cursor-pointer"
       >
         Create
       </button>
     </div>
   </form>
 </template>
+
+<style scoped>
+input[type='date']::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+}
+</style>

@@ -25,9 +25,7 @@ export const useInitiativesStore = defineStore('initiatives', () => {
   }
 
   const createInitiative = async (initiative: CreateInitiativeRequest) => {
-    loading.value = true
     error.value = null
-
     try {
       const newInitiative = await initiativesApi.createInitiative(initiative)
       addInitiativeToStore(newInitiative)

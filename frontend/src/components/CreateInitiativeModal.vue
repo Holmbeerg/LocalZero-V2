@@ -20,7 +20,9 @@ function handleFormSubmit() {
       <div class="p-6">
         <div class="flex justify-between items-center mb-6">
           <h2 class="text-xl font-semibold text-gray-900">Create New Initiative</h2>
-          <button @click="$emit('close')" class="text-gray-400 hover:text-gray-600">×</button>
+          <button @click="$emit('close')" class="text-gray-400 hover:text-gray-600 cursor-pointer">
+            ×
+          </button>
         </div>
         <InitiativeForm
           :userNeighborhood="userNeighborhood"
