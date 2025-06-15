@@ -1,5 +1,6 @@
 package com.localzero.service;
 
+import com.localzero.exception.InitiativeNotFoundException;
 import com.localzero.model.Initiative;
 import com.localzero.model.InitiativeMember;
 import com.localzero.model.User;
@@ -49,5 +50,11 @@ public class InitiativeService {
     public List<Initiative> getAccessibleInitiatives(User user) {
         log.info("Fetching all available initiatives for user: {}", user.getEmail());
         return initiativeRepository.findAllAccessibleByUser(user, user.getLocation());
+    }
+
+    public Initiative getInitiativeById(Long id, User user) {
+        log.info("Fetching initiative by ID: {}", id);
+        return initiativeRepository.findAccessibleById(id, user, user.getLocation())
+                .orElseThrow(() -> new InitiativeNotFoundException(id));
     }
 }

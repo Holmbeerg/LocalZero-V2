@@ -1,5 +1,6 @@
 package com.localzero.controller;
 
+import com.localzero.dto.InitiativeDetailResponse;
 import com.localzero.mapper.InitiativeMapper;
 import com.localzero.model.Initiative;
 import com.localzero.dto.CreateInitiativeRequest;
@@ -36,15 +37,14 @@ public class InitiativesController {
     @PostMapping
     public ResponseEntity<InitiativeListResponse> createInitiative(@Valid @RequestBody CreateInitiativeRequest initiativeRequest,
                                                                    @AuthenticationPrincipal
-                                                               UserDetails userDetails) {
+                                                                   UserDetails userDetails) {
 
         User user = userService.getUserByEmail(userDetails.getUsername());
         Initiative initiative = initiativeService.createInitiative(initiativeRequest, user);
-        InitiativeListResponse response = initiativeMapper.toResponse(initiative, user);
 
         return ResponseEntity.
                 status(HttpStatus.CREATED).
-                body(response);
+                body(initiativeMapper.toResponse(initiative, user));
     }
 
     @GetMapping
@@ -59,20 +59,16 @@ public class InitiativesController {
         return ResponseEntity.ok(responses);
     }
 
-    /*
-    @GetMapping("/{id}")
-    public ResponseEntity<InitiativeResponse> getInitiativeById(@PathVariable Long id,
-                                                                @AuthenticationPrincipal UserDetails userDetails) {
 
-        try {
-            Initiative initiative = initiativeService.getInitiativeById(id, userDetails.getUsername());
-            InitiativeResponse response = initiativeMapper.toResponse(initiative);
-            return ResponseEntity.ok(response);
-        } catch (InitiativeNotFoundException e) {
-            return ResponseEntity.notFound().build();
-        } catch (AccessDeniedException e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
-    } */
+    @GetMapping("/{id}")
+    public ResponseEntity<InitiativeDetailResponse> getInitiativeById(@PathVariable Long id,
+                                                                      @AuthenticationPrincipal UserDetails userDetails) {
+        User user = userService.getUserByEmail(userDetails.getUsername());
+        Initiative initiative = initiativeService.getInitiativeById(id, user);
+
+        InitiativeDetailResponse response = initiativeMapper.toDetailResponse(initiative, user);
+        log.info("Retrieved initiative by ID: {} for user: {}", id, userDetails.getUsername());
+        return ResponseEntity.ok(response);
+    }
 }
 
