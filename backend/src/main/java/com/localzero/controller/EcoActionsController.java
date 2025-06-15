@@ -32,9 +32,8 @@ public class EcoActionsController {
     @PostMapping
     public ResponseEntity<EcoActionResponse> logEcoAction(@Valid @RequestBody LogEcoActionRequest logEcoActionRequest, @AuthenticationPrincipal UserDetails userDetails) {
         EcoAction savedAction = ecoActionService.logEcoAction(logEcoActionRequest, userDetails.getUsername());
-        EcoActionResponse response = ecoActionMapper.toResponse(savedAction);
         log.info("Eco action logged for user: {} with actionId: {}", userDetails.getUsername(), logEcoActionRequest.actionId());
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        return ResponseEntity.status(HttpStatus.CREATED).body(ecoActionMapper.toResponse(savedAction));
     }
 
     @GetMapping

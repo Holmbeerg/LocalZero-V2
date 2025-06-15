@@ -10,7 +10,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -56,10 +55,6 @@ public class User {
     @Builder.Default
     private Set<Role> roles = new HashSet<>();
 
-    public void addRole(Role role) {
-        this.roles.add(role);
-    }
-
     public boolean hasRole(RoleName roleName) {
         return roles.stream()
                 .anyMatch(role -> role.getRoleName() == roleName);
@@ -69,7 +64,7 @@ public class User {
         roles.removeIf(role -> role.getRoleName() == roleName);
     }
 
-    public Collection<? extends GrantedAuthority> getAuthorities() { // TODO: This method is used by Spring Security to get the roles of the user, needed for authentication and authorization?
+    public Set<GrantedAuthority> getAuthorities() { //
         return roles.stream()
                 .map(role -> new SimpleGrantedAuthority("ROLE_" + role.getRoleName().name()))
                 .collect(Collectors.toSet());

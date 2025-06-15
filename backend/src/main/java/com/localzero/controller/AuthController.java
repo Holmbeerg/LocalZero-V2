@@ -24,6 +24,10 @@ import org.springframework.web.server.ResponseStatusException;
 @RequestMapping("/api/auth")
 public class AuthController {
 
+    private static final String ACCESS_TOKEN_COOKIE_NAME = "accessToken";
+    private static final String COOKIE_PATH = "/";
+    private static final int COOKIE_MAX_AGE_SECONDS = 7200; // 2 hours
+
     private final UserService userService;
     private final AuthenticationManager authenticationManager;
     private final UserMapper userMapper;
@@ -50,57 +54,53 @@ public class AuthController {
     public ResponseEntity<UserResponse> register(@Valid @RequestBody CreateUserRequest createUserRequest, HttpServletResponse response) {
         User registeredUser = userService.registerUser(createUserRequest);
         String token = jwtService.createToken(registeredUser.getEmail());
-        UserResponse userResponse = userMapper.toUserResponse(registeredUser);
+        addTokenCookie(response, token);
 
-        Cookie cookie = new Cookie("accessToken", token);
-        cookie.setHttpOnly(true);
-        cookie.setSecure(true);
-        // cookie.setAttribute("SameSite", "Strict"); TODO: look into CSRF protection
-        cookie.setPath("/");
-        cookie.setMaxAge(7200); // 2 hours
-        response.addCookie(cookie);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(userResponse);
+        return ResponseEntity.status(HttpStatus.CREATED).body(userMapper.toUserResponse(registeredUser));
     }
 
     @PostMapping("/login")
     public ResponseEntity<UserResponse> login(@Valid @RequestBody LoginRequest loginRequest, HttpServletResponse response) {
         try {
             authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                    loginRequest.email(),
-                    loginRequest.password()
-                )
+                    new UsernamePasswordAuthenticationToken(
+                            loginRequest.email(),
+                            loginRequest.password()
+                    )
             );
 
             User user = userService.getUserByEmail(loginRequest.email());
             String token = jwtService.createToken(user.getEmail());
-            UserResponse userResponse = userMapper.toUserResponse(user);
+            addTokenCookie(response, token);
 
-            Cookie cookie = new Cookie("accessToken", token);
-            cookie.setHttpOnly(true);
-            cookie.setSecure(true);
-            // cookie.setAttribute("SameSite", "Strict"); TODO: read more about potential risk for CSRF-attacks
-            cookie.setPath("/");
-            cookie.setMaxAge(7200); // 2 hours
-            response.addCookie(cookie);
+            return ResponseEntity.ok(userMapper.toUserResponse(user));
 
-            return ResponseEntity.ok(userResponse); // instead of authreponse, we return userResponse directly and store the token in a cookie
-
-    } catch (final BadCredentialsException e) {
+        } catch (final BadCredentialsException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials");
         }
     }
 
     @PostMapping("/logout")
     public ResponseEntity<Void> logout(HttpServletResponse response) {
-        Cookie cookie = new Cookie("accessToken", null);
+        clearTokenCookie(response);
+        return ResponseEntity.ok().build();
+    }
+
+    private void addTokenCookie(HttpServletResponse response, String token) {
+        Cookie cookie = new Cookie(ACCESS_TOKEN_COOKIE_NAME, token);
         cookie.setHttpOnly(true);
         cookie.setSecure(true);
-        cookie.setPath("/");
-        cookie.setMaxAge(0); // delete the cookie
+        cookie.setPath(COOKIE_PATH);
+        cookie.setMaxAge(COOKIE_MAX_AGE_SECONDS);
         response.addCookie(cookie);
+    }
 
-        return ResponseEntity.ok().build();
+    private void clearTokenCookie(HttpServletResponse response) {
+        Cookie cookie = new Cookie(ACCESS_TOKEN_COOKIE_NAME, null);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true);
+        cookie.setPath(COOKIE_PATH);
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
     }
 }

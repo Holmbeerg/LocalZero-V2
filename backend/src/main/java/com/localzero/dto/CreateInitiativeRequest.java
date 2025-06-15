@@ -1,7 +1,6 @@
 package com.localzero.dto;
 
 import com.localzero.model.enums.InitiativeCategory;
-import com.localzero.model.enums.Neighborhood;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
