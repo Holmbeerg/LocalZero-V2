@@ -1,5 +1,6 @@
 package com.localzero.service;
 
+import com.localzero.exception.EcoActionNotFoundException;
 import com.localzero.model.EcoAction;
 import com.localzero.model.EcoActionType;
 import com.localzero.model.User;
@@ -33,7 +34,7 @@ public class EcoActionService {
         User user = userService.getUserByEmail(email);
 
         EcoActionType ecoActionType = ecoActionTypeRepository.findById(request.actionId())
-                .orElseThrow(() -> new RuntimeException("EcoActionType not found: " + request.actionId()));
+                .orElseThrow(() -> new EcoActionNotFoundException("EcoActionType with id " + request.actionId() + " not found"));
 
         EcoAction ecoAction = EcoAction.builder()
                 .user(user)
