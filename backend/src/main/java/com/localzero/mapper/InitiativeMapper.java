@@ -31,8 +31,8 @@ public class InitiativeMapper {
                 initiative.getParticipants().size(),
                 initiative.getStartDate().toString(),
                 initiative.getEndDate() != null ? initiative.getEndDate().toString() : null,
-                isUserCreator,
-                isUserParticipant
+                isUserParticipant,
+                isUserCreator
         );
     }
 
@@ -51,8 +51,8 @@ public class InitiativeMapper {
                 initiative.getParticipants().size(),
                 initiative.getStartDate().toString(),
                 initiative.getEndDate() != null ? initiative.getEndDate().toString() : null,
-                isUserCreator,
                 isUserParticipant,
+                isUserCreator,
                 initiative.getParticipants().stream()
                         .map(userMapper::toUserSummaryResponse)
                         .toList()
