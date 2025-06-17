@@ -55,10 +55,22 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(RoleNotFoundException.class)
     public ProblemDetail handleRoleNotFoundException(RoleNotFoundException ex) {
-        log.error("Role not found: {}", ex.getMessage());
-        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
-        problemDetail.setTitle("Role Not Found");
-        problemDetail.setType(URI.create("/problems/role-not-found"));
+        log.error("System configuration error - Role not found: {}", ex.getMessage());
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                "System configuration error: Required role not found"
+        );
+        problemDetail.setTitle("System Configuration Error");
+        problemDetail.setType(URI.create("/problems/system-configuration-error"));
+        return problemDetail;
+    }
+
+    @ExceptionHandler(AlreadyInitiativeMemberException.class)
+    public ProblemDetail handleAlreadyInitiativeMemberException(AlreadyInitiativeMemberException ex) {
+        log.error("User is already a member of this initiative: {}", ex.getMessage());
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
+        problemDetail.setTitle("Already Initiative Member");
+        problemDetail.setType(URI.create("/problems/already-initiative-member"));
         return problemDetail;
     }
 }

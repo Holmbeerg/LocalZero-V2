@@ -64,11 +64,21 @@ public class InitiativesController {
     public ResponseEntity<InitiativeDetailResponse> getInitiativeById(@PathVariable Long id,
                                                                       @AuthenticationPrincipal UserDetails userDetails) {
         User user = userService.getUserByEmail(userDetails.getUsername());
-        Initiative initiative = initiativeService.getInitiativeById(id, user);
+        Initiative initiative = initiativeService.getInitiativeByIdIfAccessible(id, user);
 
         InitiativeDetailResponse response = initiativeMapper.toDetailResponse(initiative, user);
         log.info("Retrieved initiative by ID: {} for user: {}", id, userDetails.getUsername());
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/{id}/join")
+    public ResponseEntity<Void> joinInitiative(@PathVariable Long id,
+                                               @AuthenticationPrincipal UserDetails userDetails) {
+
+        User user = userService.getUserByEmail(userDetails.getUsername());
+        initiativeService.joinInitiative(id, user);
+        log.info("User: {} joined initiative with ID: {}", userDetails.getUsername(), id);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }
 

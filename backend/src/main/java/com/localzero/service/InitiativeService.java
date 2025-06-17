@@ -1,5 +1,6 @@
 package com.localzero.service;
 
+import com.localzero.exception.AlreadyInitiativeMemberException;
 import com.localzero.exception.InitiativeNotFoundException;
 import com.localzero.model.Initiative;
 import com.localzero.model.InitiativeMember;
@@ -9,6 +10,7 @@ import com.localzero.repository.InitiativeMemberRepository;
 import com.localzero.repository.InitiativeRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -52,9 +54,20 @@ public class InitiativeService {
         return initiativeRepository.findAllAccessibleByUser(user, user.getLocation());
     }
 
-    public Initiative getInitiativeById(Long id, User user) {
+    public Initiative getInitiativeByIdIfAccessible(Long id, User user) {
         log.info("Fetching initiative by ID: {}", id);
         return initiativeRepository.findAccessibleById(id, user, user.getLocation())
                 .orElseThrow(() -> new InitiativeNotFoundException(id));
+    }
+
+    public void joinInitiative(Long initiativeId, User user) {
+        log.info("User {} is joining initiative with ID: {}", user.getEmail(), initiativeId);
+        Initiative initiative = getInitiativeByIdIfAccessible(initiativeId, user); // this already handles access control
+
+        try {
+            initiativeMemberRepository.insertMembership(initiative.getId(), user.getUserId());
+        } catch (DataIntegrityViolationException e) {
+            throw new AlreadyInitiativeMemberException("User is already a member of this initiative");
+        }
     }
 }
