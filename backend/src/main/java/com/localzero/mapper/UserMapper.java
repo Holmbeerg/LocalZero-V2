@@ -1,5 +1,7 @@
 package com.localzero.mapper;
 
+import com.localzero.dto.InitiativeParticipantResponse;
+import com.localzero.model.InitiativeMember;
 import com.localzero.model.User;
 import com.localzero.dto.CreateUserRequest;
 import com.localzero.dto.UserResponse;
@@ -35,6 +37,14 @@ public class UserMapper {
         return new UserSummaryResponse(
                 user.getUserId(),
                 user.getName()
+        );
+    }
+
+    public InitiativeParticipantResponse toInitiativeParticipantResponse(InitiativeMember initiativeMember) {
+        return new InitiativeParticipantResponse(
+                initiativeMember.getUser().getUserId(),
+                initiativeMember.getUser().getName(),
+                initiativeMember.getJoinedAt().toString()
         );
     }
 }

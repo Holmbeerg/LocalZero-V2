@@ -13,14 +13,14 @@ import java.util.Optional;
 
 public interface InitiativeRepository extends JpaRepository<Initiative, Long> {
     @EntityGraph(attributePaths = {"creator", "participants"})
-    @Query("""
+    @Query(""" 
     SELECT DISTINCT i FROM Initiative i
     LEFT JOIN InitiativeMember im ON i.id = im.initiative.id
     WHERE i.publicFlag = true
        OR i.creator = :user
        OR (im.user = :user)
        OR (i.publicFlag = false AND i.location = :userNeighborhood)
-    """)
+    """) // JPQL
     List<Initiative> findAllAccessibleByUser(@Param("user") User user,
                                              @Param("userNeighborhood") Neighborhood userNeighborhood);
 
@@ -38,4 +38,8 @@ public interface InitiativeRepository extends JpaRepository<Initiative, Long> {
     Optional<Initiative> findAccessibleById(@Param("initiativeId") Long id,
                                             @Param("user") User user,
                                             @Param("userNeighborhood") Neighborhood userNeighborhood);
+
+    @Query("SELECT COUNT(m) > 0 FROM Initiative i JOIN i.participants m WHERE i.id = :initiativeId AND m.user = :user")
+    boolean isMember(@Param("initiativeId") Long initiativeId, @Param("user") User user);
+
 }

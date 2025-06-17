@@ -18,5 +18,5 @@ public record InitiativeDetailResponse(
         String endDate,
         boolean isUserParticipant,
         boolean isUserCreator,
-        List<UserSummaryResponse> participants
+        List<InitiativeParticipantResponse> participants
 ) { }

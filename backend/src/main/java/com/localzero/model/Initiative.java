@@ -57,15 +57,9 @@ public class Initiative {
     @Column(name = "end_date") // right now, end date is optional
     private LocalDate endDate;
 
-    @ManyToMany
-    @JoinTable(
-            name = "initiative_members",
-            joinColumns = @JoinColumn(name = "initiative_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id")
-    )
-
+    @OneToMany(mappedBy = "initiative", fetch = FetchType.LAZY)
     @Builder.Default
-    private Set<User> participants = new HashSet<>();
+    private Set<InitiativeMember> participants = new HashSet<>();
 
     @Column(name = "created_at", nullable = false, updatable = false)
     @CreationTimestamp

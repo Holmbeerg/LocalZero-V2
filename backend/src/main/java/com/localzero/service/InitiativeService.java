@@ -10,7 +10,6 @@ import com.localzero.repository.InitiativeMemberRepository;
 import com.localzero.repository.InitiativeRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -60,14 +59,17 @@ public class InitiativeService {
                 .orElseThrow(() -> new InitiativeNotFoundException(id));
     }
 
-    public void joinInitiative(Long initiativeId, User user) {
+    public Initiative joinInitiative(Long initiativeId, User user) {
         log.info("User {} is joining initiative with ID: {}", user.getEmail(), initiativeId);
-        Initiative initiative = getInitiativeByIdIfAccessible(initiativeId, user); // this already handles access control
-
-        try {
-            initiativeMemberRepository.insertMembership(initiative.getId(), user.getUserId());
-        } catch (DataIntegrityViolationException e) {
+        if (initiativeRepository.isMember(initiativeId, user)) {
+            log.warn("User {} is already a member of initiative with ID: {}", user.getEmail(), initiativeId);
             throw new AlreadyInitiativeMemberException("User is already a member of this initiative");
         }
+        Initiative initiative = getInitiativeByIdIfAccessible(initiativeId, user);
+        InitiativeMember initiativeMember = new InitiativeMember(initiative, user);
+        initiativeMemberRepository.save(initiativeMember);
+        initiative.getParticipants().add(initiativeMember);
+
+        return initiative;
     }
 }

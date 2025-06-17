@@ -54,7 +54,7 @@ public class InitiativeMapper {
                 isUserParticipant,
                 isUserCreator,
                 initiative.getParticipants().stream()
-                        .map(userMapper::toUserSummaryResponse)
+                        .map(userMapper::toInitiativeParticipantResponse)
                         .toList()
         );
     }
@@ -65,6 +65,6 @@ public class InitiativeMapper {
 
     private boolean isUserParticipant(Initiative initiative, User currentUser) {
         return initiative.getParticipants().stream()
-                .anyMatch(u -> u.getUserId().equals(currentUser.getUserId()));
+                .anyMatch(im -> im.getUser().getUserId().equals(currentUser.getUserId()));
     }
 }
