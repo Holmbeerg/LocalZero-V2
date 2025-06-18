@@ -72,7 +72,7 @@ async function handleJoin() {
     <div class="flex justify-end items-center pt-4 border-t border-gray-100">
       <button
         v-if="!initiative.isUserCreator && !initiative.isUserParticipant"
-        @click="handleJoin"
+        @click.stop="handleJoin"
         class="px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-700 hover:bg-green-200 cursor-pointer"
       >
         Join

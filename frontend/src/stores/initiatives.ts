@@ -9,6 +9,9 @@ export const useInitiativesStore = defineStore('initiatives', () => {
   const error = ref<string | null>(null)
   const isLoaded = ref(false)
 
+  const currentInitiative = ref<Initiative | null>(null)
+  const detailLoading = ref(false)
+
   const fetchInitiatives = async () => {
     if (isLoaded.value) return
     loading.value = true
@@ -21,6 +24,20 @@ export const useInitiativesStore = defineStore('initiatives', () => {
       console.error('Error fetching initiatives:', err)
     } finally {
       loading.value = false
+    }
+  }
+
+  const fetchInitiativeById = async (id: number) => {
+    error.value = null
+    detailLoading.value = true
+    try {
+      currentInitiative.value = await initiativesApi.getInitiativeById(id)
+      return currentInitiative.value
+    } catch (err) {
+      error.value = 'Failed to load initiative details'
+      console.error('Error fetching initiative by ID:', err)
+    } finally {
+      detailLoading.value = false
     }
   }
 
@@ -71,9 +88,12 @@ export const useInitiativesStore = defineStore('initiatives', () => {
 
   return {
     initiatives,
+    currentInitiative,
     loading,
     error,
     fetchInitiatives,
+    fetchInitiativeById,
+    detailLoading,
     createInitiative,
     resetInitiatives,
     joinInitiative,
