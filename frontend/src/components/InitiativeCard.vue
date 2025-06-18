@@ -3,14 +3,27 @@ import type { Initiative, InitiativeCategory } from '@/types/initiative.ts'
 import { initiativeCategoriesLabelMap } from '@/constants/initiativeCategories.ts'
 import { neighborhoodLabelMap } from '@/constants/neighborhoods.ts'
 import { initiativeCategoryColorMap } from '@/constants/initiativeCategories.ts'
+import { useInitiativesStore } from '@/stores/initiatives.ts'
 
 function getCategoryColor(category: string) {
   return initiativeCategoryColorMap[category as InitiativeCategory] ?? 'bg-gray-200 text-gray-700'
 }
 
-defineProps<{
+const initiativesStore = useInitiativesStore()
+
+const props = defineProps<{
   initiative: Initiative
 }>()
+
+async function handleJoin() {
+  try {
+    await initiativesStore.joinInitiative(props.initiative.id)
+    alert('Successfully joined the initiative!')
+  } catch (error) {
+    console.error('Error joining initiative:', error)
+    alert('Failed to join initiative. Please try again later.')
+  }
+}
 </script>
 
 <template>
@@ -56,6 +69,7 @@ defineProps<{
     <div class="flex justify-end items-center pt-4 border-t border-gray-100">
       <button
         v-if="!initiative.isUserCreator && !initiative.isUserParticipant"
+        @click="handleJoin"
         class="px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-700 hover:bg-green-200 cursor-pointer"
       >
         Join

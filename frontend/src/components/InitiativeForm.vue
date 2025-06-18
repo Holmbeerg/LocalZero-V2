@@ -168,9 +168,3 @@ function handleCancel() {
     </div>
   </form>
 </template>
-
-<style scoped>
-input[type='date']::-webkit-calendar-picker-indicator {
-  cursor: pointer;
-}
-</style>

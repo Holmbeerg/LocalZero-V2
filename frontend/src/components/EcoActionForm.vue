@@ -53,7 +53,7 @@ defineProps<{
             id="action"
             v-model="selectedActionId"
             required
-            class="w-full px-3 py-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
+            class="w-full px-3 py-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 cursor-pointer"
           >
             <option value="" disabled>Select an action...</option>
             <option v-for="option in ecoActionOptions" :key="option.id" :value="option.id">
@@ -74,7 +74,7 @@ defineProps<{
 
         <button
           type="submit"
-          class="w-full bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors"
+          class="w-full bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors cursor-pointer"
         >
           Log Action
         </button>

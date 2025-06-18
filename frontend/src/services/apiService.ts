@@ -106,7 +106,7 @@ export const initiativesApi = {
     }
   },
 
-  async getInitiativeById(id: string): Promise<Initiative> {
+  async getInitiativeById(id: number): Promise<Initiative> {
     try {
       return await apiClient.get(`/initiatives/${id}`)
     } catch (error) {
@@ -120,6 +120,15 @@ export const initiativesApi = {
       return await apiClient.post('/initiatives', initiative)
     } catch (error) {
       console.error('Failed to create initiative:', error)
+      throw error
+    }
+  },
+
+  async joinInitiative(initiativeId: number): Promise<Initiative> {
+    try {
+      return await apiClient.post(`/initiatives/${initiativeId}/join`)
+    } catch (error) {
+      console.error(`Failed to join initiative with ID ${initiativeId}:`, error)
       throw error
     }
   },

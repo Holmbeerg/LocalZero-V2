@@ -38,6 +38,23 @@ export const useInitiativesStore = defineStore('initiatives', () => {
     }
   }
 
+  const joinInitiative = async (initiativeId: number) => {
+    error.value = null
+    try {
+      const updatedInitiative = await initiativesApi.joinInitiative(initiativeId)
+      const index = initiatives.value.findIndex((i) => i.id === updatedInitiative.id)
+      if (index !== -1) {
+        initiatives.value[index] = updatedInitiative
+      }
+      return updatedInitiative
+    } catch (err) {
+      error.value = 'Failed to join initiative'
+      console.error('Error joining initiative:', err)
+    } finally {
+      loading.value = false
+    }
+  }
+
   const addInitiativeToStore = (initiative: Initiative) => {
     initiatives.value.push(initiative)
     initiatives.value.sort(
@@ -59,5 +76,6 @@ export const useInitiativesStore = defineStore('initiatives', () => {
     fetchInitiatives,
     createInitiative,
     resetInitiatives,
+    joinInitiative,
   }
 })
