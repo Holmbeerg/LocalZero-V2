@@ -15,6 +15,8 @@ const props = defineProps<{
   initiative: Initiative
 }>()
 
+defineEmits(['initiative-clicked'])
+
 async function handleJoin() {
   try {
     await initiativesStore.joinInitiative(props.initiative.id)
@@ -28,7 +30,8 @@ async function handleJoin() {
 
 <template>
   <div
-    class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow"
+    class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow cursor-pointer"
+    @click="$emit('initiative-clicked', initiative)"
   >
     <div class="flex justify-between items-start mb-4">
       <span

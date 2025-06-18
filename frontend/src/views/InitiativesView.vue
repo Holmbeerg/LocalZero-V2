@@ -6,6 +6,8 @@ import { useAuthStore } from '@/stores/auth'
 import { initiativeFilterOptions } from '@/constants/initiativeCategories.ts'
 import CreateInitiativeModal from '@/components/CreateInitiativeModal.vue'
 import InitiativeCard from '@/components/InitiativeCard.vue'
+import { router } from '@/router'
+import type { Initiative } from '@/types/initiative.ts'
 
 const showCreateForm = ref(false)
 const selectedFilter = ref<'ALL' | string>('ALL')
@@ -26,6 +28,10 @@ const filteredInitiatives = computed(() =>
 
 const handleInitiativeCreated = async () => {
   showCreateForm.value = false
+}
+
+const viewInitiative = (initiative: Initiative) => {
+  router.push(`/initiatives/${initiative.id}`)
 }
 </script>
 
@@ -73,6 +79,7 @@ const handleInitiativeCreated = async () => {
             v-for="initiative in filteredInitiatives"
             :key="initiative.id"
             :initiative="initiative"
+            @initiative-clicked="viewInitiative"
           />
         </div>
       </div>
