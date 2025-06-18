@@ -2,7 +2,7 @@ import axios from 'axios'
 import type { AxiosInstance, AxiosResponse } from 'axios'
 import type { LoginCredentials, RegisterData, User } from '@/types/user.ts'
 import type { EcoAction, LogEcoActionRequest } from '@/types/ecoAction.ts'
-import type { CreateInitiativeRequest, Initiative } from '@/types/initiative.ts'
+import type { CreateInitiativeRequest, Initiative, InitiativeDetail } from '@/types/initiative.ts'
 
 const API_BASE_URL = 'http://localhost:8080/api'
 
@@ -106,7 +106,7 @@ export const initiativesApi = {
     }
   },
 
-  async getInitiativeById(id: number): Promise<Initiative> {
+  async getInitiativeById(id: number): Promise<InitiativeDetail> {
     try {
       return await apiClient.get(`/initiatives/${id}`)
     } catch (error) {

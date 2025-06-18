@@ -16,8 +16,12 @@ export interface Initiative {
   isUserCreator: boolean
 }
 
+export interface InitiativeParticipant extends UserSummary {
+  joinedAt: string
+}
+
 export interface InitiativeDetail extends Initiative {
-  participants: UserSummary[]
+  participants: InitiativeParticipant[]
 }
 
 export type InitiativeCategory =
