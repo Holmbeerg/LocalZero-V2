@@ -4,7 +4,7 @@ import com.localzero.dto.InitiativeDetailResponse;
 import com.localzero.mapper.InitiativeMapper;
 import com.localzero.model.Initiative;
 import com.localzero.dto.CreateInitiativeRequest;
-import com.localzero.dto.InitiativeListResponse;
+import com.localzero.dto.InitiativeResponse;
 import com.localzero.model.User;
 import com.localzero.service.InitiativeService;
 import com.localzero.service.UserService;
@@ -35,8 +35,8 @@ public class InitiativesController {
     }
 
     @PostMapping
-    public ResponseEntity<InitiativeListResponse> createInitiative(@Valid @RequestBody CreateInitiativeRequest initiativeRequest,
-                                                                   @AuthenticationPrincipal
+    public ResponseEntity<InitiativeResponse> createInitiative(@Valid @RequestBody CreateInitiativeRequest initiativeRequest,
+                                                               @AuthenticationPrincipal
                                                                    UserDetails userDetails) {
 
         User user = userService.getUserByEmail(userDetails.getUsername());
@@ -48,11 +48,11 @@ public class InitiativesController {
     }
 
     @GetMapping
-    public ResponseEntity<List<InitiativeListResponse>> getAllInitiatives(@AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<List<InitiativeResponse>> getAllInitiatives(@AuthenticationPrincipal UserDetails userDetails) {
         User user = userService.getUserByEmail(userDetails.getUsername());
         List<Initiative> initiatives = initiativeService.getAccessibleInitiatives(user);
         log.info("Retrieved initiatives for user: {}", userDetails.getUsername());
-        List<InitiativeListResponse> responses = initiatives.stream()
+        List<InitiativeResponse> responses = initiatives.stream()
                 .map(initiative -> initiativeMapper.toResponse(initiative, user))
                 .toList();
 
@@ -72,8 +72,8 @@ public class InitiativesController {
     }
 
     @PostMapping("/{id}/join")
-    public ResponseEntity<InitiativeListResponse> joinInitiative(@PathVariable Long id,
-                                                           @AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<InitiativeResponse> joinInitiative(@PathVariable Long id,
+                                                             @AuthenticationPrincipal UserDetails userDetails) {
 
         User user = userService.getUserByEmail(userDetails.getUsername());
         Initiative initiative = initiativeService.joinInitiative(id, user);

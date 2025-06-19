@@ -4,7 +4,7 @@ import com.localzero.dto.InitiativeDetailResponse;
 import com.localzero.model.Initiative;
 import com.localzero.model.User;
 import org.springframework.stereotype.Component;
-import com.localzero.dto.InitiativeListResponse;
+import com.localzero.dto.InitiativeResponse;
 
 @Component
 public class InitiativeMapper {
@@ -16,11 +16,11 @@ public class InitiativeMapper {
     }
 
 
-    public InitiativeListResponse toResponse(Initiative initiative, User currentUser) {
+    public InitiativeResponse toResponse(Initiative initiative, User currentUser) {
         boolean isUserCreator = isUserCreator(initiative, currentUser);
         boolean isUserParticipant = isUserCreator || isUserParticipant(initiative, currentUser);
 
-        return new InitiativeListResponse(
+        return new InitiativeResponse(
                 initiative.getId(),
                 initiative.getTitle(),
                 initiative.getDescription(),

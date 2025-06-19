@@ -3,7 +3,7 @@ package com.localzero.dto;
 import com.localzero.model.enums.InitiativeCategory;
 import com.localzero.model.enums.Neighborhood;
 
-public record InitiativeListResponse(
+public record InitiativeResponse(
     Long id,
     String title,
     String description,
