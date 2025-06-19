@@ -3,6 +3,7 @@ package com.localzero.exception;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.net.URI;
@@ -19,7 +20,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(InitiativeNotFoundException.class)
     public ProblemDetail handleInitiativeNotFoundException(InitiativeNotFoundException ex) {
-        log.error("Initiative not found: {}", ex.getMessage());
+        log.info("Initiative not found: {}", ex.getMessage());
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
         problemDetail.setTitle("Initiative Not Found");
         problemDetail.setType(URI.create("/problems/initiative-not-found"));
@@ -71,6 +72,18 @@ public class GlobalExceptionHandler {
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
         problemDetail.setTitle("Already Initiative Member");
         problemDetail.setType(URI.create("/problems/already-initiative-member"));
+        return problemDetail;
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ProblemDetail handleBadCredentialsException(BadCredentialsException ex) {
+        log.warn("Authentication failed - invalid credentials provided");
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
+                HttpStatus.UNAUTHORIZED,
+                "Invalid email or password"
+        );
+        problemDetail.setTitle("Authentication Failed");
+        problemDetail.setType(URI.create("/problems/authentication-failed"));
         return problemDetail;
     }
 }
