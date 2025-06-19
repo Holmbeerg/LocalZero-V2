@@ -3,6 +3,8 @@ package com.localzero.model;
 import com.localzero.model.enums.Neighborhood;
 import com.localzero.model.enums.RoleName;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.annotations.ColumnTransformer;
 import org.hibernate.annotations.CreationTimestamp;
@@ -27,25 +29,29 @@ public class User {
     @Column(name = "user_id")
     private Long userId;
 
+    @NotBlank
     @Column(name = "email", nullable = false, unique = true) // these should match the database constraints
     private String email;
 
+    @NotBlank
     @Column(name = "password_hash", nullable = false)
     private String passwordHash;
 
+    @NotBlank
     @Column(name = "name", nullable = false)
     private String name;
 
+    @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "location", nullable = false)
-    @ColumnTransformer(write = "?::neighborhood")
+    @ColumnTransformer(write = "?::neighborhood", read = "location::text")
     private Neighborhood location;
 
-    @Column(name = "created_at")
+    @Column(name = "created_at", nullable = false, updatable = false)
     @CreationTimestamp
     private LocalDateTime createdAt;
 
-    @ManyToMany(fetch = FetchType.EAGER) // EAGER fetch type to load roles immediately with the user
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
