@@ -2,6 +2,7 @@ package com.localzero.model;
 
 import com.localzero.model.enums.RoleName;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.annotations.ColumnTransformer;
 
@@ -18,6 +19,7 @@ public class Role {
     @Column(name = "role_id")
     private Long roleId;
 
+    @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "role_name", nullable = false, unique = true)
     @ColumnTransformer(write = "?::user_role", // PostgreSQL specific type casting

@@ -3,6 +3,8 @@ package com.localzero.model;
 import com.localzero.model.enums.InitiativeCategory;
 import com.localzero.model.enums.Neighborhood;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.annotations.ColumnTransformer;
 import org.hibernate.annotations.CreationTimestamp;
@@ -26,17 +28,21 @@ public class Initiative {
     @Column(name = "id")
     private Long id;
 
+    @NotBlank
     @Column(name = "title", nullable = false)
     private String title;
 
+    @NotBlank
     @Column(name = "description", nullable = false)
     private String description;
 
+    @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "location", nullable = false)
     @ColumnTransformer(write = "?::neighborhood", read = "location::text")
     private Neighborhood location;
 
+    @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "category", nullable = false)
     @ColumnTransformer(write = "?::initiative_category",
@@ -47,16 +53,19 @@ public class Initiative {
     @Column(name = "is_public", nullable = false)
     private boolean publicFlag;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "creator_id", nullable = false)
     private User creator;
 
+    @NotNull
     @Column(name = "start_date", nullable = false)
     private LocalDate startDate;
 
     @Column(name = "end_date") // right now, end date is optional
     private LocalDate endDate;
 
+    @NotNull
     @OneToMany(mappedBy = "initiative", fetch = FetchType.LAZY)
     @Builder.Default
     private Set<InitiativeMember> participants = new HashSet<>();

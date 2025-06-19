@@ -1,6 +1,7 @@
 package com.localzero.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -20,14 +21,17 @@ public class EcoAction {
     @Column(name = "id")
     private Long id;
 
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @NotNull
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "eco_action_type_id", nullable = false)
     private EcoActionType ecoActionType;
 
+    @NotNull
     @Column(name = "action_date", nullable = false)
     private LocalDate actionDate;
 
