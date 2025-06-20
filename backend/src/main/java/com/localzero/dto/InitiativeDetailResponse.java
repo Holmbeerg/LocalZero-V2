@@ -2,9 +2,11 @@ package com.localzero.dto;
 
 import com.localzero.model.enums.InitiativeCategory;
 import com.localzero.model.enums.Neighborhood;
+import lombok.Builder;
 
 import java.util.List;
 
+@Builder
 public record InitiativeDetailResponse(
         Long id,
         String title,
@@ -18,5 +20,6 @@ public record InitiativeDetailResponse(
         String endDate,
         boolean isUserParticipant,
         boolean isUserCreator,
-        List<InitiativeParticipantResponse> participants
+        List<InitiativeParticipantResponse> participants,
+        List<PostSummaryResponse> posts
 ) { }

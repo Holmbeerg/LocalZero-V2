@@ -3,15 +3,17 @@ package com.localzero.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.Formula;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
+@Entity
 @Getter
 @Setter
-@Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -37,9 +39,15 @@ public class Post {
     @Column(name = "text")
     private String text;
 
-    @Size(max = 255)
-    @Column(name = "image_url")
-    private String imageUrl;
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
+    @Builder.Default
+    private Set<PostImage> images = new HashSet<>();
+
+    @Formula("(SELECT COUNT(*) FROM comments c WHERE c.post_id = post_id)")
+    private int commentCount;
+
+    @Formula("(SELECT COUNT(*) FROM likes l WHERE l.post_id = post_id)")
+    private int likeCount;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     @CreationTimestamp

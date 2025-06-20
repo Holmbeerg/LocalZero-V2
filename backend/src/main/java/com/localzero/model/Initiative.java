@@ -65,10 +65,13 @@ public class Initiative {
     @Column(name = "end_date") // right now, end date is optional
     private LocalDate endDate;
 
-    @NotNull
     @OneToMany(mappedBy = "initiative", fetch = FetchType.LAZY)
     @Builder.Default
     private Set<InitiativeMember> participants = new HashSet<>();
+
+    @OneToMany(mappedBy = "initiative", fetch = FetchType.LAZY)
+    @Builder.Default
+    private Set<Post> posts = new HashSet<>();
 
     @Column(name = "created_at", nullable = false, updatable = false)
     @CreationTimestamp

@@ -1,7 +1,10 @@
 package com.localzero.dto;
 
+import lombok.Builder;
+
 import java.util.List;
 
+@Builder
 public record PostSummaryResponse(
         Long id,
         Long initiativeId,
