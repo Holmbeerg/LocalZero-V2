@@ -29,8 +29,8 @@ public class PostImage {
     private Post post;
 
     @NotBlank
-    @Column(name = "image_url", nullable = false)
-    private String imageUrl;
+    @Column(name = "s3_key", nullable = false)
+    private String s3Key;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     @CreationTimestamp

@@ -6,6 +6,7 @@ import org.springframework.http.ProblemDetail;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
 import java.net.URI;
 
 /**
@@ -84,6 +85,18 @@ public class GlobalExceptionHandler {
         );
         problemDetail.setTitle("Authentication Failed");
         problemDetail.setType(URI.create("/problems/authentication-failed"));
+        return problemDetail;
+    }
+
+    @ExceptionHandler(FailureGeneratingPresignedURLException.class)
+    public ProblemDetail handleFailureGeneratingPresignedURLException(FailureGeneratingPresignedURLException ex) {
+        log.error("Failed to generate presigned URL: {}", ex.getMessage(), ex);
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                "Could not prepare the file upload. Please try again later."
+        );
+        problemDetail.setTitle("File Upload Preparation Failed");
+        problemDetail.setType(URI.create("/problems/presigned-url-generation-failed"));
         return problemDetail;
     }
 }

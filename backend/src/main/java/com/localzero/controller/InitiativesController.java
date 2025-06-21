@@ -1,12 +1,13 @@
 package com.localzero.controller;
 
-import com.localzero.dto.InitiativeDetailResponse;
+import com.localzero.dto.*;
 import com.localzero.mapper.InitiativeMapper;
+import com.localzero.mapper.PostMapper;
 import com.localzero.model.Initiative;
-import com.localzero.dto.CreateInitiativeRequest;
-import com.localzero.dto.InitiativeResponse;
+import com.localzero.model.Post;
 import com.localzero.model.User;
 import com.localzero.service.InitiativeService;
+import com.localzero.service.PostService;
 import com.localzero.service.UserService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -26,17 +27,21 @@ public class InitiativesController {
     private final InitiativeService initiativeService;
     private final InitiativeMapper initiativeMapper;
     private final UserService userService;
+    private final PostService postService;
+    private final PostMapper postMapper;
 
 
-    public InitiativesController(InitiativeService initiativeService, InitiativeMapper initiativeMapper, UserService userService) {
+    public InitiativesController(InitiativeService initiativeService, InitiativeMapper initiativeMapper, UserService userService, PostService postService, PostMapper postMapper) {
         this.initiativeService = initiativeService;
         this.initiativeMapper = initiativeMapper;
         this.userService = userService;
+        this.postService = postService;
+        this.postMapper = postMapper;
     }
 
     @PostMapping
-    public ResponseEntity<InitiativeResponse> createInitiative(@Valid @RequestBody CreateInitiativeRequest initiativeRequest,
-                                                               @AuthenticationPrincipal
+    public ResponseEntity<InitiativeSummaryResponse> createInitiative(@Valid @RequestBody CreateInitiativeRequest initiativeRequest,
+                                                                      @AuthenticationPrincipal
                                                                    UserDetails userDetails) {
 
         User user = userService.getUserByEmail(userDetails.getUsername());
@@ -48,11 +53,11 @@ public class InitiativesController {
     }
 
     @GetMapping
-    public ResponseEntity<List<InitiativeResponse>> getAllInitiatives(@AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<List<InitiativeSummaryResponse>> getAllInitiatives(@AuthenticationPrincipal UserDetails userDetails) {
         User user = userService.getUserByEmail(userDetails.getUsername());
         List<Initiative> initiatives = initiativeService.getAccessibleInitiatives(user);
         log.info("Retrieved initiatives for user: {}", userDetails.getUsername());
-        List<InitiativeResponse> responses = initiatives.stream()
+        List<InitiativeSummaryResponse> responses = initiatives.stream()
                 .map(initiative -> initiativeMapper.toResponse(initiative, user))
                 .toList();
 
@@ -72,8 +77,8 @@ public class InitiativesController {
     }
 
     @PostMapping("/{id}/join")
-    public ResponseEntity<InitiativeResponse> joinInitiative(@PathVariable Long id,
-                                                             @AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<InitiativeSummaryResponse> joinInitiative(@PathVariable Long id,
+                                                                    @AuthenticationPrincipal UserDetails userDetails) {
 
         User user = userService.getUserByEmail(userDetails.getUsername());
         Initiative initiative = initiativeService.joinInitiative(id, user);
@@ -81,6 +86,15 @@ public class InitiativesController {
         return ResponseEntity.
                 status(HttpStatus.CREATED).
                 body(initiativeMapper.toResponse(initiative, user));
+    }
+
+    @PostMapping("/{id}/posts")
+    public ResponseEntity<PostSummaryResponse> createPostInInitiative(@PathVariable Long id,
+                                                                      @Valid @RequestBody CreatePostRequest createPostRequest,
+                                                                      @AuthenticationPrincipal UserDetails userDetails) {
+        Post post = postService.createPost(id, createPostRequest, userDetails.getUsername());
+        log.info("User: {} created a post in initiative with ID: {}", userDetails.getUsername(), id);
+        return ResponseEntity.status(HttpStatus.CREATED).body(postMapper.toPostSummaryResponse(post));
     }
 }
 

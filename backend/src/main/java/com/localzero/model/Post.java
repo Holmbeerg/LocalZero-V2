@@ -52,4 +52,8 @@ public class Post {
     @Column(name = "created_at", nullable = false, updatable = false)
     @CreationTimestamp
     private LocalDateTime createdAt;
+
+    public void addImage(PostImage image) {
+        images.add(image);
+    }
 }

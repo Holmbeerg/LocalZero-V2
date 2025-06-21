@@ -2,8 +2,10 @@ package com.localzero.dto;
 
 import com.localzero.model.enums.InitiativeCategory;
 import com.localzero.model.enums.Neighborhood;
+import lombok.Builder;
 
-public record InitiativeResponse(
+@Builder
+public record InitiativeSummaryResponse(
     Long id,
     String title,
     String description,
