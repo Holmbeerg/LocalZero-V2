@@ -43,8 +43,9 @@ public class PostService {
             for (String s3Key : createPostRequest.imageKeys()) {
                 s3Service.confirmUpload(s3Key);
 
-                PostImage postImage = new PostImage();
-                postImage.setS3Key(s3Key);
+                PostImage postImage = PostImage.builder()
+                        .s3Key(s3Key)
+                        .build();
 
                 post.addImage(postImage);
             }

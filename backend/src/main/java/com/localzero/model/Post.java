@@ -39,7 +39,7 @@ public class Post {
     @Column(name = "text")
     private String text;
 
-    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private Set<PostImage> images = new HashSet<>();
 
@@ -55,5 +55,6 @@ public class Post {
 
     public void addImage(PostImage image) {
         images.add(image);
+        image.setPost(this);
     }
 }
