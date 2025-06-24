@@ -68,7 +68,7 @@ const handleFileSelection = (event: Event) => {
 
 const validateFile = (file: File): boolean => {
   const maxSize = 5 * 1024 * 1024 // 5MB
-  const allowedTypes = ['image/jpeg', 'image/png', 'image/gif']
+  const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp']
 
   if (file.size > maxSize) {
     alert(`File "${file.name}" is too large. Maximum size is 5MB.`)
