@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import type { CreateInitiativeRequest, Initiative, InitiativeDetail } from '@/types/initiative'
 import { initiativesApi } from '@/services/apiService'
-import type { CreatePostRequest } from '@/types/post.ts' // You'd create this
+import type { CreatePostRequest } from '@/types/post.ts'
 
 export const useInitiativesStore = defineStore('initiatives', () => {
   const initiatives = ref<Initiative[]>([])

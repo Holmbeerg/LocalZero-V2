@@ -2,13 +2,13 @@
 import { ref } from 'vue'
 import { Plus, X } from 'lucide-vue-next'
 import { useRoute } from 'vue-router'
-import { useUploadStore } from '@/stores/uploads.ts'
+import { useFileUpload } from '@/composables/uploads.ts'
 import { useInitiativesStore } from '@/stores/initiatives.ts'
 import type { CreatePostRequest } from '@/types/post.ts'
 
 const content = ref('')
 const selectedImages = ref<File[]>([])
-const uploadStore = useUploadStore()
+const fileUploadStore = useFileUpload()
 const initiativeStore = useInitiativesStore()
 const route = useRoute()
 
@@ -31,7 +31,7 @@ const handleSubmit = async () => {
     let uploadedFileKeys: string[] = []
 
     if (selectedImages.value.length > 0) {
-      uploadedFileKeys = await uploadStore.uploadFiles(selectedImages.value)
+      uploadedFileKeys = await fileUploadStore.uploadFiles(selectedImages.value)
       console.log('Uploaded file keys:', uploadedFileKeys)
     }
 

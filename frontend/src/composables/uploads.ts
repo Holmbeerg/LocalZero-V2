@@ -1,9 +1,8 @@
-import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { uploadApi } from '@/services/apiService.ts'
 import type { InitiateUploadRequest } from '@/types/upload.ts'
 
-export const useUploadStore = defineStore('upload', () => {
+export function useFileUpload() {
   const error = ref<string | null>(null)
   const isUploading = ref(false)
 
@@ -11,6 +10,7 @@ export const useUploadStore = defineStore('upload', () => {
     const request: InitiateUploadRequest = {
       fileName: file.name,
       contentType: file.type,
+      contentLength: file.size,
     }
     const response = await uploadApi.initiateUpload(request)
     await uploadApi.uploadToS3(response.presignedUrl, file)
@@ -41,4 +41,4 @@ export const useUploadStore = defineStore('upload', () => {
     isUploading,
     uploadFiles,
   }
-})
+}
