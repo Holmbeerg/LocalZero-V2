@@ -4,7 +4,8 @@ import { useRoute } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { useInitiativesStore } from '@/stores/initiatives.ts'
 import InitiativeCard from '@/components/initiative/InitiativeCard.vue'
-import NewPostForm from '@/components/initiative/NewPostForm.vue'
+import NewPostForm from '@/components/initiative/post/NewPostForm.vue'
+import PostList from '@/components/initiative/post/PostList.vue'
 
 const route = useRoute()
 const initiativesStore = useInitiativesStore()
@@ -28,6 +29,7 @@ onMounted(() => {
       <div v-else class="grid grid-cols-1 gap-8">
         <InitiativeCard v-if="currentInitiative" :initiative="currentInitiative"></InitiativeCard>
         <NewPostForm v-if="currentInitiative?.isUserParticipant"></NewPostForm>
+        <PostList v-if="currentInitiative?.posts" :posts="currentInitiative.posts"> </PostList>
       </div>
     </div>
   </div>
