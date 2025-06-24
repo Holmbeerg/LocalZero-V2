@@ -15,6 +15,7 @@ import software.amazon.awssdk.services.s3.presigner.model.PutObjectPresignReques
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -24,6 +25,8 @@ public class S3Service {
     private final S3Presigner presigner;
     private final String bucketName;
     private final S3Client s3Client;
+    private static final List<String> ALLOWED_CONTENT_TYPES = List.of("image/jpeg", "image/png", "image/gif");
+    private static final long MAX_FILE_SIZE_MB = (long) 5 * 1024 * 1024; // 5 MB
 
     public S3Service(S3Client s3Client, @Qualifier("bucketName") String bucketName, S3Presigner presigner) {
         this.bucketName = bucketName;
@@ -49,7 +52,7 @@ public class S3Service {
             PresignedPutObjectRequest presignedRequest = presigner.presignPutObject(presignRequest);
 
             return PresignedUploadResponse.builder()
-                    .uploadUrl(presignedRequest.url().toString())
+                    .presignedUrl(presignedRequest.url().toString())
                     .key(uniqueKey)
                     .expiresAt(Instant.now().plus(Duration.ofMinutes(15)))
                     .build();
@@ -74,14 +77,14 @@ public class S3Service {
                     .build();
 
             PresignedGetObjectRequest presignedRequest = presigner.presignGetObject(presignRequest);
-            return presignedRequest.url().toString();
+            return presignedRequest.url().toExternalForm();
         } catch (Exception e) {
             log.error("Failed to generate presigned URL for: {}", key, e);
             throw new RuntimeException("Could not generate presigned URL", e);
         }
     }
 
-    public void confirmUpload(String key) {
+    public void confirmUpload(String key) { // TODO: improved validation, before uploading to S3? quarantine bucket?
         try {
             // Check if object exists in S3
             HeadObjectRequest headRequest = HeadObjectRequest.builder()
@@ -89,7 +92,11 @@ public class S3Service {
                     .key(key)
                     .build();
 
-            s3Client.headObject(headRequest); // Throws exception if not found
+            HeadObjectResponse headResponse = s3Client.headObject(headRequest); // Throws exception if not found
+
+            validateContentType(headResponse.contentType(), key);
+            validateFileSize(headResponse.contentLength(), key);
+
         } catch (NoSuchKeyException e) {
             log.error("Object with key '{}' does not exist in bucket '{}'", key, bucketName, e);
             throw new RuntimeException("File upload confirmation failed: Object not found", e);
@@ -99,8 +106,36 @@ public class S3Service {
         }
     }
 
+    private void validateContentType(String contentType, String key) {
+        if (!ALLOWED_CONTENT_TYPES.contains(contentType)) {
+            log.error("Invalid content type: {}", contentType);
+            deleteObject(key);
+            throw new IllegalArgumentException("Unsupported content type: " + contentType);
+        }
+    }
+
+    private void validateFileSize(long fileSize, String key) {
+        if (fileSize > MAX_FILE_SIZE_MB) {
+            log.error("File size exceeds limit: {} bytes", fileSize);
+            deleteObject(key);
+            throw new IllegalArgumentException("File size exceeds limit: " + fileSize + " bytes");
+        }
+    }
+
     private String generateUniqueKey(String fileName) {
         String extension = fileName.substring(fileName.lastIndexOf('.'));
         return "images/" + UUID.randomUUID() + extension;
+    }
+
+    private void deleteObject(String key) {
+        try {
+            s3Client.deleteObject(DeleteObjectRequest.builder()
+                    .bucket(bucketName)
+                    .key(key)
+                    .build());
+            log.info("Deleted invalid object with key: {}", key);
+        } catch (Exception e) {
+            log.error("Failed to delete invalid object with key: {}", key, e);
+        }
     }
 }

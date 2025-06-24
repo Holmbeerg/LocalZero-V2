@@ -6,7 +6,7 @@ import java.time.Instant;
 
 @Builder
 public record PresignedUploadResponse(
-     String uploadUrl,
+     String presignedUrl,
      String key,
      Instant expiresAt
 ) { }

@@ -36,6 +36,7 @@ public class UploadController {
                 request.contentType()
         );
 
+        log.info("Generated presigned PUT URL for user '{}': {}", userDetails.getUsername(), response.presignedUrl());
         return ResponseEntity.ok(response);
     }
 }
