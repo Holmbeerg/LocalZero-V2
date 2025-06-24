@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import InitiativeForm from './InitiativeForm.vue'
-import { type Neighborhood } from '@/constants/neighborhoods'
+import { type Neighborhood } from '@/constants/neighborhoods.ts'
 
 defineProps<{
   show: boolean

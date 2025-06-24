@@ -2,7 +2,7 @@
 import { User as UserIcon, Calendar, MapPin, Badge } from 'lucide-vue-next'
 import { computed } from 'vue'
 import type { User } from '@/types/user.ts'
-import type { EcoAction } from '@/types/ecoAction'
+import type { EcoAction } from '@/types/ecoAction.ts'
 import { roleDisplayNames } from '@/types/user.ts'
 import { type Neighborhood, neighborhoodLabelMap } from '@/constants/neighborhoods.ts'
 

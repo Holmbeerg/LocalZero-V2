@@ -3,8 +3,8 @@ import { onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { useInitiativesStore } from '@/stores/initiatives.ts'
-import InitiativeCard from '@/components/InitiativeCard.vue'
-import NewPostForm from '@/components/NewPostForm.vue'
+import InitiativeCard from '@/components/initiative/InitiativeCard.vue'
+import NewPostForm from '@/components/initiative/NewPostForm.vue'
 
 const route = useRoute()
 const initiativesStore = useInitiativesStore()

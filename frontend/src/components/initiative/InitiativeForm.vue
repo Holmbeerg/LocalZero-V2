@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { initiativeCategories } from '@/constants/initiativeCategories'
+import { initiativeCategories } from '@/constants/initiativeCategories.ts'
 import type { CreateInitiativeRequest, InitiativeCategory } from '@/types/initiative.ts'
-import { type Neighborhood } from '@/constants/neighborhoods'
-import { neighborhoodLabelMap } from '@/constants/neighborhoods'
+import { type Neighborhood } from '@/constants/neighborhoods.ts'
+import { neighborhoodLabelMap } from '@/constants/neighborhoods.ts'
 import { useInitiativesStore } from '@/stores/initiatives.ts'
 
 const initiativesStore = useInitiativesStore()

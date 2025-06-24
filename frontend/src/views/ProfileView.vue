@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { useAuthStore } from '@/stores/auth'
 import { storeToRefs } from 'pinia'
-import UserProfileCard from '@/components/UserProfileCard.vue'
-import EcoActionList from '@/components/EcoActionList.vue'
+import UserProfileCard from '@/components/profile/UserProfileCard.vue'
+import EcoActionList from '@/components/profile/EcoActionList.vue'
 import { onMounted } from 'vue'
 import { ecoActionOptions } from '@/constants/ecoActionOptions.ts'
-import EcoActionForm from '@/components/EcoActionForm.vue'
+import EcoActionForm from '@/components/profile/EcoActionForm.vue'
 import { useEcoActionsStore } from '@/stores/ecoActions.ts'
 
 const { user } = storeToRefs(useAuthStore())
