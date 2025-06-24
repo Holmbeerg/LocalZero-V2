@@ -3,6 +3,8 @@ import type { AxiosInstance, AxiosResponse } from 'axios'
 import type { LoginCredentials, RegisterData, User } from '@/types/user.ts'
 import type { EcoAction, LogEcoActionRequest } from '@/types/ecoAction.ts'
 import type { CreateInitiativeRequest, Initiative, InitiativeDetail } from '@/types/initiative.ts'
+import type { InitiateUploadRequest, PresignedUploadResponse } from '@/types/upload.ts'
+import type { CreatePostRequest, PostSummaryResponse } from '@/types/post.ts'
 
 const API_BASE_URL = 'http://localhost:8080/api'
 
@@ -131,5 +133,37 @@ export const initiativesApi = {
       console.error(`Failed to join initiative with ID ${initiativeId}:`, error)
       throw error
     }
+  },
+
+  async createPost(initiativeId: number, post: CreatePostRequest): Promise<PostSummaryResponse> {
+    try {
+      return await apiClient.post(`/initiatives/${initiativeId}/posts`, post)
+    } catch (error) {
+      console.error(`Failed to create post for initiative with ID ${initiativeId}:`, error)
+      throw error
+    }
+  },
+}
+
+// Upload API endpoints
+
+export const uploadApi = {
+  async initiateUpload(content: InitiateUploadRequest): Promise<PresignedUploadResponse> {
+    try {
+      return await apiClient.post('/uploads/initiate', content)
+    } catch (error) {
+      console.error('Failed to initiate upload:', error)
+      throw error
+    }
+  },
+
+  async uploadToS3(presignedUrl: string, file: File): Promise<Response> {
+    return fetch(presignedUrl, {
+      method: 'PUT',
+      body: file,
+      headers: {
+        'Content-Type': file.type,
+      },
+    })
   },
 }

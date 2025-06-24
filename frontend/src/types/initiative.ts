@@ -1,5 +1,6 @@
 import type { Neighborhood } from '@/constants/neighborhoods.ts'
 import type { UserSummary } from '@/types/user.ts'
+import type { PostSummaryResponse } from '@/types/post.ts'
 
 export interface Initiative {
   id: number
@@ -22,6 +23,7 @@ export interface InitiativeParticipant extends UserSummary {
 
 export interface InitiativeDetail extends Initiative {
   participants: InitiativeParticipant[]
+  posts: PostSummaryResponse[]
 }
 
 export type InitiativeCategory =

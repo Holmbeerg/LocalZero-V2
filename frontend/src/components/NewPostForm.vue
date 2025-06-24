@@ -1,21 +1,55 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { Plus, X } from 'lucide-vue-next'
+import { useRoute } from 'vue-router'
+import { useUploadStore } from '@/stores/uploads.ts'
+import { useInitiativesStore } from '@/stores/initiatives.ts'
+import type { CreatePostRequest } from '@/types/post.ts'
 
 const content = ref('')
 const selectedImages = ref<File[]>([])
+const uploadStore = useUploadStore()
+const initiativeStore = useInitiativesStore()
+const route = useRoute()
 
 const handleSubmit = async () => {
+  const initiativeId = Number(route.params.id)
+
+  if (isNaN(initiativeId)) {
+    alert('Invalid initiative ID. Please try again.')
+    return
+  }
+
   if (!content.value.trim()) {
     alert('Please enter some content for your post.')
     return
   }
 
-  console.log('Post submitted:', content.value, selectedImages.value)
+  console.log('Submitting post...')
 
-  content.value = ''
-  selectedImages.value = []
+  try {
+    let uploadedFileKeys: string[] = []
+
+    if (selectedImages.value.length > 0) {
+      uploadedFileKeys = await uploadStore.uploadFiles(selectedImages.value)
+      console.log('Uploaded file keys:', uploadedFileKeys)
+    }
+
+    const postContent: CreatePostRequest = {
+      text: content.value,
+      imageKeys: uploadedFileKeys,
+    }
+
+    await initiativeStore.createPost(initiativeId, postContent)
+
+    content.value = ''
+    selectedImages.value = []
+  } catch (error) {
+    console.error('Error creating post:', error)
+    alert('Failed to create post. Please try again later.')
+  }
 }
+
 const handleFileSelection = (event: Event) => {
   const input = event.target as HTMLInputElement
   if (!input.files) return

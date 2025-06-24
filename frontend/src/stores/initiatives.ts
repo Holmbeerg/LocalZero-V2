@@ -1,7 +1,8 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import type { CreateInitiativeRequest, Initiative } from '@/types/initiative'
-import { initiativesApi } from '@/services/apiService' // You'd create this
+import type { CreateInitiativeRequest, Initiative, InitiativeDetail } from '@/types/initiative'
+import { initiativesApi } from '@/services/apiService'
+import type { CreatePostRequest } from '@/types/post.ts' // You'd create this
 
 export const useInitiativesStore = defineStore('initiatives', () => {
   const initiatives = ref<Initiative[]>([])
@@ -9,7 +10,7 @@ export const useInitiativesStore = defineStore('initiatives', () => {
   const error = ref<string | null>(null)
   const isLoaded = ref(false)
 
-  const currentInitiative = ref<Initiative | null>(null)
+  const currentInitiative = ref<InitiativeDetail | null>(null)
   const detailLoading = ref(false)
 
   const fetchInitiatives = async () => {
@@ -63,10 +64,31 @@ export const useInitiativesStore = defineStore('initiatives', () => {
       if (index !== -1) {
         initiatives.value[index] = updatedInitiative
       }
+
+      if (currentInitiative.value && currentInitiative.value.id === updatedInitiative.id) {
+        currentInitiative.value.isUserParticipant = true
+      }
+
       return updatedInitiative
     } catch (err) {
       error.value = 'Failed to join initiative'
       console.error('Error joining initiative:', err)
+    } finally {
+      loading.value = false
+    }
+  }
+
+  const createPost = async (initiativeId: number, postContent: CreatePostRequest) => {
+    error.value = null
+    try {
+      const newPost = await initiativesApi.createPost(initiativeId, postContent)
+      if (currentInitiative.value) {
+        currentInitiative.value.posts.push(newPost)
+      }
+      return newPost
+    } catch (err) {
+      error.value = 'Failed to create post'
+      console.error('Error creating post:', err)
     } finally {
       loading.value = false
     }
@@ -97,5 +119,6 @@ export const useInitiativesStore = defineStore('initiatives', () => {
     createInitiative,
     resetInitiatives,
     joinInitiative,
+    createPost,
   }
 })
