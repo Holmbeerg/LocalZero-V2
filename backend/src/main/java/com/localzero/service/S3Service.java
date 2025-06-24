@@ -3,8 +3,10 @@ package com.localzero.service;
 import com.localzero.dto.PresignedUploadResponse;
 import com.localzero.exception.FailureGeneratingPresignedURLException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tika.Tika;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import software.amazon.awssdk.core.ResponseInputStream;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.*;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
@@ -25,7 +27,12 @@ public class S3Service {
     private final S3Presigner presigner;
     private final String bucketName;
     private final S3Client s3Client;
-    private static final List<String> ALLOWED_CONTENT_TYPES = List.of("image/jpeg", "image/png", "image/gif");
+    private static final List<String> ALLOWED_CONTENT_TYPES = List.of(
+            "image/jpeg",
+            "image/png",
+            "image/gif",
+            "image/webp"
+    );
     private static final long MAX_FILE_SIZE_MB = (long) 5 * 1024 * 1024; // 5 MB
 
     public S3Service(S3Client s3Client, @Qualifier("bucketName") String bucketName, S3Presigner presigner) {
@@ -34,7 +41,8 @@ public class S3Service {
         this.presigner = presigner;
     }
 
-    public PresignedUploadResponse generatePresignedUpload(String fileName, String contentType) {
+    public PresignedUploadResponse generatePresignedUpload(String fileName, String contentType, long contentLength) {
+        validateFileSize(contentLength);
         String uniqueKey = generateUniqueKey(fileName);
         try {
 
@@ -42,6 +50,7 @@ public class S3Service {
                     .bucket(bucketName)
                     .key(uniqueKey)
                     .contentType(contentType)
+                    .contentLength(contentLength)
                     .build();
 
             PutObjectPresignRequest presignRequest = PutObjectPresignRequest.builder()
@@ -84,7 +93,7 @@ public class S3Service {
         }
     }
 
-    public void confirmUpload(String key) { // TODO: improved validation, before uploading to S3? quarantine bucket?
+    public void confirmUpload(String key) { // TODO: improved validation, quarantine bucket before uploading to actual?
         try {
             // Check if object exists in S3
             HeadObjectRequest headRequest = HeadObjectRequest.builder()
@@ -94,8 +103,8 @@ public class S3Service {
 
             HeadObjectResponse headResponse = s3Client.headObject(headRequest); // Throws exception if not found
 
-            validateContentType(headResponse.contentType(), key);
-            validateFileSize(headResponse.contentLength(), key);
+            validateFileSize(headResponse.contentLength());
+            validateContentType(key);
 
         } catch (NoSuchKeyException e) {
             log.error("Object with key '{}' does not exist in bucket '{}'", key, bucketName, e);
@@ -106,18 +115,32 @@ public class S3Service {
         }
     }
 
-    private void validateContentType(String contentType, String key) {
-        if (!ALLOWED_CONTENT_TYPES.contains(contentType)) {
-            log.error("Invalid content type: {}", contentType);
-            deleteObject(key);
-            throw new IllegalArgumentException("Unsupported content type: " + contentType);
+    private void validateContentType(String s3Key) {
+        GetObjectRequest getObjectRequest = GetObjectRequest.builder()
+                .bucket(bucketName)
+                .key(s3Key)
+                .build();
+
+        try (ResponseInputStream<GetObjectResponse> s3Object = s3Client.getObject(getObjectRequest)) {
+            Tika tika = new Tika();
+            String detectedType = tika.detect(s3Object);
+
+            if (!ALLOWED_CONTENT_TYPES.contains(detectedType)) {
+                log.error("Invalid file content type: {}", detectedType);
+                deleteObject(s3Key);
+                throw new IllegalArgumentException("Unsupported file content type: " + detectedType);
+            }
+        } catch (Exception e) {
+            log.error("Error validating file content type for: {}", s3Key, e);
+            deleteObject(s3Key);
+            throw new RuntimeException("Failed to validate file content type", e);
         }
     }
 
-    private void validateFileSize(long fileSize, String key) {
+
+    private void validateFileSize(long fileSize) {
         if (fileSize > MAX_FILE_SIZE_MB) {
             log.error("File size exceeds limit: {} bytes", fileSize);
-            deleteObject(key);
             throw new IllegalArgumentException("File size exceeds limit: " + fileSize + " bytes");
         }
     }

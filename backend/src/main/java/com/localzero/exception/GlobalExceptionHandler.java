@@ -99,4 +99,16 @@ public class GlobalExceptionHandler {
         problemDetail.setType(URI.create("/problems/presigned-url-generation-failed"));
         return problemDetail;
     }
+
+    @ExceptionHandler(InvalidFileTypeException.class)
+    public ProblemDetail handleInvalidFileTypeException(InvalidFileTypeException ex) {
+        log.error("Invalid file type: {}", ex.getMessage(), ex);
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
+                HttpStatus.UNSUPPORTED_MEDIA_TYPE,
+                "The uploaded file type is not supported"
+        );
+        problemDetail.setTitle("Unsupported File Type");
+        problemDetail.setType(URI.create("/problems/unsupported-file-type"));
+        return problemDetail;
+    }
 }

@@ -33,7 +33,8 @@ public class UploadController {
 
         PresignedUploadResponse response = s3Service.generatePresignedUpload(
                 request.fileName(),
-                request.contentType()
+                request.contentType(),
+                request.contentLength()
         );
 
         log.info("Generated presigned PUT URL for user '{}': {}", userDetails.getUsername(), response.presignedUrl());
