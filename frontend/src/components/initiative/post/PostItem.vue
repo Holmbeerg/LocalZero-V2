@@ -1,8 +1,12 @@
 <script setup lang="ts">
 import type { PostSummaryResponse } from '@/types/post.ts'
 import { MessageCircleMore, Heart, UserIcon } from 'lucide-vue-next'
+import { useInitiativesStore } from '@/stores/initiatives.ts'
+import { useRoute } from 'vue-router'
 
 const props = defineProps<{ post: PostSummaryResponse }>()
+const initiativesStore = useInitiativesStore()
+const route = useRoute()
 
 function formatDate(dateString: string): string {
   return new Date(dateString).toLocaleDateString('sv-SE', {
@@ -14,8 +18,21 @@ function formatDate(dateString: string): string {
   })
 }
 
-const handleLike = () => {
-  console.log('Like post:', props.post.id)
+const handleLike = async () => {
+  const initiativeId = Number(route.params.id)
+
+  if (isNaN(initiativeId)) {
+    alert('Invalid initiative ID. Please try again.')
+    return
+  }
+
+  try {
+    await initiativesStore.likePost(initiativeId, props.post.id)
+    console.log('Post liked successfully')
+  } catch (error) {
+    console.error('Error liking post:', error)
+    alert('Failed to like post. Please try again later.')
+  }
 }
 
 const handleComment = () => {
@@ -87,7 +104,7 @@ const handleComment = () => {
           @click="handleLike"
           class="flex items-center space-x-1 text-gray-500 hover:text-blue-600 transition-colors duration-200 cursor-pointer"
         >
-          <Heart class="w-5 h-5" />
+          <Heart class="w-5 h-5" :class="{ 'text-red-500 fill-current': post.isLikedByUser }" />
           <span class="text-sm">{{ post.likeCount }}</span>
         </button>
 

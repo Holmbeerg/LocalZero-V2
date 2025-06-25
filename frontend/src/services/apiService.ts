@@ -143,6 +143,15 @@ export const initiativesApi = {
       throw error
     }
   },
+
+  async likePost(initiativeId: number, postId: number): Promise<PostSummaryResponse> {
+    try {
+      return await apiClient.post(`/initiatives/${initiativeId}/posts/${postId}/like`)
+    } catch (error) {
+      console.error(`Failed to like post with ID ${postId} in initiative ${initiativeId}:`, error)
+      throw error
+    }
+  },
 }
 
 // Upload API endpoints

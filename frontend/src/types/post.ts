@@ -14,4 +14,5 @@ export interface PostSummaryResponse {
   createdAt: string
   likeCount: number
   commentCount: number
+  isLikedByUser: boolean
 }

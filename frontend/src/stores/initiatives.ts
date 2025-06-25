@@ -94,6 +94,25 @@ export const useInitiativesStore = defineStore('initiatives', () => {
     }
   }
 
+  const likePost = async (initiativeId: number, postId: number) => {
+    error.value = null
+    try {
+      const updatedPost = await initiativesApi.likePost(initiativeId, postId)
+      if (currentInitiative.value) {
+        const postIndex = currentInitiative.value.posts.findIndex((p) => p.id === postId)
+        if (postIndex !== -1) {
+          currentInitiative.value.posts[postIndex] = updatedPost
+        }
+      }
+      return updatedPost
+    } catch (err) {
+      error.value = 'Failed to like post'
+      console.error('Error liking post:', err)
+    } finally {
+      loading.value = false
+    }
+  }
+
   const addInitiativeToStore = (initiative: Initiative) => {
     initiatives.value.push(initiative)
     initiatives.value.sort(
@@ -120,5 +139,6 @@ export const useInitiativesStore = defineStore('initiatives', () => {
     resetInitiatives,
     joinInitiative,
     createPost,
+    likePost,
   }
 })
