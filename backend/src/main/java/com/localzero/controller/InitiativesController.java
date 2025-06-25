@@ -93,8 +93,18 @@ public class InitiativesController {
                                                                       @Valid @RequestBody CreatePostRequest createPostRequest,
                                                                       @AuthenticationPrincipal UserDetails userDetails) {
         Post post = postService.createPost(id, createPostRequest, userDetails.getUsername());
+        User user = userService.getUserByEmail(userDetails.getUsername());
         log.info("User: {} created a post in initiative with ID: {}", userDetails.getUsername(), id);
-        return ResponseEntity.status(HttpStatus.CREATED).body(postMapper.toPostSummaryResponse(post));
+        return ResponseEntity.status(HttpStatus.CREATED).body(postMapper.toPostSummaryResponse(post, user));
+    }
+
+    @PostMapping("/{id}/posts/{postId}/like")
+    public ResponseEntity<PostSummaryResponse> likePostInInitiative(@PathVariable Long id,
+                                                                    @PathVariable Long postId,
+                                                                    @AuthenticationPrincipal UserDetails userDetails) {
+        User user = userService.getUserByEmail(userDetails.getUsername());
+        Post post = postService.toggleLike(id, postId, user);
+        return ResponseEntity.ok(postMapper.toPostSummaryResponse(post, user));
     }
 }
 

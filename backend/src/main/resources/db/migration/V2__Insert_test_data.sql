@@ -90,7 +90,10 @@ VALUES ('Centrum Tool Library',
 
        ('Limhamn Beach Cleanup Tools',
         'Borrow cleanup supplies for beach and park maintenance. Keep our coast beautiful!', 'LIMHAMN',
-        'TOOL_SHARING', true, 3, '2025-05-15', NULL, '2025-05-10 13:45:00+02');
+        'TOOL_SHARING', true, 3, '2025-05-15', NULL, '2025-05-10 13:45:00+02'),
+
+        ('Limhamn Ride Sharing', 'Connect with neighbors for shared rides to work, shopping, and events around Malmö.',
+        'LIMHAMN', 'RIDE_SHARING', true, 3, '2025-04-01', NULL, '2025-03-25 16:20:00+01');
 
 INSERT INTO initiative_members (initiative_id, user_id, joined_at) VALUES
 -- Centrum Tool Library members
@@ -124,7 +127,13 @@ INSERT INTO initiative_members (initiative_id, user_id, joined_at) VALUES
 -- Limhamn Beach Cleanup Tools members
 (6, 3, '2025-05-15 13:45:00'),
 (6, 5, '2025-05-18 10:20:00'),
-(6, 8, '2025-05-22 15:55:00');
+(6, 8, '2025-05-22 15:55:00'),
+
+-- Limhamn Ride Sharing members
+(7, 3, '2025-04-01 16:20:00'),
+(7, 5, '2025-04-05 08:45:00'),
+(7, 9, '2025-04-10 12:10:00'),
+(7, 4, '2025-04-15 17:30:00');
 
 -- Insert posts for initiatives
 INSERT INTO posts (initiative_id, author_id, text, created_at) VALUES

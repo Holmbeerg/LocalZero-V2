@@ -13,5 +13,6 @@ public record PostSummaryResponse(
         UserSummaryResponse author,
         String createdAt,
         int likeCount,
-        int commentCount
+        int commentCount,
+        boolean isLikedByUser
 ) { }

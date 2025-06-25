@@ -61,7 +61,7 @@ public class InitiativeMapper {
                 .isUserParticipant(isUserParticipant)
                 .isUserCreator(isUserCreator)
                 .participants(mapParticipants(initiative))
-                .posts(mapPosts(initiative))
+                .posts(mapPosts(initiative, currentUser))
                 .build();
     }
 
@@ -80,9 +80,9 @@ public class InitiativeMapper {
                 .toList();
     }
 
-    private List<PostSummaryResponse> mapPosts(Initiative initiative) {
+    private List<PostSummaryResponse> mapPosts(Initiative initiative, User user) {
         return initiative.getPosts().stream()
-                .map(postMapper::toPostSummaryResponse)
+                .map(post -> postMapper.toPostSummaryResponse(post, user))
                 .toList();
     }
 
