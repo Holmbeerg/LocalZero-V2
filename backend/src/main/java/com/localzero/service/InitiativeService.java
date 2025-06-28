@@ -2,17 +2,18 @@ package com.localzero.service;
 
 import com.localzero.exception.AlreadyInitiativeMemberException;
 import com.localzero.exception.InitiativeNotFoundException;
-import com.localzero.model.Initiative;
-import com.localzero.model.InitiativeMember;
-import com.localzero.model.User;
+import com.localzero.exception.PostNotFoundException;
+import com.localzero.model.*;
 import com.localzero.dto.CreateInitiativeRequest;
 import com.localzero.repository.InitiativeMemberRepository;
 import com.localzero.repository.InitiativeRepository;
+import com.localzero.repository.PostRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 
 @Transactional
 @Service
@@ -20,10 +21,13 @@ import java.util.List;
 public class InitiativeService {
     private final InitiativeRepository initiativeRepository;
     private final InitiativeMemberRepository initiativeMemberRepository;
+    private final PostRepository postRepository;
 
-    public InitiativeService(InitiativeRepository initiativeRepository, InitiativeMemberRepository initiativeMemberRepository) {
+    public InitiativeService(InitiativeRepository initiativeRepository, InitiativeMemberRepository initiativeMemberRepository,
+                            PostRepository postRepository) {
         this.initiativeRepository = initiativeRepository;
         this.initiativeMemberRepository = initiativeMemberRepository;
+        this.postRepository = postRepository;
     }
 
     public Initiative createInitiative(CreateInitiativeRequest initiativeRequest, User user) {
@@ -71,5 +75,12 @@ public class InitiativeService {
         initiative.getParticipants().add(initiativeMember);
 
         return initiative;
+    }
+
+    public Set<Comment> getCommentsForPost(Long initiativeId, Long postId, User user) {
+        log.info("Fetching comments for post ID: {} in initiative ID: {}", postId, initiativeId);
+        Post post = postRepository.findAccessibleById(postId, user, user.getLocation())
+                .orElseThrow(() -> new PostNotFoundException(postId));
+        return post.getComments();
     }
 }

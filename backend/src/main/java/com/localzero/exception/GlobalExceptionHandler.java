@@ -111,4 +111,16 @@ public class GlobalExceptionHandler {
         problemDetail.setType(URI.create("/problems/unsupported-file-type"));
         return problemDetail;
     }
+
+    @ExceptionHandler(PostNotFoundException.class)
+    public ProblemDetail handlePostNotFoundException(PostNotFoundException ex) {
+        log.warn("Post access attempt failed: {}", ex.getMessage());
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail
+                (HttpStatus.NOT_FOUND,
+                "The requested post could not be found or is not accessible"
+        );
+        problemDetail.setTitle("Post Not Found");
+        problemDetail.setType(URI.create("/problems/post-not-found"));
+        return problemDetail;
+    }
 }

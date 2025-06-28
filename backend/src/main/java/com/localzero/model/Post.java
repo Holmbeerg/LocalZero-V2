@@ -47,6 +47,10 @@ public class Post {
     @Builder.Default
     private Set<Like> likes = new HashSet<>();
 
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private Set<Comment> comments = new HashSet<>();
+
     @Formula("(SELECT COUNT(*) FROM comments c WHERE c.post_id = post_id)")
     private int commentCount;
 
@@ -64,6 +68,15 @@ public class Post {
     public void addLike(Like like) {
         likes.add(like);
         like.setPost(this);
+    }
+
+    public void addComment(Comment comment) {
+        comments.add(comment);
+        comment.setPost(this);
+    }
+
+    public void removeComment(Comment comment) {
+        comments.remove(comment);
     }
 
     public void removeLike(Like like) {

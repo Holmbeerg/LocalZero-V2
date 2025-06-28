@@ -1,8 +1,10 @@
 package com.localzero.controller;
 
 import com.localzero.dto.*;
+import com.localzero.mapper.CommentMapper;
 import com.localzero.mapper.InitiativeMapper;
 import com.localzero.mapper.PostMapper;
+import com.localzero.model.Comment;
 import com.localzero.model.Initiative;
 import com.localzero.model.Post;
 import com.localzero.model.User;
@@ -18,6 +20,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/initiatives")
@@ -29,20 +32,24 @@ public class InitiativesController {
     private final UserService userService;
     private final PostService postService;
     private final PostMapper postMapper;
+    private final CommentMapper commentMapper;
 
 
-    public InitiativesController(InitiativeService initiativeService, InitiativeMapper initiativeMapper, UserService userService, PostService postService, PostMapper postMapper) {
+    public InitiativesController(InitiativeService initiativeService, InitiativeMapper initiativeMapper,
+                                 UserService userService, PostService postService, PostMapper postMapper
+                                , CommentMapper commentMapper) {
         this.initiativeService = initiativeService;
         this.initiativeMapper = initiativeMapper;
         this.userService = userService;
         this.postService = postService;
         this.postMapper = postMapper;
+        this.commentMapper = commentMapper;
     }
 
     @PostMapping
     public ResponseEntity<InitiativeSummaryResponse> createInitiative(@Valid @RequestBody CreateInitiativeRequest initiativeRequest,
                                                                       @AuthenticationPrincipal
-                                                                   UserDetails userDetails) {
+                                                                      UserDetails userDetails) {
 
         User user = userService.getUserByEmail(userDetails.getUsername());
         Initiative initiative = initiativeService.createInitiative(initiativeRequest, user);
@@ -105,6 +112,20 @@ public class InitiativesController {
         User user = userService.getUserByEmail(userDetails.getUsername());
         Post post = postService.toggleLike(id, postId, user);
         return ResponseEntity.ok(postMapper.toPostSummaryResponse(post, user));
+    }
+
+    @GetMapping("/{id}/posts/{postId}/comments")
+    public ResponseEntity<List<CommentResponse>> getCommentsForPost(@PathVariable Long id,
+                                                                    @PathVariable Long postId,
+                                                                    @AuthenticationPrincipal UserDetails userDetails) {
+        User user = userService.getUserByEmail(userDetails.getUsername());
+        Set<Comment> comments = initiativeService.getCommentsForPost(id, postId, user);
+        log.info("Retrieved comments for post ID: {} in initiative ID: {} for user: {}", postId, id, userDetails.getUsername());
+        List<CommentResponse> commentResponse = comments.stream()
+                .map(commentMapper::toResponse)
+                .toList();
+
+        return ResponseEntity.ok(commentResponse);
     }
 }
 
