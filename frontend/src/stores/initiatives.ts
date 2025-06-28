@@ -1,8 +1,9 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { readonly, ref } from 'vue'
 import type { CreateInitiativeRequest, Initiative, InitiativeDetail } from '@/types/initiative'
 import { initiativesApi } from '@/services/apiService'
 import type { CreatePostRequest } from '@/types/post.ts'
+import type { CommentResponse } from '@/types/comment.ts'
 
 export const useInitiativesStore = defineStore('initiatives', () => {
   const initiatives = ref<Initiative[]>([])
@@ -12,6 +13,9 @@ export const useInitiativesStore = defineStore('initiatives', () => {
 
   const currentInitiative = ref<InitiativeDetail | null>(null)
   const detailLoading = ref(false)
+
+  const postComments = ref<Record<number, CommentResponse[]>>({})
+  const commentsLoading = ref<Record<number, boolean>>({})
 
   const fetchInitiatives = async () => {
     if (isLoaded.value) return
@@ -113,6 +117,29 @@ export const useInitiativesStore = defineStore('initiatives', () => {
     }
   }
 
+  const getCommentsForPost = async (initiativeId: number, postId: number) => {
+    if (postComments.value[postId]?.length) {
+      return postComments.value[postId]
+    }
+
+    if (commentsLoading.value[postId]) {
+      return postComments.value[postId] || []
+    }
+
+    error.value = null
+    commentsLoading.value[postId] = true
+    try {
+      const comments = await initiativesApi.getCommentsForPost(initiativeId, postId)
+      postComments.value[postId] = comments
+      return comments
+    } catch (err) {
+      error.value = 'Failed to load comments'
+      console.error('Error fetching comments for post:', err)
+    } finally {
+      commentsLoading.value[postId] = false
+    }
+  }
+
   const addInitiativeToStore = (initiative: Initiative) => {
     initiatives.value.push(initiative)
     initiatives.value.sort(
@@ -125,6 +152,13 @@ export const useInitiativesStore = defineStore('initiatives', () => {
     loading.value = false
     error.value = null
     isLoaded.value = false
+  }
+
+  const addCommentToPost = (postId: number, comment: CommentResponse) => {
+    if (!postComments.value[postId]) {
+      postComments.value[postId] = []
+    }
+    postComments.value[postId].push(comment)
   }
 
   return {
@@ -140,5 +174,8 @@ export const useInitiativesStore = defineStore('initiatives', () => {
     joinInitiative,
     createPost,
     likePost,
+    getCommentsForPost,
+    postComments: readonly(postComments),
+    commentsLoading,
   }
 })

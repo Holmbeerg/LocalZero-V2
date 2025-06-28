@@ -3,24 +3,18 @@ import type { PostSummaryResponse } from '@/types/post.ts'
 import { MessageCircleMore, Heart, UserIcon } from 'lucide-vue-next'
 import { useInitiativesStore } from '@/stores/initiatives.ts'
 import { useRoute } from 'vue-router'
+import { ref } from 'vue'
+import CommentList from '@/components/initiative/post/CommentList.vue'
+import { formatRelativeTime } from '@/utils/dateUtils'
 
 const props = defineProps<{ post: PostSummaryResponse }>()
 const initiativesStore = useInitiativesStore()
 const route = useRoute()
+const initiativeId = Number(route.params.id)
 
-function formatDate(dateString: string): string {
-  return new Date(dateString).toLocaleDateString('sv-SE', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  })
-}
+const showComments = ref(false)
 
 const handleLike = async () => {
-  const initiativeId = Number(route.params.id)
-
   if (isNaN(initiativeId)) {
     alert('Invalid initiative ID. Please try again.')
     return
@@ -36,7 +30,7 @@ const handleLike = async () => {
 }
 
 const handleComment = () => {
-  console.log('Comment on post:', props.post.id)
+  showComments.value = !showComments.value
 }
 </script>
 
@@ -54,7 +48,7 @@ const handleComment = () => {
         </h4>
         <span class="text-xs text-gray-500">•</span>
         <time class="text-xs text-gray-500" :datetime="post.createdAt">
-          {{ formatDate(post.createdAt) }}
+          {{ formatRelativeTime(post.createdAt) }}
         </time>
       </div>
     </div>
@@ -117,6 +111,11 @@ const handleComment = () => {
           <span class="text-sm">{{ post.commentCount }}</span>
         </button>
       </div>
+    </div>
+
+    <!-- Comments Section -->
+    <div v-if="showComments" class="mt-4 pt-4 border-t border-gray-100">
+      <CommentList :initiativeId="initiativeId" :postId="post.id" />
     </div>
   </div>
 </template>

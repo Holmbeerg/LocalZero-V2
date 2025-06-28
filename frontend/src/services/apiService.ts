@@ -5,6 +5,7 @@ import type { EcoAction, LogEcoActionRequest } from '@/types/ecoAction.ts'
 import type { CreateInitiativeRequest, Initiative, InitiativeDetail } from '@/types/initiative.ts'
 import type { InitiateUploadRequest, PresignedUploadResponse } from '@/types/upload.ts'
 import type { CreatePostRequest, PostSummaryResponse } from '@/types/post.ts'
+import type { CommentResponse } from '@/types/comment.ts'
 
 const API_BASE_URL = 'http://localhost:8080/api'
 
@@ -149,6 +150,18 @@ export const initiativesApi = {
       return await apiClient.post(`/initiatives/${initiativeId}/posts/${postId}/like`)
     } catch (error) {
       console.error(`Failed to like post with ID ${postId} in initiative ${initiativeId}:`, error)
+      throw error
+    }
+  },
+
+  async getCommentsForPost(initiativeId: number, postId: number): Promise<CommentResponse[]> {
+    try {
+      return await apiClient.get(`/initiatives/${initiativeId}/posts/${postId}/comments`)
+    } catch (error) {
+      console.error(
+        `Failed to fetch comments for post ${postId} in initiative ${initiativeId}:`,
+        error,
+      )
       throw error
     }
   },
