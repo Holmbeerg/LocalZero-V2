@@ -1,17 +1,9 @@
 <script setup lang="ts">
 import { formatRelativeTime } from '@/utils/dateUtils'
-
-interface Comment {
-  id: number
-  text: string
-  createdAt: string
-  author: {
-    name: string
-  }
-}
+import type { CommentResponse } from '@/types/comment.ts'
 
 defineProps<{
-  comment: Comment
+  comment: CommentResponse
 }>()
 </script>
 
