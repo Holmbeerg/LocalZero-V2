@@ -167,28 +167,28 @@ INSERT INTO posts (initiative_id, author_id, text, created_at) VALUES
 -- Insert comments on posts
 INSERT INTO comments (post_id, author_id, text, created_at) VALUES
 -- Comments on tool library posts
-(1, 4, 'This is such a great idea! How do we reserve tools in advance?', '2024-03-02 12:15:00+01'),
-(1, 9, 'Perfect timing - I need to hang some shelves next week. Will check out the drill!', '2024-03-02 14:45:00+01'),
-(2, 1, 'So glad it worked well for you Lars! That''s exactly what we hoped for.', '2024-03-15 16:20:00+01'),
-(3, 1, 'Not yet, but I''ll ask around. Maybe we can add one to our collection if there''s demand.', '2024-04-22 18:30:00+02'),
-(3, 11, 'I might be able to lend mine occasionally. Send me a message with your timeline.', '2024-04-23 09:15:00+02'),
+(1, 4, 'This is such a great idea! How do we reserve tools in advance?', '2025-03-02 12:15:00+01'),
+(1, 9, 'Perfect timing - I need to hang some shelves next week. Will check out the drill!', '2025-03-02 14:45:00+01'),
+(2, 1, 'So glad it worked well for you Lars! That''s exactly what we hoped for.', '2025-03-15 16:20:00+01'),
+(3, 1, 'Not yet, but I''ll ask around. Maybe we can add one to our collection if there''s demand.', '2025-04-22 18:30:00+02'),
+(3, 11, 'I might be able to lend mine occasionally. Send me a message with your timeline.', '2025-04-23 09:15:00+02'),
 
 -- Comments on seed swap posts
-(4, 7, 'I''ll bring pepper and herb seeds! Maybe some flower seeds too.', '2024-04-13 15:30:00+02'),
-(4, 10, 'Planning to bring bean and pea seeds. Can''t wait for the swap!', '2024-04-13 17:45:00+02'),
-(5, 2, 'Wonderful! Those cucumber varieties are really special. Happy growing!', '2024-04-16 10:20:00+02'),
-(6, 7, 'I have some strawberry runners that might work! Will bring them to the swap.', '2024-05-01 21:30:00+02'),
+(4, 7, 'I''ll bring pepper and herb seeds! Maybe some flower seeds too.', '2025-04-13 15:30:00+02'),
+(4, 10, 'Planning to bring bean and pea seeds. Can''t wait for the swap!', '2025-04-13 17:45:00+02'),
+(5, 2, 'Wonderful! Those cucumber varieties are really special. Happy growing!', '2025-04-16 10:20:00+02'),
+(6, 7, 'I have some strawberry runners that might work! Will bring them to the swap.', '2025-05-01 21:30:00+02'),
 
 -- Comments on garden posts
-(7, 8, 'Such a productive day! The beds look amazing. See everyone Saturday!', '2024-03-25 19:45:00+01'),
-(7, 11, 'Great organization Maja. The tool sharing system is working perfectly too.', '2024-03-25 20:10:00+01'),
+(7, 8, 'Such a productive day! The beds look amazing. See everyone Saturday!', '2025-03-25 19:45:00+01'),
+(7, 11, 'Great organization Maja. The tool sharing system is working perfectly too.', '2025-03-25 20:10:00+01'),
 (8, 3, 'Nature is amazing! Wait until you see the tomatoes - they''re going to be incredible.', '2024-04-08 13:15:00+02'),
 (9, 8, 'Thanks for the reminder Karin! I watered yesterday evening and checked off my slot.', '2024-05-12 15:20:00+02'),
 
 -- Comments on other posts
-(10, 6, 'Amazing results! This community really cares about the environment.', '2024-05-05 17:25:00+02'),
-(11, 1, 'Textile collection is planned for July. Will post details once we confirm the date.', '2024-05-08 14:40:00+02'),
-(12, 9, 'I''d love to join if you still have space! I need some new curtains.', '2024-04-18 21:45:00+02'),
+(10, 6, 'Amazing results! This community really cares about the environment.', '2025-06-05 17:25:00+02'),
+(11, 1, 'Textile collection is planned for July. Will post details once we confirm the date.', '2025-06-08 14:40:00+02'),
+(12, 9, 'I''d love to join if you still have space! I need some new curtains.', '2022-04-18 21:45:00+02'),
 (13, 5, 'That sounds perfect for my commute! Will send you a message tomorrow.', '2024-05-15 08:30:00+02'),
 (15, 8, 'What a great way to combine exercise with helping the environment!', '2024-05-25 18:20:00+02');
 
