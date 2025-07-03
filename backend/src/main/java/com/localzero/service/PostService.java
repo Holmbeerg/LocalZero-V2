@@ -2,6 +2,7 @@ package com.localzero.service;
 
 import com.localzero.dto.CreatePostRequest;
 import com.localzero.exception.InitiativeNotFoundException;
+import com.localzero.exception.PostNotFoundException;
 import com.localzero.model.*;
 import com.localzero.repository.InitiativeRepository;
 import com.localzero.repository.LikeRepository;
@@ -65,7 +66,11 @@ public class PostService {
         initiativeRepository.findById(initiativeId)
                 .orElseThrow(() -> new InitiativeNotFoundException(initiativeId));
         Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new RuntimeException("Post not found with id: " + postId));
+                .orElseThrow(() -> new PostNotFoundException(postId));
+
+        if (!post.getInitiative().getId().equals(initiativeId)) {
+            throw new PostNotFoundException(postId);
+        }
 
         Optional<Like> existingLikeOpt = likeRepository.findByPostAndUser(post, user);
 
