@@ -5,7 +5,6 @@ import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
 
-
 public record CreatePostRequest(
         @NotNull long initiativeId,
         @NotBlank String text,

@@ -10,7 +10,7 @@ import java.util.Base64;
 import java.util.Date;
 
 // https://github.com/jwtk/jjwt library for JWT creation and validation
-// TODO: could add refresh token functionality etc? or just use authorization server? store in http-only cookie with SameSite?
+// TODO: could add refresh token functionality etc? or just use authorization server?
 @Service
 public class JWTService {
 

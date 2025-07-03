@@ -23,18 +23,27 @@ const toggleNotifications = () => {
 <template>
   <header class="bg-white shadow-md p-4 flex justify-between items-center">
     <div class="flex items-center space-x-4">
-      <router-link to="/initiatives" class="text-lg font-bold text-gray-800 hover:text-blue-600">
+      <router-link
+        to="/initiatives"
+        class="text-lg font-bold text-gray-800 hover:text-blue-600 transition-colors duration-200"
+      >
         Initiatives
       </router-link>
     </div>
 
     <!-- right side -->
     <div class="flex items-center space-x-4">
-      <router-link to="/profile" class="text-gray-800 hover:text-blue-600">
+      <router-link
+        to="/profile"
+        class="text-gray-800 hover:text-blue-600 transition-colors duration-200"
+      >
         <span class="font-semibold">{{ user?.name || 'Profile' }}</span>
       </router-link>
 
-      <router-link to="/messages" class="text-gray-800 hover:text-blue-600">
+      <router-link
+        to="/messages"
+        class="text-gray-800 hover:text-blue-600 transition-colors duration-200"
+      >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
@@ -59,7 +68,7 @@ const toggleNotifications = () => {
         viewBox="0 0 24 24"
         stroke-width="1.5"
         stroke="currentColor"
-        class="size-6 cursor-pointer hover:text-blue-600"
+        class="size-6 cursor-pointer hover:text-blue-600 transition-colors duration-200"
       >
         <path
           stroke-linecap="round"
@@ -68,7 +77,12 @@ const toggleNotifications = () => {
         />
       </svg>
 
-      <button @click="logout" class="hover:text-red-800 cursor-pointer">Logout</button>
+      <button
+        @click="logout"
+        class="hover:text-red-800 cursor-pointer transition-colors duration-200"
+      >
+        Logout
+      </button>
     </div>
   </header>
 </template>
