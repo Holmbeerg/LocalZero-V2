@@ -5,7 +5,7 @@ import type { EcoAction, LogEcoActionRequest } from '@/types/ecoAction.ts'
 import type { CreateInitiativeRequest, Initiative, InitiativeDetail } from '@/types/initiative.ts'
 import type { InitiateUploadRequest, PresignedUploadResponse } from '@/types/upload.ts'
 import type { CreatePostRequest, PostSummaryResponse } from '@/types/post.ts'
-import type { CommentResponse } from '@/types/comment.ts'
+import type { CommentResponse, CreateCommentRequest } from '@/types/comment.ts'
 
 const API_BASE_URL = 'http://localhost:8080/api'
 
@@ -165,6 +165,18 @@ export const initiativesApi = {
       throw error
     }
   },
+
+  async createCommentForPost(initiativeId: number, postId: number, comment: CreateCommentRequest): Promise<CommentResponse> {
+    try {
+      return await apiClient.post(`/initiatives/${initiativeId}/posts/${postId}/comments`, comment)
+    }catch (error) {
+      console.error(
+        `Failed to create comment for post ${postId} in initiative ${initiativeId}:`,
+        error
+      )
+      throw error
+    }
+  }
 }
 
 // Upload API endpoints
