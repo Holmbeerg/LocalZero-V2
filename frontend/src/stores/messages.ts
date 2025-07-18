@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import type { Message, MessageUserSummary } from '@/types/message.ts'
+import type { Message } from '@/types/message.ts'
+import type { UserSummary } from '@/types/user.ts'
 import { messagesApi } from '@/services/apiService'
 
 export const useMessagesStore = defineStore('messages', () => {
@@ -8,7 +9,7 @@ export const useMessagesStore = defineStore('messages', () => {
   const loading = ref(false)
   const error = ref<string | null>(null)
   const isLoaded = ref(false)
-  const currentReceiver = ref<MessageUserSummary | null>(null)
+  const currentReceiver = ref<UserSummary | null>(null)
 
   const fetchMessages = async () => {
     if (isLoaded.value) return
@@ -28,12 +29,12 @@ export const useMessagesStore = defineStore('messages', () => {
 
 
   // TODO: move out of store?
-  const sendMessage = async (email: string, request: Message) => {
+  const sendMessage = async (receiverId: number, request: Message) => {
     error.value = null
     try {
       // caches the current receiver for repeated messaging
-      if (!currentReceiver.value || !(email === currentReceiver.value.email)) {
-        currentReceiver.value = await messagesApi.getUserFromEmail(email)
+      if (!currentReceiver.value || !(receiverId === currentReceiver.value.id)) {
+        currentReceiver.value = await messagesApi.getUser(receiverId)
         if (!currentReceiver.value) return false
       }
       request.receiver = currentReceiver.value

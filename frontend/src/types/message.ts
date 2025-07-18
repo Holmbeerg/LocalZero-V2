@@ -1,13 +1,8 @@
 import type { UserSummary } from '@/types/user.ts'
 
-export interface MessageUserSummary extends UserSummary {
-  email: string
-}
-
 export interface Message {
-  sender: MessageUserSummary
-  receiver: MessageUserSummary
+  sender: UserSummary
+  receiver: UserSummary
   text: string
-  messageContent: string
   createdAt: string
 }
