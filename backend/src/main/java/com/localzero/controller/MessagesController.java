@@ -60,7 +60,7 @@ public class MessagesController {
     }
 
     @PostMapping("/send")
-    public ResponseEntity<Message> sendMessage(@Valid @RequestBody MessageResponse messageResponse,
+    public ResponseEntity<Message> sendMessage(@Valid @RequestBody MessageRequest messageRequest,
                                                                     @AuthenticationPrincipal UserDetails userDetails) {
 
         User user = userService.getUserByEmail(userDetails.getUsername());

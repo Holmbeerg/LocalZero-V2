@@ -1,12 +1,12 @@
 import axios from 'axios'
 import type { AxiosInstance, AxiosResponse } from 'axios'
-import type { LoginCredentials, RegisterData, User, UserSummary } from '@/types/user.ts'
+import type { LoginCredentials, RegisterData, User } from '@/types/user.ts'
 import type { EcoAction, LogEcoActionRequest } from '@/types/ecoAction.ts'
 import type { CreateInitiativeRequest, Initiative, InitiativeDetail } from '@/types/initiative.ts'
 import type { InitiateUploadRequest, PresignedUploadResponse } from '@/types/upload.ts'
 import type { CreatePostRequest, PostSummaryResponse } from '@/types/post.ts'
 import type { CommentResponse } from '@/types/comment.ts'
-import type { Message } from '@/types/message.ts'
+import type { Message, MessageRequest } from '@/types/message.ts'
 
 const API_BASE_URL = 'http://localhost:8080/api'
 
@@ -214,19 +214,10 @@ export const messagesApi = {
   },
    */
 
-  async getUser(id: number): Promise<UserSummary> {
-    try {
-      return await apiClient.get(`/messages/find${id}`)
-    } catch (error) {
-      console.error('Failed to send find user request:', error)
-      throw error
-    }
-  },
-
   // TODO: return status on sent message?
-  async postMessage(message: Message) {
+  async postMessage(messageRequest: MessageRequest) {
     try {
-      return await apiClient.post(`/messages/send`, message)
+      return await apiClient.post(`/messages/send`, messageRequest)
     } catch (error) {
       console.error('Failed to send message:', error)
       throw error

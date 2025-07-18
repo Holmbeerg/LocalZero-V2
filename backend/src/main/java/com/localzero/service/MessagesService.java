@@ -1,13 +1,8 @@
 package com.localzero.service;
 
-import com.localzero.dto.CreateInitiativeRequest;
-import com.localzero.exception.AlreadyInitiativeMemberException;
-import com.localzero.exception.InitiativeNotFoundException;
-import com.localzero.exception.PostNotFoundException;
+import com.localzero.exception.CannotSendMessageToSelfException;
 import com.localzero.model.*;
-import com.localzero.repository.InitiativeMemberRepository;
-import com.localzero.repository.InitiativeRepository;
-import com.localzero.repository.PostRepository;
+import com.localzero.repository.MessagesRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -21,7 +16,7 @@ import java.util.Set;
 public class MessagesService {
     private final MessagesRepository messagesRepository;
 
-    public MessagesService(MessageRepository messagesRepository) {
+    public MessagesService(MessagesRepository messagesRepository) {
         this.messagesRepository = messagesRepository;
     }
 
@@ -30,17 +25,14 @@ public class MessagesService {
         return messagesRepository.getUserMessages(user.getUserId());
     }
 
-    public Initiative sendMessage(Long initiativeId, User user) {
-        log.info("User {} is joining initiative with ID: {}", user.getEmail(), initiativeId);
-        if (initiativeRepository.isMember(initiativeId, user)) {
-            log.warn("User {} is already a member of initiative with ID: {}", user.getEmail(), initiativeId);
-            throw new AlreadyInitiativeMemberException("User is already a member of this initiative");
+    public Message sendMessage(Message message) {
+        log.info("User {} is sending message to user: {}", message.getSender(), message.getReceiver());
+        if (message.getSender().equals(message.getReceiver())) {
+            log.warn("User {} tried to send message to self", message.getSender());
+            throw new CannotSendMessageToSelfException("User can't send message to self");
         }
-        Initiative initiative = getInitiativeByIdIfAccessible(initiativeId, user);
-        InitiativeMember initiativeMember = new InitiativeMember(initiative, user);
-        initiativeMemberRepository.save(initiativeMember);
-        initiative.getParticipants().add(initiativeMember);
+        messagesRepository.insertMessage(message);
 
-        return initiative;
+        return message;
     }
 }

@@ -35,7 +35,6 @@ public class Message {
     @Column(name = "text", nullable = false)
     private String text;
 
-    @NotNull
     @Column(name = "created_at", nullable = false, updatable = false)
     @CreationTimestamp
     private LocalDateTime createdAt;
