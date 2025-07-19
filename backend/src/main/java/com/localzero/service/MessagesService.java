@@ -19,16 +19,14 @@ import java.util.List;
 public class MessagesService {
     private final MessagesRepository messagesRepository;
     private final UserRepository userRepository;
-    private final MessageMapper messageMapper;
 
     public MessagesService(MessagesRepository messagesRepository, UserRepository userRepository, MessageMapper messageMapper) {
         this.messagesRepository = messagesRepository;
         this.userRepository = userRepository;
-        this.messageMapper = messageMapper;
     }
 
     public List<Message> getUserMessages(User user) {
-        log.info("Fetching all available messages for user ID {}", user.getEmail());
+        log.info("Fetching all available messages for user {}", user.getEmail());
         return messagesRepository.findAllByReceiver(user);
     }
 

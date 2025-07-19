@@ -30,12 +30,15 @@ const handleSubmit = async () => {
 
   console.log('Submitting message...')
 
-    const message: MessageRequest = {
-      receiverEmail: receiver.value,
-      text: content.value
-    }
+  const message: MessageRequest = {
+    receiverEmail: receiver.value,
+    text: content.value,
+  }
 
-    await sendMessage(message);
+  receiver.value = ''
+  content.value = ''
+
+  await sendMessage(message)
 }
 </script>
 

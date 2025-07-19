@@ -55,25 +55,31 @@ public class MessagesController {
         String text = messageRequest.text();
 
         if (senderEmail == null || senderEmail.isBlank()) {
+            log.info("Message failed to send to receiver user {}, invalid sender email", receiverEmail);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Sender email is required");
         }
 
         if (receiverEmail == null || receiverEmail.isBlank()) {
+            log.info("Message failed to send to receiver user {}, invalid receiver email", receiverEmail);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Receiver email is required");
         }
 
         if (text == null || text.isBlank()) {
+            log.info("Message failed to send to receiver user {}, missing text content", receiverEmail);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Text content is required");
         }
 
         try {
             messagesService.sendUserMessage(messageRequest, senderEmail);
+            log.info("Message sent to receiver user {}", receiverEmail);
             return ResponseEntity.
                     status(HttpStatus.CREATED).
                     body("Message sent successfully");
         } catch (UserNotFoundException | CannotSendMessageToSelfException se) {
+            log.info("Message failed to send to receiver user {}, invalid request", receiverEmail);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(se.getMessage());
         } catch (Exception e) {
+            log.info("Message failed to send to receiver user {}", receiverEmail);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Message failed to send");
         }
     }

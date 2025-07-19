@@ -10,8 +10,7 @@ defineProps<{
 <template>
   <div class="bg-gray-50 rounded-lg p-3">
     <div class="flex items-start mb-2 space-x-2">
-      <span class="font-medium text-sm">{{ message.sender.name }}</span>
-      <span class="font-medium text-sm">{{ message.sender.email }}</span>
+      <span class="font-medium text-sm">{{ message.sender.name + " (" + message.sender.email + ")"}}</span>
       <span class="text-xs text-gray-500">•</span>
       <time class="text-xs text-gray-400" :datetime="message.createdAt">
         {{ formatRelativeTime(message.createdAt) }}

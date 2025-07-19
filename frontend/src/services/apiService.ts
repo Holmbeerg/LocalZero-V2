@@ -6,7 +6,7 @@ import type { CreateInitiativeRequest, Initiative, InitiativeDetail } from '@/ty
 import type { InitiateUploadRequest, PresignedUploadResponse } from '@/types/upload.ts'
 import type { CreatePostRequest, PostSummaryResponse } from '@/types/post.ts'
 import type { CommentResponse } from '@/types/comment.ts'
-import type { Message, MessageRequest } from '@/types/message.ts'
+import type { MessageRequest, MessageResponse } from '@/types/message.ts'
 
 const API_BASE_URL = 'http://localhost:8080/api'
 
@@ -194,7 +194,7 @@ export const uploadApi = {
 // Messages API endpoints
 export const messagesApi = {
   // currently gets all messages at once instead of only a page at a time
-  async getMessages(): Promise<Message[]> {
+  async getMessages(): Promise<MessageResponse[]> {
     try {
       return await apiClient.get(`/messages`)
     } catch (error) {
@@ -204,7 +204,7 @@ export const messagesApi = {
   },
 
   /*
-  async getMessagesByPage(page: number): Promise<Message[]> {
+  async getMessagesByPage(page: number): Promise<MessageResponse[]> {
     try {
       return await apiClient.get(`/messages/${page}`)
     } catch (error) {
@@ -214,10 +214,9 @@ export const messagesApi = {
   },
    */
 
-  // TODO: return status on sent message?
   async postMessage(messageRequest: MessageRequest) {
     try {
-      return await apiClient.post(`/messages/send`, messageRequest)
+      return await apiClient.post(`/messages`, messageRequest)
     } catch (error) {
       console.error('Failed to send message:', error)
       throw error
