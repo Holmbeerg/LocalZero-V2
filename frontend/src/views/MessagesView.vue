@@ -9,7 +9,7 @@ import { onMounted } from 'vue'
 
 const { user } = storeToRefs(useAuthStore())
 const messagesStore = useMessagesStore()
-const { messages, loading, error } = storeToRefs(useMessagesStore())
+const { userMessages, messagesLoading, error } = storeToRefs(useMessagesStore())
 
 onMounted(() => {
   messagesStore.fetchMessages()
@@ -18,7 +18,7 @@ onMounted(() => {
 
 <template>
   <div class="min-h-screen bg-gray-50 py-20 px-6">
-    <div v-if="loading" class="text-center py-8 text-gray-500">Loading messages...</div>
+    <div v-if="messagesLoading" class="text-center py-8 text-gray-500">Loading messages...</div>
     <div v-else-if="error" class="bg-red-100 text-red-700 text-center py-4 rounded mb-4">
       {{ error }}
     </div>
@@ -29,11 +29,11 @@ onMounted(() => {
       </div>
       <!-- Middle Column - Messages -->
       <div class="lg:col-span-6">
-        <MessageList :messages="messages" />
+        <MessageList :messages="userMessages" />
       </div>
       <!-- Right Column - Send Message -->
       <div class="lg:col-span-3">
-        <NewMessageForm :user="user" />
+        <NewMessageForm />
       </div>
     </div>
   </div>

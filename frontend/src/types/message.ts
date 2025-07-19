@@ -1,7 +1,7 @@
 import type { UserMessageSummary } from '@/types/user.ts'
 
 export interface MessageResponse {
-  id: bigint
+  id: number
   sender: UserMessageSummary
   receiver: UserMessageSummary
   text: string

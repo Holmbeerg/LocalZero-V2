@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { readonly, ref } from 'vue'
 import type { MessageResponse } from '@/types/message.ts'
 import { messagesApi } from '@/services/apiService'
 
@@ -33,8 +33,8 @@ export const useMessagesStore = defineStore('messages', () => {
   }
 
   return {
-    messages: userMessages,
-    loading: messagesLoading,
+    userMessages: readonly(userMessages),
+    messagesLoading: messagesLoading,
     error,
     fetchMessages,
     resetMessages,

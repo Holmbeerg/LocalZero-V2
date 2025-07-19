@@ -47,7 +47,7 @@ public class MessagesController {
         return ResponseEntity.ok(responses);
     }
 
-    @PostMapping("/send")
+    @PostMapping
     public ResponseEntity<String> postMessage(@Valid @RequestBody MessageRequest messageRequest,
                                                                     @AuthenticationPrincipal UserDetails userDetails) {
         String senderEmail = userDetails.getUsername();
