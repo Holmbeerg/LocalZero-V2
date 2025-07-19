@@ -1,14 +1,11 @@
 package com.localzero.controller;
 
 import com.localzero.dto.*;
-import com.localzero.mapper.CommentMapper;
-import com.localzero.mapper.InitiativeMapper;
+import com.localzero.exception.CannotSendMessageToSelfException;
+import com.localzero.exception.UserNotFoundException;
 import com.localzero.mapper.MessageMapper;
-import com.localzero.mapper.PostMapper;
 import com.localzero.model.*;
-import com.localzero.service.InitiativeService;
 import com.localzero.service.MessagesService;
-import com.localzero.service.PostService;
 import com.localzero.service.UserService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +16,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Set;
 
 @RestController
 @RequestMapping("/api/messages")
@@ -38,6 +34,7 @@ public class MessagesController {
         this.userService = userService;
     }
 
+    // for now automatically gets all messages received by current user
     @GetMapping
     public ResponseEntity<List<MessageResponse>> getAllMessages(@AuthenticationPrincipal UserDetails userDetails) {
         User user = userService.getUserByEmail(userDetails.getUsername());
@@ -50,26 +47,35 @@ public class MessagesController {
         return ResponseEntity.ok(responses);
     }
 
-    @GetMapping("/find/{id}")
-    public ResponseEntity<UserSummaryResponse> getUserById(@PathVariable Long id,
-                                                                      @AuthenticationPrincipal UserDetails userDetails) {
-        UserSummaryResponse userSummary = userService.getUserSummaryById(id);
-
-        log.info("Retrieved user {} for user {} by ID: {}", userSummary.name(), userDetails.getUsername(), id);
-        return ResponseEntity.ok(userSummary);
-    }
-
     @PostMapping("/send")
-    public ResponseEntity<Message> sendMessage(@Valid @RequestBody MessageRequest messageRequest,
+    public ResponseEntity<String> postMessage(@Valid @RequestBody MessageRequest messageRequest,
                                                                     @AuthenticationPrincipal UserDetails userDetails) {
+        String senderEmail = userDetails.getUsername();
+        String receiverEmail = messageRequest.receiverEmail();
+        String text = messageRequest.text();
 
-        User user = userService.getUserByEmail(userDetails.getUsername());
-        Initiative initiative = initiativeService.joinInitiative(id, user);
-        log.info("User: {} sent message to user with ID: {}", userDetails.getUsername(), id);
-        // TODO: what should this return?
-        return ResponseEntity.
-                status(HttpStatus.CREATED).
-                body(initiativeMapper.toResponse(initiative, user));
+        if (senderEmail == null || senderEmail.isBlank()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Sender email is required");
+        }
+
+        if (receiverEmail == null || receiverEmail.isBlank()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Receiver email is required");
+        }
+
+        if (text == null || text.isBlank()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Text content is required");
+        }
+
+        try {
+            messagesService.sendUserMessage(messageRequest, senderEmail);
+            return ResponseEntity.
+                    status(HttpStatus.CREATED).
+                    body("Message sent successfully");
+        } catch (UserNotFoundException | CannotSendMessageToSelfException se) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(se.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Message failed to send");
+        }
     }
 }
 

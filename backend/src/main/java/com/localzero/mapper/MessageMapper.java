@@ -16,8 +16,8 @@ public class MessageMapper {
     public MessageResponse toResponse(Message message) {
         return MessageResponse.builder()
                 .id(message.getId())
-                .sender(userMapper.toUserSummaryResponse(message.getSender()))
-                .receiver(userMapper.toUserSummaryResponse(message.getReceiver()))
+                .sender(userMapper.toUserMessageSummaryResponse(message.getSender()))
+                .receiver(userMapper.toUserMessageSummaryResponse(message.getReceiver()))
                 .text(message.getText())
                 .createdAt(message.getCreatedAt())
                 .build();

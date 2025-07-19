@@ -1,15 +1,14 @@
-import type { UserSummary } from '@/types/user.ts'
+import type { UserMessageSummary } from '@/types/user.ts'
 
-export interface Message {
+export interface MessageResponse {
   id: bigint
-  sender: UserSummary
-  receiver: UserSummary
+  sender: UserMessageSummary
+  receiver: UserMessageSummary
   text: string
   createdAt: string
 }
 
 export interface MessageRequest {
-  sender: bigint
-  receiver: bigint
+  receiverEmail: string
   text: string
 }

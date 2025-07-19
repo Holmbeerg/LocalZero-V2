@@ -1,11 +1,8 @@
 package com.localzero.mapper;
 
-import com.localzero.dto.InitiativeParticipantResponse;
+import com.localzero.dto.*;
 import com.localzero.model.InitiativeMember;
 import com.localzero.model.User;
-import com.localzero.dto.CreateUserRequest;
-import com.localzero.dto.UserResponse;
-import com.localzero.dto.UserSummaryResponse;
 import org.springframework.stereotype.Component;
 
 // mapper libraries exist for example MapStruct or ModelMapper, but for simplicity we will do it manually
@@ -37,6 +34,14 @@ public class UserMapper {
         return new UserSummaryResponse(
                 user.getUserId(),
                 user.getName()
+        );
+    }
+
+    public UserMessageSummaryResponse toUserMessageSummaryResponse(User user) {
+        return new UserMessageSummaryResponse(
+                user.getUserId(),
+                user.getName(),
+                user.getEmail()
         );
     }
 

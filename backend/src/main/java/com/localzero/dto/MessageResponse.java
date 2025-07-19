@@ -8,8 +8,8 @@ import lombok.Builder;
 @Builder
 public record MessageResponse(
         @NotNull long id,
-        @NotNull UserSummaryResponse sender,
-        @NotNull UserSummaryResponse receiver,
+        @NotNull UserMessageSummaryResponse sender,
+        @NotNull UserMessageSummaryResponse receiver,
         @NotBlank String text,
         @NotNull LocalDateTime createdAt
 ) { }

@@ -52,10 +52,5 @@ public class UserService {
                 .orElseThrow(() -> new UserNotFoundException("User not found with email: " + email));
     }
 
-    public UserSummaryResponse getUserSummaryById(Long id) {
-        return userRepository.findUserSummaryById(id)
-                .orElseThrow(() -> new UserNotFoundException("User not found with id: " + id));
-    }
-
     // should take DTOs as parameters
 }
