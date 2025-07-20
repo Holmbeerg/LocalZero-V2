@@ -6,6 +6,7 @@ import type { CreateInitiativeRequest, Initiative, InitiativeDetail } from '@/ty
 import type { InitiateUploadRequest, PresignedUploadResponse } from '@/types/upload.ts'
 import type { CreatePostRequest, PostSummaryResponse } from '@/types/post.ts'
 import type { CommentResponse } from '@/types/comment.ts'
+import type { NotificationResponse } from '@/types/notifications'
 
 const API_BASE_URL = 'http://localhost:8080/api'
 
@@ -164,6 +165,25 @@ export const initiativesApi = {
       )
       throw error
     }
+  },
+}
+
+//Notifications API endpoints
+export const notificationsAPI = {
+  async getNotifications(): Promise<NotificationResponse[]> {
+    return await apiClient.get(`/notifications`);
+  },
+  
+  async getUnreadCount(): Promise<number> {
+    return await apiClient.get(`/notifications/count`);
+  },
+
+  async deleteNotification(id: number): Promise<void> {
+    return await apiClient.delete(`/notifications/${id}`);
+  },
+
+  async clearAllNotifications(): Promise<void> {
+    return await apiClient.delete(`/notifications`)
   },
 }
 
