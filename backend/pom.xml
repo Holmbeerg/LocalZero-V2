@@ -19,6 +19,9 @@
     <properties>
         <java.version>21</java.version>
         <spring-cloud-aws.version>3.3.0</spring-cloud-aws.version>
+        <flyway.url>jdbc:postgresql://localhost:5432/localzero_db</flyway.url>
+        <flyway.user>localzero</flyway.user>
+        <flyway.password>localzero</flyway.password>
     </properties>
 
     <dependencyManagement>
