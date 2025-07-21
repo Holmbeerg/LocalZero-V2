@@ -128,7 +128,7 @@ public class PostService {
                     Map.of(
                             "post", post,
                             "comment", comment,
-                            "commenter", author
+                            "commentedBy", author
                     ),
                     post.getAuthor()
             );

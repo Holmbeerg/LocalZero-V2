@@ -1,6 +1,7 @@
 package com.localzero.notification;
 
 import com.localzero.model.Comment;
+import com.localzero.model.Notification;
 import com.localzero.model.User;
 import com.localzero.model.enums.NotificationType;
 
@@ -14,28 +15,23 @@ public class CommentReplyNotification extends BaseNotification {
 
     @Override
     protected void validateData() {
-        getRequiredData("parentComment", Comment.class);
-        getRequiredData("reply", Comment.class);
-        getRequiredData("replier", User.class);
+        getRequiredData("originalComment");
+        getRequiredData("reply");
+        getRequiredData("repliedBy");
     }
 
     @Override
-    protected void prepareContent() {
-        Comment parentComment = getRequiredData("parentComment", Comment.class);
-        User replier = getRequiredData("replier", User.class);
+    public Notification create() {
+        Comment originalComment = getRequiredData("originalComment");
+        Comment reply = getRequiredData("reply");
+        User repliedBy = getRequiredData("repliedBy");
 
-        notification.setTitle("New Reply to Your Comment");
-        notification.setMessage(String.format(
-                "%s replied to your comment: %s",
-                replier.getName(),
-                parentComment.getText().length() > 50
-                        ? parentComment.getText().substring(0, 47) + "..."
-                        : parentComment.getText()
-        ));
-    }
-
-    @Override
-    protected void setType() {
+        Notification notification = new Notification();
         notification.setType(NotificationType.COMMENT_REPLY);
+        notification.setTitle("New Reply to Your Comment");
+        notification.setMessage(repliedBy.getName() + " replied to your comment: " + reply.getText());
+        notification.setCreatedBy(repliedBy);
+
+        return notification;
     }
 }

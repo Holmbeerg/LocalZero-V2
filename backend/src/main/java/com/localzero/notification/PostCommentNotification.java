@@ -1,6 +1,7 @@
 package com.localzero.notification;
 
 import com.localzero.model.Comment;
+import com.localzero.model.Notification;
 import com.localzero.model.Post;
 import com.localzero.model.User;
 import com.localzero.model.enums.NotificationType;
@@ -15,28 +16,24 @@ public class PostCommentNotification extends BaseNotification {
 
     @Override
     protected void validateData() {
-        getRequiredData("post", Post.class);
-        getRequiredData("comment", Comment.class);
-        getRequiredData("commenter", User.class);
+        getRequiredData("post");
+        getRequiredData("comment");
+        getRequiredData("commentedBy");
     }
 
     @Override
-    protected void prepareContent() {
-        Post post = getRequiredData("post", Post.class);
-        User commenter = getRequiredData("commenter", User.class);
+    public Notification create() {
+        Post post = getRequiredData("post");
+        Comment comment = getRequiredData("comment");
+        User commentedBy = getRequiredData("commentedBy");
 
-        notification.setTitle("New Comment on Your Post");
-        notification.setMessage(String.format(
-                "%s commented on your post: %s",
-                commenter.getName(),
-                post.getText().length() > 50
-                        ? post.getText().substring(0, 47) + "..."
-                        : post.getText()
-        ));
-    }
-
-    @Override
-    protected void setType() {
+        Notification notification = new Notification();
         notification.setType(NotificationType.POST_COMMENT);
+        notification.setTitle("New Comment on Your Post");
+        notification.setMessage(commentedBy.getName() + " commented: " + comment.getText());
+        notification.setCreatedBy(commentedBy);
+
+        return notification;
     }
+
 }

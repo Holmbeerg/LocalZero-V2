@@ -1,5 +1,6 @@
 package com.localzero.notification;
 
+import com.localzero.model.Notification;
 import com.localzero.model.User;
 import com.localzero.model.enums.NotificationType;
 
@@ -13,25 +14,21 @@ public class MessageNotification extends BaseNotification {
 
     @Override
     protected void validateData() {
-        getRequiredData("sender", User.class);
-        getRequiredData("message", String.class);
+        getRequiredData("message");
+        getRequiredData("sender");
     }
 
     @Override
-    protected void prepareContent() {
-        User sender = getRequiredData("sender", User.class);
-        String message = getRequiredData("message", String.class);
+    public Notification create() {
+        String message = getRequiredData("message");
+        User sender = getRequiredData("sender");
 
-        notification.setTitle("New Message from " + sender.getName());
-        notification.setMessage(
-                message.length() > 100
-                        ? message.substring(0, 97) + "..."
-                        : message
-        );
-    }
-
-    @Override
-    protected void setType() {
+        Notification notification = new Notification();
         notification.setType(NotificationType.NEW_MESSAGE);
+        notification.setTitle("New Message from " + sender.getName());
+        notification.setMessage(message);
+        notification.setCreatedBy(sender);
+
+        return notification;
     }
 }

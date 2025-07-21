@@ -70,7 +70,7 @@ public class InitiativeService {
         if (!recipients.isEmpty()) {
             Map<String, Object> notificationData = new HashMap<>();
             notificationData.put("initiative", initiative);
-            notificationData.put("actor", initiative.getCreator());
+            notificationData.put("createdBy", initiative.getCreator());
 
             notificationService.createAndAssignNotification(
                     NotificationType.NEW_INITIATIVE,
@@ -104,12 +104,12 @@ public class InitiativeService {
 
         if (!initiative.getCreator().equals(user)) {
             notificationService.createAndAssignNotification(
-                NotificationType.NEW_INITIATIVE,
-                Map.of(
-                    "title", "New Member Joined",
-                    "message", String.format("%s has joined your initiative: %s", user.getName(), initiative.getTitle())
-                ),
-                initiative.getCreator()
+                    NotificationType.NEW_INITIATIVE,
+                    Map.of(
+                            "initiative", initiative,
+                            "createdBy", user
+                    ),
+                    initiative.getCreator()
             );
         }
 
