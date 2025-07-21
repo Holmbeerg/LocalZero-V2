@@ -8,29 +8,52 @@ import com.localzero.notification.BaseNotification;
 import com.localzero.notification.NotificationFactory;
 import com.localzero.repository.NotificationRepository;
 import com.localzero.repository.UserNotificationRepository;
+import com.localzero.repository.UserRepository;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Map;
 
 @Service
 public class NotificationService {
+    private static final Logger log = LoggerFactory.getLogger(NotificationService.class);
     private final NotificationRepository notificationRepository;
     private final UserNotificationRepository userNotificationRepository;
     private final NotificationFactory notificationFactory;
+    private final UserRepository userRepository;
 
     public NotificationService(NotificationRepository notificationRepository, UserNotificationRepository userNotificationRepository,
-                               NotificationFactory notificationFactory) {
+                               NotificationFactory notificationFactory, UserRepository userRepository) {
         this.notificationRepository = notificationRepository;
         this.userNotificationRepository = userNotificationRepository;
         this.notificationFactory = notificationFactory;
+        this.userRepository = userRepository;
     }
 
     @Transactional
     public void createAndAssignNotification(NotificationType type, Map<String, Object> data, User recipient) {
         BaseNotification notificationBuilder = notificationFactory.createNotification(type, data);
         Notification notification = notificationBuilder.create();
+
+        String currentUserEmail = SecurityContextHolder.getContext().getAuthentication() != null ?
+                SecurityContextHolder.getContext().getAuthentication().getName() :
+                null;
+
+        if (notification.getCreatedBy() == null && currentUserEmail != null) {
+            try {
+                User currentUser = userRepository.findByEmail(currentUserEmail)
+                        .orElse(null);
+                if (currentUser != null) {
+                    notification.setCreatedBy(currentUser);
+                }
+            } catch (Exception e) {
+                log.warn("Could not find user with email: {}", currentUserEmail, e);
+            }
+        }
 
         notification = notificationRepository.save(notification);
 
@@ -47,7 +70,25 @@ public class NotificationService {
         }
 
         BaseNotification notificationBuilder = notificationFactory.createNotification(type, data);
-        final Notification savedNotification = notificationRepository.save(notificationBuilder.create());
+        final Notification notification = notificationBuilder.create();
+
+        String currentUserEmail = SecurityContextHolder.getContext().getAuthentication() != null ?
+                SecurityContextHolder.getContext().getAuthentication().getName() :
+                null;
+
+        if (notification.getCreatedBy() == null && currentUserEmail != null) {
+            try {
+                User currentUser = userRepository.findByEmail(currentUserEmail)
+                        .orElse(null);
+                if (currentUser != null) {
+                    notification.setCreatedBy(currentUser);
+                }
+            } catch (Exception e) {
+                log.warn("Could not find user with email: {}", currentUserEmail, e);
+            }
+        }
+
+        final Notification savedNotification = notificationRepository.save(notification);
 
         List<UserNotification> userNotifications = recipients.stream()
                 .filter(recipient -> recipient != null && !recipient.equals(savedNotification.getCreatedBy()))
