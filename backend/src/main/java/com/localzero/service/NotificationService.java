@@ -1,5 +1,6 @@
 package com.localzero.service;
 
+import com.localzero.exception.UserNotFoundException;
 import com.localzero.model.Notification;
 import com.localzero.model.User;
 import com.localzero.model.UserNotification;
@@ -43,10 +44,11 @@ public class NotificationService {
                 SecurityContextHolder.getContext().getAuthentication().getName() :
                 null;
 
-        if (notification.getCreatedBy() == null && currentUserEmail != null) {
+        if (/*notification.getCreatedBy() == null && */currentUserEmail != null) {
             try {
+                log.info("Attempting create notification: {}", recipient.getEmail() );
                 User currentUser = userRepository.findByEmail(currentUserEmail)
-                        .orElse(null);
+                        .orElseThrow(() -> new UserNotFoundException("No user found"));
                 if (currentUser != null) {
                     notification.setCreatedBy(currentUser);
                 }
@@ -65,6 +67,7 @@ public class NotificationService {
 
     @Transactional
     public void createAndAssignNotification(NotificationType type, Map<String, Object> data, List<User> recipients) {
+        System.out.println("In createAndAssignNotification");
         if (recipients == null || recipients.isEmpty()) {
             return;
         }
@@ -76,10 +79,11 @@ public class NotificationService {
                 SecurityContextHolder.getContext().getAuthentication().getName() :
                 null;
 
-        if (notification.getCreatedBy() == null && currentUserEmail != null) {
+        if (/*notification.getCreatedBy() == null && */currentUserEmail != null) {
             try {
+                log.info("Attempting create notification: {}", recipients );
                 User currentUser = userRepository.findByEmail(currentUserEmail)
-                        .orElse(null);
+                        .orElseThrow(() -> new UserNotFoundException("User in recipientlist not found"));
                 if (currentUser != null) {
                     notification.setCreatedBy(currentUser);
                 }

@@ -29,6 +29,12 @@ public class NotificationController {
     @GetMapping
     public List<Notification> getUserNotifications(@AuthenticationPrincipal UserDetails userDetails) {
         User user = userService.getUserByEmail(userDetails.getUsername());
+        List<Notification> notifications = notificationService.getUserNotifications(user);
+
+        System.out.println("Printing notifications fetched:");
+        for (Notification notification : notifications){
+            System.out.println(notification);
+        }
         return notificationService.getUserNotifications(user);
     }
 

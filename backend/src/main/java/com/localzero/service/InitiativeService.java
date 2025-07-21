@@ -66,8 +66,10 @@ public class InitiativeService {
         List<User> recipients = usersInArea.stream()
                 .filter(user -> !user.equals(initiative.getCreator()))
                 .toList();
+        System.out.println("Outside if");
 
         if (!recipients.isEmpty()) {
+            System.out.println("Inside if");
             Map<String, Object> notificationData = new HashMap<>();
             notificationData.put("initiative", initiative);
             notificationData.put("createdBy", initiative.getCreator());
@@ -103,6 +105,7 @@ public class InitiativeService {
         initiative.getParticipants().add(initiativeMember);
 
         if (!initiative.getCreator().equals(user)) {
+            System.out.println("Attempting to create new notif");
             notificationService.createAndAssignNotification(
                     NotificationType.NEW_INITIATIVE,
                     Map.of(
