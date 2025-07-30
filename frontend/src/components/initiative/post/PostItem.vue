@@ -6,6 +6,7 @@ import { useRoute } from 'vue-router'
 import { ref } from 'vue'
 import CommentList from '@/components/initiative/post/CommentList.vue'
 import { formatRelativeTime } from '@/utils/dateUtils'
+import NewCommentForm from '@/components/initiative/post/NewCommentForm.vue'
 
 const props = defineProps<{ post: PostSummaryResponse }>()
 const initiativesStore = useInitiativesStore()
@@ -116,6 +117,7 @@ const handleComment = () => {
     <!-- Comments Section -->
     <div v-if="showComments" class="mt-4 pt-4 border-t border-gray-100">
       <CommentList :initiativeId="initiativeId" :postId="post.id" />
+      <NewCommentForm :initiativeId="initiativeId" :postId="post.id"/>
     </div>
   </div>
 </template>
