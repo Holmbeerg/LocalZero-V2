@@ -107,10 +107,10 @@ public class InitiativeService {
         if (!initiative.getCreator().equals(user)) {
             System.out.println("Attempting to create new notif");
             notificationService.createAndAssignNotification(
-                    NotificationType.NEW_INITIATIVE,
+                    NotificationType.JOIN_INITIATIVE,
                     Map.of(
                             "initiative", initiative,
-                            "createdBy", user
+                            "joinedBy", user
                     ),
                     initiative.getCreator()
             );

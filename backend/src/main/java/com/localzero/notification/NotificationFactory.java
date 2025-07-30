@@ -14,6 +14,7 @@ public class NotificationFactory {
             case NEW_LIKE_ON_POST -> new PostLikeNotification(data);
             case COMMENT_REPLY -> new CommentReplyNotification(data);
             case NEW_MESSAGE -> new MessageNotification(data);
+            case JOIN_INITIATIVE -> new JoinInitiativeNotification(data);
             default -> throw new IllegalArgumentException("Unsupported notification type: " + type);
         };
     }

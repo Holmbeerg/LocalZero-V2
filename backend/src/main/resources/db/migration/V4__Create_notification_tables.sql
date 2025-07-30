@@ -1,3 +1,5 @@
+ALTER TYPE notification_type ADD VALUE IF NOT EXISTS 'JOIN_INITIATIVE';
+
 CREATE TABLE notification (
       id BIGSERIAL PRIMARY KEY,
       title VARCHAR(255) NOT NULL,

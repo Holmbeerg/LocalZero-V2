@@ -5,5 +5,6 @@ public enum NotificationType {
     POST_COMMENT,
     NEW_LIKE_ON_POST,
     NEW_MESSAGE,
-    COMMENT_REPLY
+    COMMENT_REPLY,
+    JOIN_INITIATIVE
 }
