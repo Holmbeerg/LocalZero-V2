@@ -1,11 +1,12 @@
 // In NotificationController.java
 package com.localzero.controller;
 
+import com.localzero.dto.NotificationSummaryResponse;
+import com.localzero.mapper.NotificationMapper;
 import com.localzero.model.Notification;
 import com.localzero.model.User;
 import com.localzero.service.NotificationService;
 import com.localzero.service.UserService;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -20,22 +21,26 @@ import java.util.List;
 public class NotificationController {
     private final NotificationService notificationService;
     private final UserService userService;
+    private final NotificationMapper notificationMapper;
 
-    public NotificationController(NotificationService notificationService, UserService userService){
+    public NotificationController(NotificationService notificationService, UserService userService, NotificationMapper notificationMapper) {
         this.notificationService = notificationService;
         this.userService = userService;
+        this.notificationMapper = notificationMapper;
     }
 
     @GetMapping
-    public List<Notification> getUserNotifications(@AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<List<NotificationSummaryResponse>> getUserNotifications(@AuthenticationPrincipal UserDetails userDetails) {
         User user = userService.getUserByEmail(userDetails.getUsername());
         List<Notification> notifications = notificationService.getUserNotifications(user);
 
-        System.out.println("Printing notifications fetched:");
-        for (Notification notification : notifications){
-            System.out.println(notification);
-        }
-        return notificationService.getUserNotifications(user);
+        List<NotificationSummaryResponse> notificationResponses = notifications.stream()
+                .map(notificationMapper::toSummaryResponse)
+                .toList();
+
+        log.info("Retrieved {} notifications for user: {}", notificationResponses.size(), userDetails.getUsername());
+
+        return ResponseEntity.ok(notificationResponses);
     }
 
     @GetMapping("/count")
