@@ -119,7 +119,7 @@ public class InitiativesController {
                                                                     @PathVariable Long postId,
                                                                     @AuthenticationPrincipal UserDetails userDetails) {
         User user = userService.getUserByEmail(userDetails.getUsername());
-        Set<Comment> comments = initiativeService.getCommentsForPost(id, postId, user);
+        Set<Comment> comments = postService.getCommentsForPost(id, postId, user);
         log.info("Retrieved comments for post ID: {} in initiative ID: {} for user: {}", postId, id, userDetails.getUsername());
         List<CommentResponse> commentResponse = comments.stream()
                 .map(commentMapper::toResponse)
@@ -134,7 +134,7 @@ public class InitiativesController {
                                                                 @Valid @RequestBody CreateCommentRequest createCommentRequest,
                                                                 @AuthenticationPrincipal UserDetails userDetails) {
         User user = userService.getUserByEmail(userDetails.getUsername());
-        Comment comment = initiativeService.createCommentForPost(id, postId, createCommentRequest.text(), user);
+        Comment comment = postService.createCommentForPost(id, postId, createCommentRequest.text(), user);
         return ResponseEntity.status(HttpStatus.CREATED).body(commentMapper.toResponse(comment));
     }
 }

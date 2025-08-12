@@ -5,6 +5,7 @@ import com.localzero.exception.InitiativeNotFoundException;
 import com.localzero.exception.PostNotFoundException;
 import com.localzero.model.*;
 import com.localzero.model.enums.NotificationType;
+import com.localzero.repository.CommentRepository;
 import com.localzero.repository.InitiativeRepository;
 import com.localzero.repository.LikeRepository;
 import com.localzero.repository.PostRepository;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 @Transactional
 @Service
@@ -26,12 +28,13 @@ public class PostService {
     private final S3Service s3Service;
     private final PostRepository postRepository;
     private final LikeRepository likeRepository;
+    private final CommentRepository commentRepository;
     private final EntityManager entityManager;
     private final NotificationService notificationService;
 
     public PostService(InitiativeRepository initiativeRepository, UserService userService, S3Service s3Service,
                        PostRepository postRepository, LikeRepository likeRepository, EntityManager entityManager,
-                       NotificationService notificationService) {
+                       NotificationService notificationService, CommentRepository commentRepository) {
         this.initiativeRepository = initiativeRepository;
         this.userService = userService;
         this.s3Service = s3Service;
@@ -39,6 +42,7 @@ public class PostService {
         this.likeRepository = likeRepository;
         this.entityManager = entityManager;
         this.notificationService = notificationService;
+        this.commentRepository = commentRepository;
     }
 
     public Post createPost(Long initiativeId, CreatePostRequest createPostRequest, String email) {
@@ -108,32 +112,31 @@ public class PostService {
         return post;
     }
 
-    //might change depending on comment implementation
-    @Transactional
-    public Comment addComment(Long postId, String commentText, User author) {
-        Post post = postRepository.findById(postId)
+    public Set<Comment> getCommentsForPost(Long initiativeId, Long postId, User user) {
+        log.info("Fetching comments for post ID: {} in initiative ID: {}", postId, initiativeId);
+        Post post = postRepository.findAccessibleById(postId, user, user.getLocation())
                 .orElseThrow(() -> new PostNotFoundException(postId));
+        return post.getComments();
+    }
 
-        Comment comment = new Comment();
-        comment.setText(commentText);
-        comment.setAuthor(author);
-        comment.setPost(post);
+    public Comment createCommentForPost(Long initiativeId, Long postId, String text, User user){
+        log.info("Creating comment for post ID: {} in initiative ID: {} by user: {}", postId, initiativeId, user.getEmail());
+        Post post = postRepository.findAccessibleById(postId, user, user.getLocation())
+                .orElseThrow(()-> new PostNotFoundException(postId));
+        Comment comment = Comment.builder().post(post).author(user).text(text).build();
 
-        post.getComments().add(comment);
-        postRepository.save(post);
-
-        if (!post.getAuthor().equals(author)) {
+        if (!post.getAuthor().equals(user)) {
             notificationService.createAndAssignNotification(
                     NotificationType.POST_COMMENT,
                     Map.of(
                             "post", post,
                             "comment", comment,
-                            "commentedBy", author
+                            "commentedBy", user
                     ),
                     post.getAuthor()
             );
         }
 
-        return comment;
+        return commentRepository.save(comment);
     }
 }

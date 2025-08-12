@@ -2,14 +2,11 @@ package com.localzero.service;
 
 import com.localzero.exception.AlreadyInitiativeMemberException;
 import com.localzero.exception.InitiativeNotFoundException;
-import com.localzero.exception.PostNotFoundException;
 import com.localzero.model.*;
 import com.localzero.dto.CreateInitiativeRequest;
 import com.localzero.model.enums.NotificationType;
-import com.localzero.repository.CommentRepository;
 import com.localzero.repository.InitiativeMemberRepository;
 import com.localzero.repository.InitiativeRepository;
-import com.localzero.repository.PostRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -17,7 +14,6 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 @Transactional
 @Service
@@ -25,17 +21,13 @@ import java.util.Set;
 public class InitiativeService {
     private final InitiativeRepository initiativeRepository;
     private final InitiativeMemberRepository initiativeMemberRepository;
-    private final PostRepository postRepository;
-    private final CommentRepository commentRepository;
     private final NotificationService notificationService;
     private final UserService userService;
 
     public InitiativeService(InitiativeRepository initiativeRepository, InitiativeMemberRepository initiativeMemberRepository,
-                            PostRepository postRepository, CommentRepository commentRepository, NotificationService notificationService, UserService userService) {
+                            NotificationService notificationService, UserService userService) {
         this.initiativeRepository = initiativeRepository;
         this.initiativeMemberRepository = initiativeMemberRepository;
-        this.postRepository = postRepository;
-        this.commentRepository = commentRepository;
         this.notificationService = notificationService;
         this.userService = userService;
     }
@@ -120,21 +112,5 @@ public class InitiativeService {
         }
 
         return initiative;
-    }
-
-    public Set<Comment> getCommentsForPost(Long initiativeId, Long postId, User user) {
-        log.info("Fetching comments for post ID: {} in initiative ID: {}", postId, initiativeId);
-        Post post = postRepository.findAccessibleById(postId, user, user.getLocation())
-                .orElseThrow(() -> new PostNotFoundException(postId));
-        return post.getComments();
-    }
-
-    public Comment createCommentForPost(Long initiativeId, Long postId, String text, User user){
-        log.info("Creating comment for post ID: {} in initiative ID: {} by user: {}", postId, initiativeId, user.getEmail());
-        Post post = postRepository.findAccessibleById(postId, user, user.getLocation())
-                .orElseThrow(()-> new PostNotFoundException(postId));
-        Comment comment = Comment.builder().post(post).author(user).text(text).build();
-
-        return commentRepository.save(comment);
     }
 }
