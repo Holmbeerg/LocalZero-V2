@@ -127,5 +127,15 @@ public class InitiativesController {
 
         return ResponseEntity.ok(commentResponse);
     }
+
+    @PostMapping("/{id}/posts/{postId}/comments")
+    public ResponseEntity<CommentResponse> createCommentForPost(@PathVariable Long id,
+                                                                @PathVariable Long postId,
+                                                                @Valid @RequestBody CreateCommentRequest createCommentRequest,
+                                                                @AuthenticationPrincipal UserDetails userDetails) {
+        User user = userService.getUserByEmail(userDetails.getUsername());
+        Comment comment = initiativeService.createCommentForPost(id, postId, createCommentRequest.text(), user);
+        return ResponseEntity.status(HttpStatus.CREATED).body(commentMapper.toResponse(comment));
+    }
 }
 

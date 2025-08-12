@@ -7,3 +7,7 @@ export interface CommentResponse {
   author: UserSummary
   createdAt: string
 }
+
+export interface CreateCommentRequest{
+  text: string
+}

@@ -161,6 +161,26 @@ export const useInitiativesStore = defineStore('initiatives', () => {
     postComments.value[postId].push(comment)
   }
 
+  const createCommentForPost = async(initiativeId: number, postId: number, text: string) => {
+    error.value = null
+    try{
+      const comment = await initiativesApi.createCommentForPost(initiativeId, postId, {text})
+      addCommentToPost(postId, comment)
+
+      //Comment counter update
+      if(currentInitiative.value){
+        const postIndex = currentInitiative.value.posts.findIndex(p => p.id === postId)
+        if(postIndex !== -1){
+          currentInitiative.value.posts[postIndex].commentCount += 1
+        }
+      }
+      return comment
+    }catch(err){
+      error.value = 'Failed to create comment'
+      console.error('Error creating comment: ', err)
+    }
+  }
+
   return {
     initiatives,
     currentInitiative,
@@ -177,5 +197,6 @@ export const useInitiativesStore = defineStore('initiatives', () => {
     getCommentsForPost,
     postComments: readonly(postComments),
     commentsLoading,
+    createCommentForPost,
   }
 })

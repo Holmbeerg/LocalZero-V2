@@ -5,6 +5,7 @@ import com.localzero.exception.InitiativeNotFoundException;
 import com.localzero.exception.PostNotFoundException;
 import com.localzero.model.*;
 import com.localzero.dto.CreateInitiativeRequest;
+import com.localzero.repository.CommentRepository;
 import com.localzero.repository.InitiativeMemberRepository;
 import com.localzero.repository.InitiativeRepository;
 import com.localzero.repository.PostRepository;
@@ -22,12 +23,14 @@ public class InitiativeService {
     private final InitiativeRepository initiativeRepository;
     private final InitiativeMemberRepository initiativeMemberRepository;
     private final PostRepository postRepository;
+    private final CommentRepository commentRepository;
 
     public InitiativeService(InitiativeRepository initiativeRepository, InitiativeMemberRepository initiativeMemberRepository,
-                            PostRepository postRepository) {
+                            PostRepository postRepository, CommentRepository commentRepository) {
         this.initiativeRepository = initiativeRepository;
         this.initiativeMemberRepository = initiativeMemberRepository;
         this.postRepository = postRepository;
+        this.commentRepository = commentRepository;
     }
 
     public Initiative createInitiative(CreateInitiativeRequest initiativeRequest, User user) {
@@ -82,5 +85,14 @@ public class InitiativeService {
         Post post = postRepository.findAccessibleById(postId, user, user.getLocation())
                 .orElseThrow(() -> new PostNotFoundException(postId));
         return post.getComments();
+    }
+
+    public Comment createCommentForPost(Long initiativeId, Long postId, String text, User user){
+        log.info("Creating comment for post ID: {} in initiative ID: {} by user: {}", postId, initiativeId, user.getEmail());
+        Post post = postRepository.findAccessibleById(postId, user, user.getLocation())
+                .orElseThrow(()-> new PostNotFoundException(postId));
+        Comment comment = Comment.builder().post(post).author(user).text(text).build();
+
+        return commentRepository.save(comment);
     }
 }
