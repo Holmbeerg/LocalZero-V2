@@ -7,6 +7,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
+@Table(name = "user_notification")
 public class UserNotification {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
