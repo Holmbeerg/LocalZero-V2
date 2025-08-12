@@ -26,16 +26,18 @@ public class InitiativeService {
     private final InitiativeRepository initiativeRepository;
     private final InitiativeMemberRepository initiativeMemberRepository;
     private final PostRepository postRepository;
+    private final CommentRepository commentRepository;
     private final NotificationService notificationService;
     private final UserService userService;
-    private final CommentRepository commentRepository;
 
     public InitiativeService(InitiativeRepository initiativeRepository, InitiativeMemberRepository initiativeMemberRepository,
-                            PostRepository postRepository, NotificationService notificationService, UserService userService) {
-                            PostRepository postRepository, CommentRepository commentRepository) {
+                            PostRepository postRepository, CommentRepository commentRepository, NotificationService notificationService, UserService userService) {
+        {
+    ) {
         this.initiativeRepository = initiativeRepository;
         this.initiativeMemberRepository = initiativeMemberRepository;
         this.postRepository = postRepository;
+        this.commentRepository = commentRepository;
         this.notificationService = notificationService;
         this.userService = userService;
         this.commentRepository = commentRepository;
