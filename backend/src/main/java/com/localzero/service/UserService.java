@@ -9,6 +9,7 @@ import com.localzero.mapper.UserMapper;
 import com.localzero.model.Role;
 import com.localzero.model.User;
 import com.localzero.dto.CreateUserRequest;
+import com.localzero.model.enums.Neighborhood;
 import com.localzero.model.enums.RoleName;
 import com.localzero.repository.RoleRepository;
 import com.localzero.repository.UserRepository;
@@ -16,7 +17,9 @@ import jakarta.transaction.Transactional;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-@Transactional //
+import java.util.List;
+
+@Transactional
 @Service
 public class UserService {
     private final UserMapper userMapper;
@@ -50,6 +53,15 @@ public class UserService {
     public User getUserByEmail(String email) {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new UserNotFoundException("User not found with email: " + email));
+    }
+
+    public User getUserById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + id));
+    }
+
+    public List<User> findByLocation(Neighborhood location) {
+        return userRepository.findByLocation(location);
     }
 
     // should take DTOs as parameters

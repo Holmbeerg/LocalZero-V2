@@ -1,12 +1,16 @@
 <script setup lang="ts">
 import { useAuthStore } from '@/stores/auth.ts'
 import { useRouter } from 'vue-router'
-import { ref } from 'vue'
+import { onMounted, onUnmounted, ref } from 'vue'
 import { storeToRefs } from 'pinia'
+import { useNotificationStore } from '@/stores/notifications'
+import NotificationsDropdown from './NotificationsDropdown.vue'
 
 const authStore = useAuthStore()
+const notificationStore = useNotificationStore()
 const { user } = storeToRefs(authStore)
 const router = useRouter()
+const notificationRef = ref<HTMLElement | null>(null)
 
 const logout = async () => {
   console.log('Logging out...')
@@ -14,9 +18,25 @@ const logout = async () => {
   await router.push('/login')
 }
 
-const showNotifications = ref(false)
+onMounted(() => {
+  if(user.value){
+    notificationStore.fetchUnreadCount();
+    document.addEventListener('click', handleClickOutside);
+  }
+});
+
+onUnmounted(() => {
+  document.removeEventListener('click', handleClickOutside);
+});
+
+const handleClickOutside = (event: MouseEvent) => {
+  if (notificationRef.value && !notificationRef.value.contains(event.target as Node)) {
+    notificationStore.closeDropdown();
+  }
+}
+
 const toggleNotifications = () => {
-  showNotifications.value = !showNotifications.value
+  notificationStore.toggleDropdown();
 }
 </script>
 
@@ -61,7 +81,34 @@ const toggleNotifications = () => {
       </router-link>
 
       <!-- Notifications -->
-      <svg
+       <div ref="notificationsRef" class="relative">
+        <button @click="toggleNotifications" class="relative">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="size-6 cursor-pointer hover:text-blue-600 transition-colors duration-200">
+
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0"
+              />
+          </svg>
+
+              <span 
+                v-if="notificationStore.unreadCount > 0"
+                class="absolute top-0 right-0 inline-flex items-center justify-center px-1.5 py-0.5 text-xs font-bold leading-none
+                      text-white transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full">
+                  
+                  {{ notificationStore.unreadCount }}
+              </span>
+        </button>
+        <NotificationsDropdown v-if="notificationStore.showDropdown" :notifications="notificationStore.notifications"/>
+       </div>
+      <!-- <svg
         @click="toggleNotifications"
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
@@ -75,7 +122,8 @@ const toggleNotifications = () => {
           stroke-linejoin="round"
           d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0"
         />
-      </svg>
+      </svg> -->
+    
 
       <button
         @click="logout"

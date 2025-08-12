@@ -5,6 +5,7 @@ import type { EcoAction, LogEcoActionRequest } from '@/types/ecoAction.ts'
 import type { CreateInitiativeRequest, Initiative, InitiativeDetail } from '@/types/initiative.ts'
 import type { InitiateUploadRequest, PresignedUploadResponse } from '@/types/upload.ts'
 import type { CreatePostRequest, PostSummaryResponse } from '@/types/post.ts'
+import type { NotificationResponse } from '@/types/notifications'
 import type { CommentResponse, CreateCommentRequest } from '@/types/comment.ts'
 import type { MessageRequest, MessageResponse } from '@/types/message.ts'
 
@@ -178,6 +179,25 @@ export const initiativesApi = {
       throw error
     }
   }
+}
+
+//Notifications API endpoints
+export const notificationsAPI = {
+  async getNotifications(): Promise<NotificationResponse[]> {
+    return await apiClient.get(`/notifications`);
+  },
+  
+  async getUnreadCount(): Promise<number> {
+    return await apiClient.get(`/notifications/count`);
+  },
+
+  async deleteNotification(id: number): Promise<void> {
+    return await apiClient.delete(`/notifications/${id}`);
+  },
+
+  async clearAllNotifications(): Promise<void> {
+    return await apiClient.delete(`/notifications`)
+  },
 }
 
 // Upload API endpoints
