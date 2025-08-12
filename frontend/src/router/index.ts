@@ -5,6 +5,7 @@ import ProfileView from '@/views/ProfileView.vue'
 import { useAuthStore } from '@/stores/auth.ts'
 import InitiativesView from '@/views/InitiativesView.vue'
 import InitiativeView from '@/views/InitiativeView.vue'
+import MessagesView from '@/views/MessagesView.vue'
 
 const routes = [
   { path: '/login', component: LoginView, meta: { hideHeader: true, guest: true } },
@@ -12,6 +13,8 @@ const routes = [
   { path: '/profile', component: ProfileView, meta: { requiresAuth: true } },
   { path: '/initiatives', component: InitiativesView, meta: { requiresAuth: true } },
   { path: '/initiatives/:id', component: InitiativeView, meta: { requiresAuth: true } },
+  // TODO: fix messages routing?
+  { path: '/messages', component: MessagesView, meta: { requiresAuth: true } },
   { path: '/', redirect: '/login' },
 ]
 
