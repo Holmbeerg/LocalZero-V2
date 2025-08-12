@@ -24,6 +24,10 @@ export interface UserSummary {
   name: string
 }
 
+export interface UserMessageSummary extends UserSummary {
+  email: string
+}
+
 export interface LoginCredentials {
   email: string
   password: string

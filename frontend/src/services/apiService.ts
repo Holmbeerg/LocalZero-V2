@@ -5,8 +5,9 @@ import type { EcoAction, LogEcoActionRequest } from '@/types/ecoAction.ts'
 import type { CreateInitiativeRequest, Initiative, InitiativeDetail } from '@/types/initiative.ts'
 import type { InitiateUploadRequest, PresignedUploadResponse } from '@/types/upload.ts'
 import type { CreatePostRequest, PostSummaryResponse } from '@/types/post.ts'
-import type { CommentResponse } from '@/types/comment.ts'
 import type { NotificationResponse } from '@/types/notifications'
+import type { CommentResponse, CreateCommentRequest } from '@/types/comment.ts'
+import type { MessageRequest, MessageResponse } from '@/types/message.ts'
 
 const API_BASE_URL = 'http://localhost:8080/api'
 
@@ -15,8 +16,8 @@ const apiClient: AxiosInstance = axios.create({
   timeout: 10000,
   withCredentials: true,
   headers: {
-    'Content-Type': 'application/json',
-  },
+    'Content-Type': 'application/json'
+  }
 })
 
 // Request interceptor
@@ -26,7 +27,7 @@ apiClient.interceptors.request.use(
   },
   (error) => {
     return Promise.reject(error)
-  },
+  }
 )
 
 // Response interceptor
@@ -46,7 +47,7 @@ apiClient.interceptors.response.use(
       console.error('Server error:', error.response?.data?.message)
     }
     return Promise.reject(error)
-  },
+  }
 )
 
 // Auth API endpoints
@@ -74,7 +75,7 @@ export const authApi = {
 
   async logout() {
     return await apiClient.post('/auth/logout')
-  },
+  }
 }
 
 // Eco Actions API endpoints
@@ -95,7 +96,7 @@ export const ecoActionsApi = {
       console.error('Failed to add eco action:', error)
       throw error
     }
-  },
+  }
 }
 
 // Initiatives API endpoints
@@ -161,11 +162,23 @@ export const initiativesApi = {
     } catch (error) {
       console.error(
         `Failed to fetch comments for post ${postId} in initiative ${initiativeId}:`,
-        error,
+        error
       )
       throw error
     }
   },
+
+  async createCommentForPost(initiativeId: number, postId: number, comment: CreateCommentRequest): Promise<CommentResponse> {
+    try {
+      return await apiClient.post(`/initiatives/${initiativeId}/posts/${postId}/comments`, comment)
+    }catch (error) {
+      console.error(
+        `Failed to create comment for post ${postId} in initiative ${initiativeId}:`,
+        error
+      )
+      throw error
+    }
+  }
 }
 
 //Notifications API endpoints
@@ -204,8 +217,41 @@ export const uploadApi = {
       method: 'PUT',
       body: file,
       headers: {
-        'Content-Type': file.type,
-      },
+        'Content-Type': file.type
+      }
     })
+  }
+}
+
+// Messages API endpoints
+export const messagesApi = {
+  // currently gets all messages at once instead of only a page at a time
+  async getMessages(): Promise<MessageResponse[]> {
+    try {
+      return await apiClient.get(`/messages`)
+    } catch (error) {
+      console.error('Failed to get messages:', error)
+      throw error
+    }
   },
+
+  /*
+  async getMessagesByPage(page: number): Promise<MessageResponse[]> {
+    try {
+      return await apiClient.get(`/messages/${page}`)
+    } catch (error) {
+      console.error('Failed to get messages:', error)
+      throw error
+    }
+  },
+   */
+
+  async postMessage(messageRequest: MessageRequest) {
+    try {
+      return await apiClient.post(`/messages`, messageRequest)
+    } catch (error) {
+      console.error('Failed to send message:', error)
+      throw error
+    }
+  }
 }

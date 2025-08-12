@@ -1,6 +1,7 @@
 package com.localzero.service;
 
 
+import com.localzero.dto.UserSummaryResponse;
 import com.localzero.exception.EmailAlreadyExistsException;
 import com.localzero.exception.RoleNotFoundException;
 import com.localzero.exception.UserNotFoundException;
