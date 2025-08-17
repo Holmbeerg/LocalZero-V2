@@ -14,7 +14,7 @@ export const useAuthStore = defineStore('auth', () => {
   const ecoActionsStore = useEcoActionsStore()
   const initiativesStore = useInitiativesStore()
   const messagesStore = useMessagesStore()
-  const notificationsStore = useNotificationsStore()
+  const notificationsStore = useNotificationStore()
 
   async function initializeAuth() {
     if (isInitialized.value) return // prevent re-initialization
