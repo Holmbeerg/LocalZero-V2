@@ -79,7 +79,7 @@ public class PostService {
                 )
             );
         }
-        
+
         return savedPost;
     }
 
@@ -126,5 +126,33 @@ public class PostService {
         postRepository.flush();
         entityManager.refresh(post);
         return post;
+    }
+
+    public Set<Comment> getCommentsForPost(Long initiativeId, Long postId, User user) {
+        log.info("Fetching comments for post ID: {} in initiative ID: {}", postId, initiativeId);
+        Post post = postRepository.findAccessibleById(postId, user, user.getLocation())
+                .orElseThrow(() -> new PostNotFoundException(postId));
+        return post.getComments();
+    }
+
+    public Comment createCommentForPost(Long initiativeId, Long postId, String text, User user){
+        log.info("Creating comment for post ID: {} in initiative ID: {} by user: {}", postId, initiativeId, user.getEmail());
+        Post post = postRepository.findAccessibleById(postId, user, user.getLocation())
+                .orElseThrow(()-> new PostNotFoundException(postId));
+        Comment comment = Comment.builder().post(post).author(user).text(text).build();
+
+        if (!post.getAuthor().equals(user)) {
+            notificationService.createAndAssignNotification(
+                    NotificationType.POST_COMMENT,
+                    Map.of(
+                            "post", post,
+                            "comment", comment,
+                            "commentedBy", user
+                    ),
+                    post.getAuthor()
+            );
+        }
+
+        return commentRepository.save(comment);
     }
 }

@@ -60,10 +60,10 @@ public class NotificationController {
         Map<String, Object> response = new HashMap<>();
         response.put("content", content);
         response.put("totalElements", notificationsPage.getTotalElements());
-        
+
         Map<String, Object> data = new HashMap<>();
         data.put("data", response);
-        
+
         return ResponseEntity.ok(data);
     }
 
@@ -80,10 +80,10 @@ public class NotificationController {
     public ResponseEntity<Map<String, Object>> getUnreadCount(@AuthenticationPrincipal UserDetails userDetails) {
         User user = userService.getUserByEmail(userDetails.getUsername());
         long count = notificationService.countUnreadNotifications(user);
-        
+
         Map<String, Object> data = new HashMap<>();
         data.put("count", count);
-        
+
         return ResponseEntity.ok(data);
     }
 

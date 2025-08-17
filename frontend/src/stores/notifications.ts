@@ -113,8 +113,8 @@ export const useNotificationStore = defineStore('notifications', {
       }
     },
 
-    closeDropdown() {
-      this.showDropdown = false;
+        closeDropdown() {
+            this.showDropdown = false;
+        }
     }
-  }
-});
+})
