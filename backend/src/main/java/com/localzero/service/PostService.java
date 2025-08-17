@@ -5,6 +5,7 @@ import com.localzero.exception.InitiativeNotFoundException;
 import com.localzero.exception.PostNotFoundException;
 import com.localzero.model.*;
 import com.localzero.model.enums.NotificationType;
+import com.localzero.repository.CommentRepository;
 import com.localzero.repository.InitiativeRepository;
 import com.localzero.repository.LikeRepository;
 import com.localzero.repository.PostRepository;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 @Transactional
 @Service
@@ -28,10 +30,11 @@ public class PostService {
     private final LikeRepository likeRepository;
     private final EntityManager entityManager;
     private final NotificationService notificationService;
+    private final CommentRepository commentRepository;
 
     public PostService(InitiativeRepository initiativeRepository, UserService userService, S3Service s3Service,
                        PostRepository postRepository, LikeRepository likeRepository, EntityManager entityManager,
-                       NotificationService notificationService) {
+                       NotificationService notificationService, CommentRepository commentRepository) {
         this.initiativeRepository = initiativeRepository;
         this.userService = userService;
         this.s3Service = s3Service;
@@ -39,6 +42,7 @@ public class PostService {
         this.likeRepository = likeRepository;
         this.entityManager = entityManager;
         this.notificationService = notificationService;
+        this.commentRepository = commentRepository;
     }
 
     public Post createPost(Long initiativeId, CreatePostRequest createPostRequest, String email) {
@@ -143,13 +147,13 @@ public class PostService {
 
         if (!post.getAuthor().equals(user)) {
             notificationService.createAndAssignNotification(
-                    NotificationType.POST_COMMENT,
+                    NotificationType.COMMENT_REPLY,
+                    post.getAuthor(),
+                    user,
                     Map.of(
-                            "post", post,
-                            "comment", comment,
-                            "commentedBy", user
-                    ),
-                    post.getAuthor()
+                            "postText", post.getText(),
+                            "repliedBy", user.getName()
+                    )
             );
         }
 

@@ -2,17 +2,21 @@ package com.localzero.service;
 
 import com.localzero.exception.AlreadyInitiativeMemberException;
 import com.localzero.exception.InitiativeNotFoundException;
+import com.localzero.exception.PostNotFoundException;
 import com.localzero.model.*;
 import com.localzero.dto.CreateInitiativeRequest;
 import com.localzero.model.enums.NotificationType;
 import com.localzero.repository.InitiativeMemberRepository;
 import com.localzero.repository.InitiativeRepository;
+import com.localzero.repository.PostRepository;
+import com.localzero.repository.CommentRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Transactional
 @Service
@@ -28,7 +32,6 @@ public class InitiativeService {
     public InitiativeService(InitiativeRepository initiativeRepository, InitiativeMemberRepository initiativeMemberRepository,
                              PostRepository postRepository, NotificationService notificationService,
                              UserService userService, CommentRepository commentRepository) {
-                            NotificationService notificationService, UserService userService) {
         this.initiativeRepository = initiativeRepository;
         this.initiativeMemberRepository = initiativeMemberRepository;
         this.postRepository = postRepository;
