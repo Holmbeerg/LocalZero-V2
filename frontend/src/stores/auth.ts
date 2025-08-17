@@ -4,6 +4,8 @@ import { authApi } from '@/services/apiService.ts'
 import type { User, LoginCredentials, RegisterData } from '@/types/user.ts'
 import { useEcoActionsStore } from '@/stores/ecoActions'
 import { useInitiativesStore } from '@/stores/initiatives.ts'
+import { useMessagesStore } from '@/stores/messages.ts'
+import { useNotificationStore } from '@/stores/notifications'
 
 export const useAuthStore = defineStore('auth', () => {
   const user = ref<User | null>(null) // user state, initially null
@@ -11,6 +13,8 @@ export const useAuthStore = defineStore('auth', () => {
   const isAuthenticated = computed(() => Boolean(user.value))
   const ecoActionsStore = useEcoActionsStore()
   const initiativesStore = useInitiativesStore()
+  const messagesStore = useMessagesStore()
+  const notificationsStore = useNotificationsStore()
 
   async function initializeAuth() {
     if (isInitialized.value) return // prevent re-initialization
@@ -63,6 +67,8 @@ export const useAuthStore = defineStore('auth', () => {
     isInitialized.value = false
     ecoActionsStore.resetEcoActions()
     initiativesStore.resetInitiatives()
+    messagesStore.resetMessages()
+    notificationsStore.resetNotifications()
   }
 
   return { user, isAuthenticated, initializeAuth, login, register, logout }

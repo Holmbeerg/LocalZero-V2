@@ -37,11 +37,16 @@ export const useNotificationStore = defineStore('notification', {
             }
         },
 
+        resetNotifications() {
+            this.notifications = [];
+            this.unreadCount = 0;
+            this.showDropdown = false;
+        },
+
         async clearAllNotifications() {
             try{
                 await notificationsAPI.clearAllNotifications();
-                this.notifications = [];
-                this.unreadCount = 0;
+                this.resetNotifications();
             }catch (error){
                 console.error('Failed to clear notifications:', error);
             }
