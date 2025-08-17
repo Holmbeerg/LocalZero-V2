@@ -1,6 +1,5 @@
-ALTER TYPE notification_type ADD VALUE IF NOT EXISTS 'JOIN_INITIATIVE';
 
-CREATE TABLE notification (
+CREATE TABLE IF NOT EXISTS notification (
       id BIGSERIAL PRIMARY KEY,
       title VARCHAR(255) NOT NULL,
       message TEXT NOT NULL,
@@ -10,7 +9,7 @@ CREATE TABLE notification (
       FOREIGN KEY (created_by_user_id) REFERENCES users(user_id)
 );
 
-CREATE TABLE user_notification (
+CREATE TABLE IF NOT EXISTS user_notification (
        id BIGSERIAL PRIMARY KEY,
        user_id BIGINT NOT NULL,
        notification_id BIGINT NOT NULL,

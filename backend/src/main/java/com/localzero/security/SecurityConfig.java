@@ -34,6 +34,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable) // Disable CSRF protection as we are using JWT
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers("/", "/api/auth/login", "/api/auth/register", "/css/**", "/js/**").permitAll() // Allow access to these paths without authentication
+                        .requestMatchers("/api/notifications/**").authenticated()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)

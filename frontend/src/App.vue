@@ -17,8 +17,6 @@ watch(
   (user) => {
     if (user) {
       notificationStore.fetchUnreadCount()
-    }else{
-      notificationStore.clearAllNotifications()
     }
   },
   {immediate: true}

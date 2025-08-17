@@ -64,7 +64,23 @@ public class PostService {
                 post.addImage(postImage);
             }
         }
-        return postRepository.save(post);
+
+        Post savedPost = postRepository.save(post);
+
+        if (!initiative.getCreator().equals(user)) {
+            notificationService.createAndAssignNotification(
+                NotificationType.NEW_COMMENT_ON_POST,
+                initiative.getCreator(),
+                user,
+                Map.of(
+                    "postText", savedPost.getText(),
+                    "commentText", savedPost.getText(),
+                    "commentedBy", user.getName()
+                )
+            );
+        }
+        
+        return savedPost;
     }
 
     public Post toggleLike(Long initiativeId, Long postId, User user) {
@@ -93,47 +109,22 @@ public class PostService {
             log.info("User {} liked post {}", user.getEmail(), postId);
 
             if (!post.getAuthor().equals(user)) {
+                log.info("Creating like notification from user {} to post author {}",
+                        user.getEmail(), post.getAuthor().getEmail());
                 notificationService.createAndAssignNotification(
                         NotificationType.NEW_LIKE_ON_POST,
+                        post.getAuthor(),
+                        user,
                         Map.of(
-                                "post", post,
-                                "likedBy", user
-                        ),
-                        post.getAuthor()
+                                "postText", post.getText(),
+                                "postId", post.getId(),
+                                "likedBy", user.getName()
+                        )
                 );
             }
         }
         postRepository.flush();
         entityManager.refresh(post);
         return post;
-    }
-
-    //might change depending on comment implementation
-    @Transactional
-    public Comment addComment(Long postId, String commentText, User author) {
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new PostNotFoundException(postId));
-
-        Comment comment = new Comment();
-        comment.setText(commentText);
-        comment.setAuthor(author);
-        comment.setPost(post);
-
-        post.getComments().add(comment);
-        postRepository.save(post);
-
-        if (!post.getAuthor().equals(author)) {
-            notificationService.createAndAssignNotification(
-                    NotificationType.POST_COMMENT,
-                    Map.of(
-                            "post", post,
-                            "comment", comment,
-                            "commentedBy", author
-                    ),
-                    post.getAuthor()
-            );
-        }
-
-        return comment;
     }
 }

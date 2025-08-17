@@ -86,7 +86,6 @@ public class InitiativesController {
     @PostMapping("/{id}/join")
     public ResponseEntity<InitiativeSummaryResponse> joinInitiative(@PathVariable Long id,
                                                                     @AuthenticationPrincipal UserDetails userDetails) {
-
         User user = userService.getUserByEmail(userDetails.getUsername());
         Initiative initiative = initiativeService.joinInitiative(id, user);
         log.info("User: {} joined initiative with ID: {}", userDetails.getUsername(), id);
