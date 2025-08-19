@@ -10,12 +10,11 @@ public class NotificationFactory {
     public BaseNotification createNotification(NotificationType type, Map<String, Object> data) {
         return switch (type) {
             case NEW_INITIATIVE -> new NewInitiativeNotification(data);
-            case POST_COMMENT -> new PostCommentNotification(data);
+            case NEW_COMMENT_ON_POST -> new PostCommentNotification(data);
             case NEW_LIKE_ON_POST -> new PostLikeNotification(data);
             case COMMENT_REPLY -> new CommentReplyNotification(data);
             case NEW_MESSAGE -> new MessageNotification(data);
             case JOIN_INITIATIVE -> new JoinInitiativeNotification(data);
-            default -> throw new IllegalArgumentException("Unsupported notification type: " + type);
         };
     }
 }

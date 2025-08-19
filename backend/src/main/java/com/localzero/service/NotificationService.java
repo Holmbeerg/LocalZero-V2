@@ -1,6 +1,6 @@
 package com.localzero.service;
 
-import com.localzero.exception.UserNotFoundException;
+import com.localzero.dto.CreateNotificationRequest;
 import com.localzero.model.Notification;
 import com.localzero.model.User;
 import com.localzero.model.UserNotification;
@@ -10,122 +10,108 @@ import com.localzero.notification.NotificationFactory;
 import com.localzero.repository.NotificationRepository;
 import com.localzero.repository.UserNotificationRepository;
 import com.localzero.repository.UserRepository;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.transaction.annotation.Transactional;
+import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
+@Slf4j
 public class NotificationService {
-    private static final Logger log = LoggerFactory.getLogger(NotificationService.class);
     private final NotificationRepository notificationRepository;
     private final UserNotificationRepository userNotificationRepository;
-    private final NotificationFactory notificationFactory;
     private final UserRepository userRepository;
+    private final NotificationFactory notificationFactory;
 
-    public NotificationService(NotificationRepository notificationRepository, UserNotificationRepository userNotificationRepository,
-                               NotificationFactory notificationFactory, UserRepository userRepository) {
-        this.notificationRepository = notificationRepository;
-        this.userNotificationRepository = userNotificationRepository;
-        this.notificationFactory = notificationFactory;
-        this.userRepository = userRepository;
-    }
-
-    @Transactional
-    public void createAndAssignNotification(NotificationType type, Map<String, Object> data, User recipient) {
-        BaseNotification notificationBuilder = notificationFactory.createNotification(type, data);
-        Notification notification = notificationBuilder.create();
-
-        String currentUserEmail = SecurityContextHolder.getContext().getAuthentication() != null ?
-                SecurityContextHolder.getContext().getAuthentication().getName() :
-                null;
-
-        if (/*notification.getCreatedBy() == null && */currentUserEmail != null) {
-            try {
-                log.info("Attempting create notification: {}", recipient.getEmail() );
-                User currentUser = userRepository.findByEmail(currentUserEmail)
-                        .orElseThrow(() -> new UserNotFoundException("No user found"));
-                if (currentUser != null) {
-                    notification.setCreatedBy(currentUser);
-                }
-            } catch (Exception e) {
-                log.warn("Could not find user with email: {}", currentUserEmail, e);
-            }
-        }
-
-        notification = notificationRepository.save(notification);
-
-        UserNotification userNotification = new UserNotification();
-        userNotification.setUser(recipient);
-        userNotification.setNotification(notification);
-        userNotificationRepository.save(userNotification);
-    }
-
-    @Transactional
-    public void createAndAssignNotification(NotificationType type, Map<String, Object> data, List<User> recipients) {
-        System.out.println("In createAndAssignNotification");
-        if (recipients == null || recipients.isEmpty()) {
-            return;
-        }
-
-        BaseNotification notificationBuilder = notificationFactory.createNotification(type, data);
-        final Notification notification = notificationBuilder.create();
-
-        String currentUserEmail = SecurityContextHolder.getContext().getAuthentication() != null ?
-                SecurityContextHolder.getContext().getAuthentication().getName() :
-                null;
-
-        if (/*notification.getCreatedBy() == null && */currentUserEmail != null) {
-            try {
-                log.info("Attempting create notification: {}", recipients );
-                User currentUser = userRepository.findByEmail(currentUserEmail)
-                        .orElseThrow(() -> new UserNotFoundException("User in recipientlist not found"));
-                if (currentUser != null) {
-                    notification.setCreatedBy(currentUser);
-                }
-            } catch (Exception e) {
-                log.warn("Could not find user with email: {}", currentUserEmail, e);
-            }
-        }
-
-        final Notification savedNotification = notificationRepository.save(notification);
-
-        List<UserNotification> userNotifications = recipients.stream()
-                .filter(recipient -> recipient != null && !recipient.equals(savedNotification.getCreatedBy()))
-                .map(recipient -> {
-                    UserNotification un = new UserNotification();
-                    un.setUser(recipient);
-                    un.setNotification(savedNotification);
-                    return un;
-                })
-                .toList();
-
-        userNotificationRepository.saveAll(userNotifications);
+    @Transactional(readOnly = true)
+    public Page<Notification> getUserNotifications(User user, Pageable pageable) {
+        return notificationRepository.findByUser(user, pageable);
     }
 
     @Transactional(readOnly = true)
-    public List<Notification> getUserNotifications(User user) {
-        return userNotificationRepository.findByUserIdOrderByNotificationCreatedAtDesc(user.getUserId()).stream()
+    public Notification getNotification(Long id, User user) {
+        return userNotificationRepository.findByUserIdAndNotificationId(user.getUserId(), id)
                 .map(UserNotification::getNotification)
-                .toList();
+                .orElseThrow(() -> new EntityNotFoundException("Notification not found"));
     }
 
     @Transactional(readOnly = true)
-    public long getUnreadCount(User user) {
+    public long countUnreadNotifications(User user) {
         return userNotificationRepository.countByUserId(user.getUserId());
     }
 
     @Transactional
     public void deleteNotification(Long notificationId, User user) {
-        userNotificationRepository.deleteByUserIdAndNotificationId(user.getUserId(), notificationId);
+        if (!userNotificationRepository.existsByUserIdAndNotificationId(user.getUserId(), notificationId)) {
+            log.warn("User {} attempted to delete non-existent or unauthorized notification {}", 
+                    user.getUserId(), notificationId);
+            return;
+        }
+        userNotificationRepository.deleteByNotificationIdAndUserId(notificationId, user.getUserId());
+        log.info("Deleted notification {} for user {}", notificationId, user.getUserId());
     }
 
     @Transactional
-    public void deleteAllUserNotifications(User user) {
+    public void deleteAllNotifications(User user) {
         userNotificationRepository.deleteByUserId(user.getUserId());
+    }
+
+    @Transactional
+    public void createAndAssignNotification(NotificationType type, User recipient, User createdBy, Map<String, Object> data) {
+        BaseNotification notificationBuilder = notificationFactory.createNotification(type, data);
+        Notification notification = notificationBuilder.create();
+        notification.setCreatedBy(createdBy);
+        notificationRepository.save(notification);
+        assignNotificationToUser(notification, recipient);
+    }
+
+    @Transactional
+    public void createAndAssignNotification(NotificationType type, List<User> recipients, User createdBy, Map<String, Object> data) {
+        BaseNotification notificationBuilder = notificationFactory.createNotification(type, data);
+        Notification notification = notificationBuilder.create();
+        notification.setCreatedBy(createdBy);
+        notificationRepository.save(notification);
+        assignNotificationToUsers(notification, recipients);
+    }
+
+    @Transactional
+    public void assignNotificationToUser(Notification notification, User user) {
+        if (userNotificationRepository.existsByUserIdAndNotificationId(user.getUserId(), notification.getId())) {
+            log.debug("Notification {} already assigned to user {}", notification.getId(), user.getUserId());
+            return;
+        }
+        
+        UserNotification userNotification = new UserNotification();
+        userNotification.setUser(user);
+        userNotification.setNotification(notification);
+        userNotificationRepository.save(userNotification);
+        log.info("Assigned notification {} to user {}", notification.getId(), user.getUserId());
+    }
+
+    @Transactional
+    public void assignNotificationToUsers(Notification notification, List<User> users) {
+        if (users == null || users.isEmpty()) {
+            log.warn("No users provided to assign notification {}", notification.getId());
+            return;
+        }
+
+        int assignedCount = 0;
+        for (User user : users) {
+            if (user != null && !userNotificationRepository.existsByUserIdAndNotificationId(user.getUserId(), notification.getId())) {
+                assignNotificationToUser(notification, user);
+                assignedCount++;
+            }
+        }
+        
+        log.info("Assigned notification {} to {} users", notification.getId(), assignedCount);
     }
 }

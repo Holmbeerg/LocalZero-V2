@@ -1,25 +1,25 @@
 package com.localzero.dto;
 
 import com.localzero.model.enums.NotificationType;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class NotificationResponse {
-    private Long id;
-    private String title;
-    private String message;
-    private NotificationType type;
-    private LocalDateTime createdAt;
-    private LocalDateTime readAt;
-    private Long referenceId;
-    private String referenceType;
-    private UserSummaryResponse recipient;
+public record NotificationResponse(
+        Long id,
+        String title,
+        String message,
+        NotificationType type,
+        LocalDateTime createdAt,
+        UserSummaryResponse createdBy
+) {
+    public static NotificationResponse fromEntity(com.localzero.model.Notification notification) {
+        return new NotificationResponse(
+                notification.getId(),
+                notification.getTitle(),
+                notification.getMessage(),
+                notification.getType(),
+                notification.getCreatedAt(),
+                null
+        );
+    }
 }

@@ -28,9 +28,9 @@ public class PostService {
     private final S3Service s3Service;
     private final PostRepository postRepository;
     private final LikeRepository likeRepository;
-    private final CommentRepository commentRepository;
     private final EntityManager entityManager;
     private final NotificationService notificationService;
+    private final CommentRepository commentRepository;
 
     public PostService(InitiativeRepository initiativeRepository, UserService userService, S3Service s3Service,
                        PostRepository postRepository, LikeRepository likeRepository, EntityManager entityManager,
@@ -68,7 +68,23 @@ public class PostService {
                 post.addImage(postImage);
             }
         }
-        return postRepository.save(post);
+
+        Post savedPost = postRepository.save(post);
+
+        if (!initiative.getCreator().equals(user)) {
+            notificationService.createAndAssignNotification(
+                NotificationType.NEW_COMMENT_ON_POST,
+                initiative.getCreator(),
+                user,
+                Map.of(
+                    "postText", savedPost.getText(),
+                    "commentText", savedPost.getText(),
+                    "commentedBy", user.getName()
+                )
+            );
+        }
+
+        return savedPost;
     }
 
     public Post toggleLike(Long initiativeId, Long postId, User user) {
@@ -97,13 +113,17 @@ public class PostService {
             log.info("User {} liked post {}", user.getEmail(), postId);
 
             if (!post.getAuthor().equals(user)) {
+                log.info("Creating like notification from user {} to post author {}",
+                        user.getEmail(), post.getAuthor().getEmail());
                 notificationService.createAndAssignNotification(
                         NotificationType.NEW_LIKE_ON_POST,
+                        post.getAuthor(),
+                        user,
                         Map.of(
-                                "post", post,
-                                "likedBy", user
-                        ),
-                        post.getAuthor()
+                                "postText", post.getText(),
+                                "postId", post.getId(),
+                                "likedBy", user.getName()
+                        )
                 );
             }
         }
@@ -127,13 +147,13 @@ public class PostService {
 
         if (!post.getAuthor().equals(user)) {
             notificationService.createAndAssignNotification(
-                    NotificationType.POST_COMMENT,
+                    NotificationType.COMMENT_REPLY,
+                    post.getAuthor(),
+                    user,
                     Map.of(
-                            "post", post,
-                            "comment", comment,
-                            "commentedBy", user
-                    ),
-                    post.getAuthor()
+                            "postText", post.getText(),
+                            "repliedBy", user.getName()
+                    )
             );
         }
 

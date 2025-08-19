@@ -7,7 +7,6 @@ import com.localzero.model.enums.NotificationType;
 import java.util.Map;
 
 public class MessageNotification extends BaseNotification {
-
     public MessageNotification(Map<String, Object> data) {
         super(data);
     }
@@ -15,19 +14,22 @@ public class MessageNotification extends BaseNotification {
     @Override
     protected void validateData() {
         getRequiredData("message");
-        getRequiredData("sender");
+        getRequiredData("senderName");
     }
 
     @Override
     public Notification create() {
-        String message = getRequiredData("message");
-        User sender = getRequiredData("sender");
+        String message = getRequiredData("message").toString();
+        String senderName = getRequiredData("senderName").toString();
 
         Notification notification = new Notification();
         notification.setType(NotificationType.NEW_MESSAGE);
-        notification.setTitle("New Message from " + sender.getName());
-        notification.setMessage(message);
-        notification.setCreatedBy(sender);
+        notification.setTitle("New Message from " + senderName);
+
+        String truncatedMessage = message.length() > 100
+                ? message.substring(0, 100) + "..."
+                : message;
+        notification.setMessage(truncatedMessage);
 
         return notification;
     }

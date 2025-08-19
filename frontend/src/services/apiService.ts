@@ -5,7 +5,6 @@ import type { EcoAction, LogEcoActionRequest } from '@/types/ecoAction.ts'
 import type { CreateInitiativeRequest, Initiative, InitiativeDetail } from '@/types/initiative.ts'
 import type { InitiateUploadRequest, PresignedUploadResponse } from '@/types/upload.ts'
 import type { CreatePostRequest, PostSummaryResponse } from '@/types/post.ts'
-import type { NotificationResponse } from '@/types/notifications'
 import type { CommentResponse, CreateCommentRequest } from '@/types/comment.ts'
 import type { MessageRequest, MessageResponse } from '@/types/message.ts'
 
@@ -178,27 +177,62 @@ export const initiativesApi = {
       )
       throw error
     }
-  }
+  },
 }
 
 //Notifications API endpoints
 export const notificationsAPI = {
-  async getNotifications(): Promise<NotificationResponse[]> {
-    return await apiClient.get(`/notifications`);
-  },
-  
-  async getUnreadCount(): Promise<number> {
-    return await apiClient.get(`/notifications/count`);
+  async getNotifications(page: number = 0, size: number = 10) {
+    try {
+      console.log('Fetching notifications from API...', { page, size });
+      const response = await apiClient.get(`/notifications?page=${page}&size=${size}`);
+      console.log('Notifications API response:', response.data);
+      return {
+        data: {
+          content: response.data?.content || [],
+          totalElements: response.data?.totalElements || 0
+        }
+      };
+    } catch (error) {
+      console.error('Failed to fetch notifications:', error);
+      throw error;
+    }
   },
 
-  async deleteNotification(id: number): Promise<void> {
-    return await apiClient.delete(`/notifications/${id}`);
+  async getUnreadCount(): Promise<number> {
+    try {
+      console.log('Fetching unread count from API...');
+      const response = await apiClient.get<{ count: number }>('/notifications/count');
+      console.log('Unread count API response:', response.data);
+      return response.data?.count || 0;
+    } catch (error) {
+      console.error('Failed to fetch unread count:', error);
+      return 0;
+    }
+  },
+
+  async deleteNotification(notificationId: number): Promise<void> {
+    try {
+      console.log('Deleting notification from API...', { notificationId });
+      await apiClient.delete(`/notifications/${notificationId}`);
+      console.log('Notification deleted successfully');
+    } catch (error) {
+      console.error(`Failed to delete notification ${notificationId}:`, error);
+      throw error;
+    }
   },
 
   async clearAllNotifications(): Promise<void> {
-    return await apiClient.delete(`/notifications`)
+    try {
+      console.log('Clearing all notifications from API...');
+      await apiClient.delete('/notifications');
+      console.log('All notifications cleared successfully');
+    } catch (error) {
+      console.error('Failed to clear all notifications:', error);
+      throw error;
+    }
   },
-}
+};
 
 // Upload API endpoints
 

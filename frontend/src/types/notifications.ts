@@ -5,8 +5,6 @@ export interface NotificationResponse {
     type: string;
     createdAt: string;
     readAt: string | null;
-    referenceId: number | null;
-    referenceType: string | null;
 }
 
 export enum NotificationType {

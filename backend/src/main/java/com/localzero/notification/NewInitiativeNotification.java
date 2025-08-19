@@ -20,14 +20,13 @@ public class NewInitiativeNotification extends BaseNotification {
 
     @Override
     public Notification create() {
-        Initiative initiative = getRequiredData("initiative");
-        User createdBy = getRequiredData("createdBy");
+        String initiativeTitle = getRequiredData("initiative").toString();
+        String createdByName = getRequiredData("createdBy").toString();
 
         Notification notification = new Notification();
         notification.setType(NotificationType.NEW_INITIATIVE);
-        notification.setTitle("New Initiative: " + initiative.getTitle());
-        notification.setMessage(createdBy.getName() + " created a new initiative: " + initiative.getTitle());
-        notification.setCreatedBy(createdBy);
+        notification.setTitle("New Initiative: " + initiativeTitle);
+        notification.setMessage(createdByName + " created a new initiative: " + initiativeTitle);
 
         return notification;
     }

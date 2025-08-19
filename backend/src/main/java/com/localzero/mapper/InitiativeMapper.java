@@ -22,7 +22,6 @@ public class InitiativeMapper {
         this.postMapper = postMapper;
     }
 
-
     public InitiativeSummaryResponse toResponse(Initiative initiative, User currentUser) {
         boolean isUserCreator = isUserCreator(initiative, currentUser);
         boolean isUserParticipant = isUserCreator || isUserParticipant(initiative, currentUser);

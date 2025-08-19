@@ -21,15 +21,13 @@ public class JoinInitiativeNotification extends BaseNotification {
 
     @Override
     public Notification create() {
-        Initiative initiative = getRequiredData("initiative");
-        User joinedBy = getRequiredData("joinedBy");
+        String initiativeName = getRequiredData("initiative").toString();
+        String joinedByName = getRequiredData("joinedBy").toString();
+
         Notification notification = new Notification();
-
         notification.setType(NotificationType.JOIN_INITIATIVE);
-        notification.setTitle("New Member Joined Your Initiative");
-        notification.setMessage(joinedBy.getName() + " has joined your initiative: " + initiative.getTitle());
-        notification.setCreatedBy(joinedBy);
-
+        notification.setTitle("New Member Joined");
+        notification.setMessage(joinedByName + " has joined your initiative: " + initiativeName);
         return notification;
     }
 }
