@@ -6,9 +6,6 @@ import com.localzero.dto.NotificationSummaryResponse;
 import com.localzero.mapper.NotificationMapper;
 import com.localzero.model.Notification;
 import com.localzero.model.User;
-import com.localzero.model.UserNotification;
-import com.localzero.repository.NotificationRepository;
-import com.localzero.repository.UserNotificationRepository;
 import com.localzero.service.NotificationService;
 import com.localzero.service.UserService;
 import jakarta.persistence.EntityNotFoundException;
@@ -17,11 +14,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
-import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.PagedModel;
-import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -31,7 +23,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/notifications")
@@ -41,8 +32,6 @@ public class NotificationController {
     private final NotificationService notificationService;
     private final UserService userService;
     private final NotificationMapper notificationMapper;
-    private final NotificationRepository notificationRepository;
-    private final UserNotificationRepository userNotificationRepository;
 
     @GetMapping
     public ResponseEntity<Map<String, Object>> getNotifications(
@@ -55,7 +44,7 @@ public class NotificationController {
 
         List<NotificationSummaryResponse> content = notificationsPage.getContent().stream()
                 .map(notificationMapper::toSummaryResponse)
-                .collect(Collectors.toList());
+                .toList();
 
         Map<String, Object> response = new HashMap<>();
         response.put("content", content);

@@ -1,6 +1,5 @@
 package com.localzero.service;
 
-import com.localzero.dto.CreateNotificationRequest;
 import com.localzero.model.Notification;
 import com.localzero.model.User;
 import com.localzero.model.UserNotification;
@@ -9,42 +8,44 @@ import com.localzero.notification.BaseNotification;
 import com.localzero.notification.NotificationFactory;
 import com.localzero.repository.NotificationRepository;
 import com.localzero.repository.UserNotificationRepository;
-import com.localzero.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional(readOnly = true)
 public class NotificationService {
     private final NotificationRepository notificationRepository;
     private final UserNotificationRepository userNotificationRepository;
-    private final UserRepository userRepository;
     private final NotificationFactory notificationFactory;
 
-    @Transactional(readOnly = true)
     public Page<Notification> getUserNotifications(User user, Pageable pageable) {
-        return notificationRepository.findByUser(user, pageable);
+        Page<Long> notificationIds = notificationRepository.findNotificationIdsByUser(user, pageable);
+
+        if (notificationIds.getContent().isEmpty()) {
+            return new PageImpl<>(List.of(), pageable, notificationIds.getTotalElements());
+        }
+
+        List<Notification> notifications = notificationRepository.findNotificationsByIds(notificationIds.getContent());
+        return new PageImpl<>(notifications, pageable, notificationIds.getTotalElements());
     }
 
-    @Transactional(readOnly = true)
     public Notification getNotification(Long id, User user) {
         return userNotificationRepository.findByUserIdAndNotificationId(user.getUserId(), id)
                 .map(UserNotification::getNotification)
                 .orElseThrow(() -> new EntityNotFoundException("Notification not found"));
     }
 
-    @Transactional(readOnly = true)
     public long countUnreadNotifications(User user) {
         return userNotificationRepository.countByUserId(user.getUserId());
     }
