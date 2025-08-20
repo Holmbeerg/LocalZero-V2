@@ -5,7 +5,6 @@ import com.localzero.model.enums.NotificationType;
 
 import java.util.Map;
 
-//TODO: finish refactor
 public class NewPostNotification extends BaseNotification {
     public NewPostNotification(Map<String, Object> data) {
         super(data);
@@ -13,30 +12,30 @@ public class NewPostNotification extends BaseNotification {
 
     @Override
     protected void validateData() {
+        getRequiredData("initiativeTitle");
         getRequiredData("postText");
-        getRequiredData("commentText");
-        getRequiredData("commentedBy");
+        getRequiredData("postBy");
     }
 
     @Override
     public Notification create() {
-        String postText = getRequiredData("postText").toString();
-        String commentText = getRequiredData("commentText").toString();
-        String commentedByName = getRequiredData("commentedBy").toString();
+        String initiativeTitle = getRequiredData("initiativeTitle");
+        String postText = getRequiredData("postText");
+        String postByName = getRequiredData("postBy");
 
         Notification notification = new Notification();
         notification.setType(NotificationType.NEW_POST_IN_INITIATIVE);
         notification.setTitle("New Post In Your Initiative");
 
-        String truncatedPost = postText.length() > 30
-                ? postText.substring(0, 30) + "..."
+        String truncatedInitiativeTitle = initiativeTitle.length() > 30
+                ? initiativeTitle.substring(0, 30) + "..."
+                : initiativeTitle;
+        String truncatedPostText = postText.length() > 50
+                ? postText.substring(0, 50) + "..."
                 : postText;
-        String truncatedComment = commentText.length() > 50
-                ? commentText.substring(0, 50) + "..."
-                : commentText;
 
-        notification.setMessage(commentedByName + " Created a post in your initiative\"" +
-                truncatedPost + "\": " + truncatedComment);
+        notification.setMessage(postByName + " Created a post in your initiative \"" +
+                truncatedInitiativeTitle + "\": " + truncatedPostText);
 
         return notification;
     }

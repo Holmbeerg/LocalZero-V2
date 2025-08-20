@@ -77,9 +77,9 @@ public class PostService {
                 initiative.getCreator(),
                 user,
                 Map.of(
+                    "initiativeTitle", savedPost.getInitiative().getTitle(),
                     "postText", savedPost.getText(),
-                    "commentText", savedPost.getText(),
-                    "commentedBy", user.getName()
+                    "postBy", user.getName()
                 )
             );
         }
