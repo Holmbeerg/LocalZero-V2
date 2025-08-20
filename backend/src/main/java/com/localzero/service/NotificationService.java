@@ -69,7 +69,7 @@ public class NotificationService {
     @Transactional
     public void createAndAssignNotification(NotificationType type, User recipient, User createdBy, Map<String, Object> data) {
         BaseNotification notificationBuilder = notificationFactory.createNotification(type, data);
-        Notification notification = notificationBuilder.create();
+        Notification notification = notificationBuilder.createNotification();
         notification.setCreatedBy(createdBy);
         notificationRepository.save(notification);
         assignNotificationToUser(notification, recipient);
@@ -78,7 +78,7 @@ public class NotificationService {
     @Transactional
     public void createAndAssignNotification(NotificationType type, List<User> recipients, User createdBy, Map<String, Object> data) {
         BaseNotification notificationBuilder = notificationFactory.createNotification(type, data);
-        Notification notification = notificationBuilder.create();
+        Notification notification = notificationBuilder.createNotification();
         notification.setCreatedBy(createdBy);
         notificationRepository.save(notification);
         assignNotificationToUsers(notification, recipients);

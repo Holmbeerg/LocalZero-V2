@@ -18,7 +18,7 @@ public class NewPostNotification extends BaseNotification {
     }
 
     @Override
-    public Notification create() {
+    public Notification buildNotification() {
         String initiativeTitle = getRequiredData("initiativeTitle");
         String postText = getRequiredData("postText");
         String postByName = getRequiredData("postBy");
@@ -34,7 +34,7 @@ public class NewPostNotification extends BaseNotification {
                 ? postText.substring(0, 50) + "..."
                 : postText;
 
-        notification.setMessage(postByName + " Created a post in your initiative \"" +
+        notification.setMessage(postByName + " created a post in your initiative \"" +
                 truncatedInitiativeTitle + "\": " + truncatedPostText);
 
         return notification;

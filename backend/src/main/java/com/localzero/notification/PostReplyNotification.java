@@ -17,7 +17,7 @@ public class PostReplyNotification extends BaseNotification {
     }
 
     @Override
-    public Notification create() {
+    public Notification buildNotification() {
         String postText = getRequiredData("postText").toString();
         String repliedBy = getRequiredData("repliedBy").toString();
 

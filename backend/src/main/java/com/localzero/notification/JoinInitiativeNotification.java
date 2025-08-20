@@ -18,7 +18,7 @@ public class JoinInitiativeNotification extends BaseNotification {
     }
 
     @Override
-    public Notification create() {
+    public Notification buildNotification() {
         String initiativeName = getRequiredData("initiative").toString();
         String joinedByName = getRequiredData("joinedBy").toString();
 

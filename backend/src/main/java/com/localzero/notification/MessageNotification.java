@@ -17,7 +17,7 @@ public class MessageNotification extends BaseNotification {
     }
 
     @Override
-    public Notification create() {
+    public Notification buildNotification() {
         String message = getRequiredData("message").toString();
         String senderName = getRequiredData("senderName").toString();
 

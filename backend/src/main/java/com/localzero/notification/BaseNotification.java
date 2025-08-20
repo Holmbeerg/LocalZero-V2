@@ -13,7 +13,13 @@ public abstract class BaseNotification {
         validateData();
     }
 
+    public final Notification createNotification() {
+        validateData();
+        return buildNotification();
+    }
+
     protected abstract void validateData();
+    public abstract Notification buildNotification();
 
     protected <T> T getRequiredData(String key) {
         if (!data.containsKey(key)) {
@@ -21,6 +27,4 @@ public abstract class BaseNotification {
         }
         return (T) data.get(key);
     }
-
-    public abstract Notification create();
 }
