@@ -3,12 +3,8 @@ package com.localzero.mapper;
 import com.localzero.dto.NotificationResponse;
 import com.localzero.dto.NotificationSummaryResponse;
 import com.localzero.model.Notification;
-import com.localzero.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor

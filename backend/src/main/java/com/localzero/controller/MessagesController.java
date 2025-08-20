@@ -41,7 +41,7 @@ public class MessagesController {
         List<Message> messages = messagesService.getUserMessages(user);
         log.info("Retrieved messages for user: {}", userDetails.getUsername());
         List<MessageResponse> responses = messages.stream()
-                .map(message -> messageMapper.toResponse(message))
+                .map(messageMapper::toResponse)
                 .toList();
 
         return ResponseEntity.ok(responses);

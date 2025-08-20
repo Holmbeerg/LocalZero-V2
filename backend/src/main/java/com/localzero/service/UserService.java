@@ -1,11 +1,9 @@
 package com.localzero.service;
 
 
-import com.localzero.dto.UserSummaryResponse;
 import com.localzero.exception.EmailAlreadyExistsException;
 import com.localzero.exception.RoleNotFoundException;
 import com.localzero.exception.UserNotFoundException;
-import com.localzero.mapper.UserMapper;
 import com.localzero.model.Role;
 import com.localzero.model.User;
 import com.localzero.dto.CreateUserRequest;
@@ -22,16 +20,13 @@ import java.util.List;
 @Transactional
 @Service
 public class UserService {
-    private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
 
-    public UserService(PasswordEncoder passwordEncoder, UserMapper userMapper,
-                       UserRepository userRepository, RoleRepository roleRepository) {
+    public UserService(PasswordEncoder passwordEncoder, UserRepository userRepository, RoleRepository roleRepository) {
         this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
-        this.userMapper = userMapper;
         this.roleRepository = roleRepository;
     }
 
@@ -39,14 +34,19 @@ public class UserService {
         if (userRepository.findByEmail(createUserRequest.email()).isPresent()) {
             throw new EmailAlreadyExistsException(createUserRequest.email());
         }
-        User user = userMapper.toUser(createUserRequest);
-        user.setPasswordHash(passwordEncoder.encode(createUserRequest.password()));
 
+        String hash = passwordEncoder.encode(createUserRequest.password());
         Role residentRole = roleRepository.findByRoleName(RoleName.RESIDENT)
                 .orElseThrow(() -> new RoleNotFoundException("Role RESIDENT not found"));
 
-        user.getRoles().add(residentRole); // assign resident role by default
+        User user = User.builder()
+                .email(createUserRequest.email())
+                .passwordHash(hash)
+                .name(createUserRequest.name())
+                .location(createUserRequest.location())
+                .build();
 
+        user.getRoles().add(residentRole); // assign resident role by default
         return userRepository.save(user);
     }
 

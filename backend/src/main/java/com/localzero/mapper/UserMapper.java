@@ -21,15 +21,6 @@ public class UserMapper {
         );
     }
 
-    public User toUser(CreateUserRequest request) {
-        return User.builder()
-                .email(request.email())
-                .passwordHash(request.password())
-                .name(request.name())
-                .location(request.location())
-                .build();
-    }
-
     public UserSummaryResponse toUserSummaryResponse(User user) {
         return new UserSummaryResponse(
                 user.getUserId(),

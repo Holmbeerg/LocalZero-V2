@@ -1,7 +1,6 @@
 package com.localzero.notification;
 
 import com.localzero.model.Notification;
-import com.localzero.model.User;
 import com.localzero.model.enums.NotificationType;
 
 import java.util.Map;

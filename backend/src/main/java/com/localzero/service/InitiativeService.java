@@ -2,21 +2,17 @@ package com.localzero.service;
 
 import com.localzero.exception.AlreadyInitiativeMemberException;
 import com.localzero.exception.InitiativeNotFoundException;
-import com.localzero.exception.PostNotFoundException;
 import com.localzero.model.*;
 import com.localzero.dto.CreateInitiativeRequest;
 import com.localzero.model.enums.NotificationType;
 import com.localzero.repository.InitiativeMemberRepository;
 import com.localzero.repository.InitiativeRepository;
-import com.localzero.repository.PostRepository;
-import com.localzero.repository.CommentRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 @Transactional
 @Service
@@ -24,20 +20,15 @@ import java.util.Set;
 public class InitiativeService {
     private final InitiativeRepository initiativeRepository;
     private final InitiativeMemberRepository initiativeMemberRepository;
-    private final PostRepository postRepository;
     private final NotificationService notificationService;
     private final UserService userService;
-    private final CommentRepository commentRepository;
 
     public InitiativeService(InitiativeRepository initiativeRepository, InitiativeMemberRepository initiativeMemberRepository,
-                             PostRepository postRepository, NotificationService notificationService,
-                             UserService userService, CommentRepository commentRepository) {
+                             NotificationService notificationService, UserService userService) {
         this.initiativeRepository = initiativeRepository;
         this.initiativeMemberRepository = initiativeMemberRepository;
-        this.postRepository = postRepository;
         this.notificationService = notificationService;
         this.userService = userService;
-        this.commentRepository = commentRepository;
     }
 
     public Initiative createInitiative(CreateInitiativeRequest initiativeRequest, User user) {
@@ -121,37 +112,6 @@ public class InitiativeService {
                         "joinedBy", user.getName()
                 )
         );
-
         return initiative;
-    }
-
-    public Set<Comment> getCommentsForPost(Long initiativeId, Long postId, User user) {
-        log.info("Fetching comments for post ID: {} in initiative ID: {}", postId, initiativeId);
-        Post post = postRepository.findAccessibleById(postId, user, user.getLocation())
-                .orElseThrow(() -> new PostNotFoundException(postId));
-        return post.getComments();
-    }
-
-    public Comment createCommentForPost(Long initiativeId, Long postId, String text, User user){
-        log.info("Creating comment for post ID: {} in initiative ID: {} by user: {}", postId, initiativeId, user.getEmail());
-        Post post = postRepository.findAccessibleById(postId, user, user.getLocation())
-                .orElseThrow(()-> new PostNotFoundException(postId));
-        Comment comment = Comment.builder().post(post).author(user).text(text).build();
-
-        Comment savedComment = commentRepository.save(comment);
-
-        if (!post.getAuthor().equals(user)) {
-            notificationService.createAndAssignNotification(
-                    NotificationType.COMMENT_REPLY,
-                    post.getAuthor(),
-                    user,
-                    Map.of(
-                            "postText", post.getText(),
-                            "repliedBy", user.getName()
-                    )
-            );
-        }
-
-        return savedComment;
     }
 }
