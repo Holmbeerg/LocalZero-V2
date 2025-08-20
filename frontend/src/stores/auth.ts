@@ -68,6 +68,7 @@ export const useAuthStore = defineStore('auth', () => {
     ecoActionsStore.resetEcoActions()
     initiativesStore.resetInitiatives()
     messagesStore.resetMessages()
+    notificationsStore.closeDropdown()
   }
 
   return { user, isAuthenticated, initializeAuth, login, register, logout }
