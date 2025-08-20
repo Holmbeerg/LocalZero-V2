@@ -5,8 +5,8 @@ import com.localzero.model.enums.NotificationType;
 
 import java.util.Map;
 
-public class CommentReplyNotification extends BaseNotification {
-    public CommentReplyNotification(Map<String, Object> data) {
+public class PostReplyNotification extends BaseNotification {
+    public PostReplyNotification(Map<String, Object> data) {
         super(data);
     }
 

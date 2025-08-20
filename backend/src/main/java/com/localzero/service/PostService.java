@@ -73,7 +73,7 @@ public class PostService {
 
         if (!initiative.getCreator().equals(user)) {
             notificationService.createAndAssignNotification(
-                NotificationType.NEW_COMMENT_ON_POST,
+                NotificationType.NEW_POST_IN_INITIATIVE,
                 initiative.getCreator(),
                 user,
                 Map.of(

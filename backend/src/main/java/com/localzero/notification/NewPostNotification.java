@@ -5,8 +5,9 @@ import com.localzero.model.enums.NotificationType;
 
 import java.util.Map;
 
-public class PostCommentNotification extends BaseNotification {
-    public PostCommentNotification(Map<String, Object> data) {
+//TODO: finish refactor
+public class NewPostNotification extends BaseNotification {
+    public NewPostNotification(Map<String, Object> data) {
         super(data);
     }
 
@@ -24,8 +25,8 @@ public class PostCommentNotification extends BaseNotification {
         String commentedByName = getRequiredData("commentedBy").toString();
 
         Notification notification = new Notification();
-        notification.setType(NotificationType.NEW_COMMENT_ON_POST);
-        notification.setTitle("New Comment on Your Post");
+        notification.setType(NotificationType.NEW_POST_IN_INITIATIVE);
+        notification.setTitle("New Post In Your Initiative");
 
         String truncatedPost = postText.length() > 30
                 ? postText.substring(0, 30) + "..."
@@ -34,7 +35,7 @@ public class PostCommentNotification extends BaseNotification {
                 ? commentText.substring(0, 50) + "..."
                 : commentText;
 
-        notification.setMessage(commentedByName + " commented on your post \"" +
+        notification.setMessage(commentedByName + " Created a post in your initiative\"" +
                 truncatedPost + "\": " + truncatedComment);
 
         return notification;
