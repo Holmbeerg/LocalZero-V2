@@ -15,6 +15,7 @@ public class NotificationFactory {
             case COMMENT_REPLY -> new CommentReplyNotification(data);
             case NEW_MESSAGE -> new MessageNotification(data);
             case JOIN_INITIATIVE -> new JoinInitiativeNotification(data);
+            case NEW_ECO_ACTION -> new EcoActionNotification(data);
             default -> throw new IllegalArgumentException("Unsupported notification type: " + type);
         };
     }
