@@ -8,6 +8,7 @@ import com.localzero.dto.LogEcoActionRequest;
 import com.localzero.repository.EcoActionRepository;
 import com.localzero.repository.EcoActionTypeRepository;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -16,18 +17,13 @@ import java.util.List;
 @Transactional
 @Service
 @Slf4j // Using Lombok's @Slf4j for logging
+@RequiredArgsConstructor
 public class EcoActionService {
 
     private final EcoActionRepository ecoActionRepository;
     private final EcoActionTypeRepository ecoActionTypeRepository;
     private final UserService userService;
 
-    public EcoActionService(EcoActionRepository ecoActionRepository,
-                            EcoActionTypeRepository ecoActionTypeRepository, UserService userService) {
-        this.ecoActionRepository = ecoActionRepository;
-        this.ecoActionTypeRepository = ecoActionTypeRepository;
-        this.userService = userService;
-    }
 
     public EcoAction logEcoAction(LogEcoActionRequest request, String email) {
         log.info("Logging eco action for user: {} with actionId: {}", email, request.actionId());

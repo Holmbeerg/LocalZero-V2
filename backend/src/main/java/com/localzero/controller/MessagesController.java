@@ -8,6 +8,7 @@ import com.localzero.model.*;
 import com.localzero.service.MessagesService;
 import com.localzero.service.UserService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,19 +21,13 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/messages")
 @Slf4j
+@RequiredArgsConstructor
 public class MessagesController {
 
     private final MessagesService messagesService;
     private final MessageMapper messageMapper;
     private final UserService userService;
 
-
-    public MessagesController(MessagesService messagesService, MessageMapper messageMapper,
-                                 UserService userService) {
-        this.messagesService = messagesService;
-        this.messageMapper = messageMapper;
-        this.userService = userService;
-    }
 
     // for now automatically gets all messages received by current user
     @GetMapping

@@ -6,6 +6,7 @@ import com.localzero.dto.EcoActionResponse;
 import com.localzero.dto.LogEcoActionRequest;
 import com.localzero.service.EcoActionService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,15 +19,11 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/eco-actions")
 @Slf4j
+@RequiredArgsConstructor
 public class EcoActionsController {
 
     private final EcoActionService ecoActionService;
     private final EcoActionMapper ecoActionMapper;
-
-    public EcoActionsController(EcoActionService ecoActionService, EcoActionMapper ecoActionMapper) {
-        this.ecoActionService = ecoActionService;
-        this.ecoActionMapper = ecoActionMapper;
-    }
 
 
     @PostMapping

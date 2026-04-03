@@ -12,6 +12,7 @@ import com.localzero.model.enums.RoleName;
 import com.localzero.repository.RoleRepository;
 import com.localzero.repository.UserRepository;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -19,16 +20,12 @@ import java.util.List;
 
 @Transactional
 @Service
+@RequiredArgsConstructor
 public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
 
-    public UserService(PasswordEncoder passwordEncoder, UserRepository userRepository, RoleRepository roleRepository) {
-        this.passwordEncoder = passwordEncoder;
-        this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
-    }
 
     public User registerUser(CreateUserRequest createUserRequest) {
         if (userRepository.findByEmail(createUserRequest.email()).isPresent()) {

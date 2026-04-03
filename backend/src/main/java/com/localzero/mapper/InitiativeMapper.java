@@ -5,6 +5,7 @@ import com.localzero.dto.InitiativeParticipantResponse;
 import com.localzero.dto.PostSummaryResponse;
 import com.localzero.model.Initiative;
 import com.localzero.model.User;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import com.localzero.dto.InitiativeSummaryResponse;
 
@@ -12,15 +13,12 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Component
+@RequiredArgsConstructor
 public class InitiativeMapper {
 
     private final UserMapper userMapper;
     private final PostMapper postMapper;
 
-    public InitiativeMapper(UserMapper userMapper, PostMapper postMapper) {
-        this.userMapper = userMapper;
-        this.postMapper = postMapper;
-    }
 
     public InitiativeSummaryResponse toResponse(Initiative initiative, User currentUser) {
         boolean isUserCreator = isUserCreator(initiative, currentUser);

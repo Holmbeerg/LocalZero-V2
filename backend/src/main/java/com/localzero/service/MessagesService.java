@@ -3,11 +3,11 @@ package com.localzero.service;
 import com.localzero.dto.MessageRequest;
 import com.localzero.exception.CannotSendMessageToSelfException;
 import com.localzero.exception.UserNotFoundException;
-import com.localzero.mapper.MessageMapper;
 import com.localzero.model.*;
 import com.localzero.repository.MessagesRepository;
 import com.localzero.repository.UserRepository;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -16,14 +16,11 @@ import java.util.List;
 @Transactional
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class MessagesService {
     private final MessagesRepository messagesRepository;
     private final UserRepository userRepository;
 
-    public MessagesService(MessagesRepository messagesRepository, UserRepository userRepository, MessageMapper messageMapper) {
-        this.messagesRepository = messagesRepository;
-        this.userRepository = userRepository;
-    }
 
     public List<Message> getUserMessages(User user) {
         log.info("Fetching all available messages for user {}", user.getEmail());

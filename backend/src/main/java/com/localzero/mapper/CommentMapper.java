@@ -2,16 +2,15 @@ package com.localzero.mapper;
 
 import com.localzero.dto.CommentResponse;
 import com.localzero.model.Comment;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class CommentMapper {
 
     private final UserMapper userMapper;
 
-    public CommentMapper(UserMapper userMapper) {
-        this.userMapper = userMapper;
-    }
 
     public CommentResponse toResponse(Comment comment) {
         return CommentResponse.builder()

@@ -1,5 +1,6 @@
 package com.localzero.security;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.lang.NonNull;
@@ -19,13 +20,11 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
 
     private final JWTAuthenticationFilter jwtFilter;
 
-    public SecurityConfig(JWTAuthenticationFilter jwtFilter) {
-        this.jwtFilter = jwtFilter;
-    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {

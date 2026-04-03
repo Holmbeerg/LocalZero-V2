@@ -10,6 +10,7 @@ import com.localzero.service.UserService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @Slf4j
+@RequiredArgsConstructor
 @RequestMapping("/api/auth")
 public class AuthController {
 
@@ -33,12 +35,6 @@ public class AuthController {
     private final UserMapper userMapper;
     private final JWTService jwtService;
 
-    public AuthController(UserService userService, AuthenticationManager authenticationManager, UserMapper userMapper, JWTService jwtService) {
-        this.userService = userService;
-        this.authenticationManager = authenticationManager;
-        this.userMapper = userMapper;
-        this.jwtService = jwtService;
-    }
 
     @GetMapping("/me") // if we reach this endpoint, the user is authenticated (because of the JWTAuthenticationFilter)
     public ResponseEntity<UserResponse> me(@AuthenticationPrincipal UserDetails userDetails) {

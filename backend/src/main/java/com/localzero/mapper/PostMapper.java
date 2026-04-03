@@ -6,6 +6,7 @@ import com.localzero.model.PostImage;
 import com.localzero.model.User;
 import com.localzero.repository.LikeRepository;
 import com.localzero.service.S3Service;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -16,17 +17,13 @@ import java.util.Set;
 
 @Component
 @Slf4j
+@RequiredArgsConstructor
 public class PostMapper {
 
     private final UserMapper userMapper;
     private final S3Service s3Service;
     private final LikeRepository likeRepository;
 
-    public PostMapper(UserMapper userMapper, S3Service s3Service, LikeRepository likeRepository) {
-        this.userMapper = userMapper;
-        this.s3Service = s3Service;
-        this.likeRepository = likeRepository;
-    }
 
     public PostSummaryResponse toPostSummaryResponse(Post post, User user) {
         boolean isLikedByUser = likeRepository.findByPostAndUser(post, user).isPresent();

@@ -11,6 +11,7 @@ import com.localzero.repository.LikeRepository;
 import com.localzero.repository.PostRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +22,7 @@ import java.util.Set;
 @Transactional
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class PostService {
 
     private final InitiativeRepository initiativeRepository;
@@ -32,18 +34,6 @@ public class PostService {
     private final NotificationService notificationService;
     private final CommentRepository commentRepository;
 
-    public PostService(InitiativeRepository initiativeRepository, UserService userService, S3Service s3Service,
-                       PostRepository postRepository, LikeRepository likeRepository, EntityManager entityManager,
-                       NotificationService notificationService, CommentRepository commentRepository) {
-        this.initiativeRepository = initiativeRepository;
-        this.userService = userService;
-        this.s3Service = s3Service;
-        this.postRepository = postRepository;
-        this.likeRepository = likeRepository;
-        this.entityManager = entityManager;
-        this.notificationService = notificationService;
-        this.commentRepository = commentRepository;
-    }
 
     public Post createPost(Long initiativeId, CreatePostRequest createPostRequest, String email) {
         Initiative initiative = initiativeRepository.findById(initiativeId)

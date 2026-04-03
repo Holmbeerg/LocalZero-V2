@@ -8,6 +8,7 @@ import com.localzero.model.enums.NotificationType;
 import com.localzero.repository.InitiativeMemberRepository;
 import com.localzero.repository.InitiativeRepository;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -17,19 +18,13 @@ import java.util.Map;
 @Transactional
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class InitiativeService {
     private final InitiativeRepository initiativeRepository;
     private final InitiativeMemberRepository initiativeMemberRepository;
     private final NotificationService notificationService;
     private final UserService userService;
 
-    public InitiativeService(InitiativeRepository initiativeRepository, InitiativeMemberRepository initiativeMemberRepository,
-                             NotificationService notificationService, UserService userService) {
-        this.initiativeRepository = initiativeRepository;
-        this.initiativeMemberRepository = initiativeMemberRepository;
-        this.notificationService = notificationService;
-        this.userService = userService;
-    }
 
     public Initiative createInitiative(CreateInitiativeRequest initiativeRequest, User user) {
         log.info("Creating initiative for user: {} with title: {}", user.getEmail(), initiativeRequest.title());

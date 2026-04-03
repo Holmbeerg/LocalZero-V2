@@ -4,6 +4,7 @@ import com.localzero.dto.InitiateUploadRequest;
 import com.localzero.dto.PresignedUploadResponse;
 import com.localzero.service.S3Service;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -16,13 +17,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/uploads")
 @Slf4j
+@RequiredArgsConstructor
 public class UploadController {
 
     private final S3Service s3Service;
 
-    public UploadController(S3Service s3Service) {
-        this.s3Service = s3Service;
-    }
 
     @PostMapping("/initiate")
     public ResponseEntity<PresignedUploadResponse> initiateUpload(

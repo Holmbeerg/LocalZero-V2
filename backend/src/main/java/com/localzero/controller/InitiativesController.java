@@ -12,6 +12,7 @@ import com.localzero.service.InitiativeService;
 import com.localzero.service.PostService;
 import com.localzero.service.UserService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +26,7 @@ import java.util.Set;
 @RestController
 @RequestMapping("/api/initiatives")
 @Slf4j
+@RequiredArgsConstructor
 public class InitiativesController {
 
     private final InitiativeService initiativeService;
@@ -34,17 +36,6 @@ public class InitiativesController {
     private final PostMapper postMapper;
     private final CommentMapper commentMapper;
 
-
-    public InitiativesController(InitiativeService initiativeService, InitiativeMapper initiativeMapper,
-                                 UserService userService, PostService postService, PostMapper postMapper
-                                , CommentMapper commentMapper) {
-        this.initiativeService = initiativeService;
-        this.initiativeMapper = initiativeMapper;
-        this.userService = userService;
-        this.postService = postService;
-        this.postMapper = postMapper;
-        this.commentMapper = commentMapper;
-    }
 
     @PostMapping
     public ResponseEntity<InitiativeSummaryResponse> createInitiative(@Valid @RequestBody CreateInitiativeRequest initiativeRequest,
