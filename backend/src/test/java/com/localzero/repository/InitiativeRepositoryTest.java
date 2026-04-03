@@ -3,8 +3,8 @@ package com.localzero.repository;
 import com.localzero.config.TestcontainersConfig;
 import com.localzero.model.Initiative;
 import com.localzero.model.User;
-import com.localzero.model.enums.InitiativeCategory;
 import com.localzero.model.enums.Neighborhood;
+import com.localzero.util.TestDataFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,10 +13,10 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+import static com.localzero.util.TestDataFactory.buildInitiative;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
@@ -25,8 +25,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ActiveProfiles("test") // We don't want seeded data
 class InitiativeRepositoryTest {
 
-    @Autowired private InitiativeRepository initiativeRepository;
-    @Autowired private UserRepository userRepository;
+    @Autowired
+    private InitiativeRepository initiativeRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     private User centrumCreator;
     private User centrumNeighbor;
@@ -34,38 +36,14 @@ class InitiativeRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        centrumCreator = userRepository.save(User.builder()
-                .email("creator@example.com")
-                .passwordHash("hashed_password")
-                .name("Centrum Creator")
-                .location(Neighborhood.CENTRUM)
-                .build());
+        centrumCreator = userRepository.save(
+                TestDataFactory.buildDefaultUser("creator@example.com", Neighborhood.CENTRUM));
 
-        centrumNeighbor = userRepository.save(User.builder()
-                .email("neighbor@example.com")
-                .passwordHash("hashed_password")
-                .name("Centrum Neighbor")
-                .location(Neighborhood.CENTRUM)
-                .build());
+        centrumNeighbor = userRepository.save(
+                TestDataFactory.buildDefaultUser("neighbor@example.com", Neighborhood.CENTRUM));
 
-        hyllieOutsider = userRepository.save(User.builder()
-                .email("outsider@example.com")
-                .passwordHash("hashed_password")
-                .name("Hyllie Outsider")
-                .location(Neighborhood.HYLLIE)
-                .build());
-    }
-
-    private Initiative buildInitiative(String title, boolean isPublic, User creator) {
-        return Initiative.builder()
-                .title(title)
-                .description("A description")
-                .location(creator.getLocation())
-                .category(InitiativeCategory.COMMUNITY_GARDENING)
-                .creator(creator)
-                .startDate(LocalDate.now())
-                .publicFlag(isPublic)
-                .build();
+        hyllieOutsider = userRepository.save(
+                TestDataFactory.buildDefaultUser("outsider@example.com", Neighborhood.HYLLIE));
     }
 
     @Test

@@ -55,7 +55,6 @@ public class InitiativeService {
         List<User> recipients = usersInArea.stream()
                 .filter(user -> !user.equals(initiative.getCreator()))
                 .toList();
-        System.out.println("Outside if");
 
         notificationService.createAndAssignNotification(
                 NotificationType.NEW_INITIATIVE,
@@ -79,7 +78,6 @@ public class InitiativeService {
                 .orElseThrow(() -> new InitiativeNotFoundException(id));
     }
 
-    @Transactional
     public Initiative joinInitiative(Long initiativeId, User user) {
         Initiative initiative = initiativeRepository.findAccessibleById(initiativeId, user, user.getLocation())
                 .orElseThrow(() -> new InitiativeNotFoundException(initiativeId));
