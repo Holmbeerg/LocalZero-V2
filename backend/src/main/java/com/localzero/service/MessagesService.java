@@ -6,7 +6,7 @@ import com.localzero.exception.UserNotFoundException;
 import com.localzero.model.*;
 import com.localzero.repository.MessagesRepository;
 import com.localzero.repository.UserRepository;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

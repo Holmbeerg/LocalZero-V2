@@ -7,7 +7,7 @@ import com.localzero.model.User;
 import com.localzero.dto.LogEcoActionRequest;
 import com.localzero.repository.EcoActionRepository;
 import com.localzero.repository.EcoActionTypeRepository;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

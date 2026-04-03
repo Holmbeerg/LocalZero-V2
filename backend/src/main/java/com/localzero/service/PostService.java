@@ -10,7 +10,7 @@ import com.localzero.repository.InitiativeRepository;
 import com.localzero.repository.LikeRepository;
 import com.localzero.repository.PostRepository;
 import jakarta.persistence.EntityManager;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
