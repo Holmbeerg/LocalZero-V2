@@ -70,7 +70,7 @@ INSERT INTO initiatives (title, description, location, category, is_public, crea
                          created_at)
 VALUES ('Centrum Tool Library',
         'Share tools and equipment with neighbors. From drills to garden tools - borrow what you need!',
-        'CENTRUM', 'TOOL_SHARING', true, 1, '2025-03-01', NULL, '2025-02-25 10:00:00+01'),
+        'CENTRUM', 'TOOL_SHARING', true, 4, '2025-03-01', NULL, '2025-02-25 10:00:00+01'),
 
        ('Västra Hamnen Seed Swap',
         'Monthly seed and plant exchange. Bring seeds from your garden and take home something new!',
@@ -78,11 +78,11 @@ VALUES ('Centrum Tool Library',
 
        ('Möllevången Community Garden',
         'Grow vegetables together in our shared garden space. Perfect for apartment dwellers!',
-        'MOLLEVANGEN', 'COMMUNITY_GARDENING', true, 3, '2025-03-15', '2025-11-30',
+        'MOLLEVANGEN', 'COMMUNITY_GARDENING', false, 3, '2025-03-15', '2025-11-30',
         '2025-03-01 09:15:00+01'),
 
-       ('Rosengård Recycling Drive',
-        'Monthly electronics and textile recycling event. Help keep electronics out of landfills!', 'ROSENGARD',
+       ('Möllan Recycling Drive',
+        'Monthly electronics and textile recycling event. Help keep electronics out of landfills!', 'MOLLEVANGEN',
         'RECYCLING_DRIVE', true, 1, '2025-05-01', NULL, '2025-04-20 11:00:00+02'),
 
        ('Hyllie Carpool Network', 'Connect with neighbors for shared rides to work, shopping, and events around Malmö.',
